@@ -111,6 +111,6 @@ AuraBlockLimit is licensed under the [GNU General Public License v3.0](https://w
 
 ## Random Quote
 
-> I think Microsoft named .Net so it wouldn’t show up in a Unix directory listing.
+> Normal people believe that if it ain’t broke, don’t fix it. Engineers believe that if it ain’t broke, it doesn’t have enough features yet.
 >
-> -- <cite>Oktal</cite>
+> -- <cite>Scott Adams</cite>
