@@ -5,5 +5,7 @@ repositories {
 }
 
 dependencies {
-    // Additional dependencies
+    shadow (project(":AuraBan-api")) {
+        exclude module: "lombok"
+    }
 }

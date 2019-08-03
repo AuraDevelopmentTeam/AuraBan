@@ -1,3 +1,6 @@
 include "GradleCommon"
+include "api"
+include "platform"
 
 rootProject.name = "AuraBan"
+project(":api").name = "AuraBan-api"
