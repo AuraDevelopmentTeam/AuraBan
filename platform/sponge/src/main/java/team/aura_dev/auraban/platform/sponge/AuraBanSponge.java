@@ -1,6 +1,7 @@
 package team.aura_dev.auraban.platform.sponge;
 
 import org.spongepowered.api.plugin.Plugin;
+import team.aura_dev.auraban.platform.common.AuraBanBase;
 
 @Plugin(
   id = AuraBanSponge.ID,
@@ -10,7 +11,7 @@ import org.spongepowered.api.plugin.Plugin;
   url = AuraBanSponge.URL,
   authors = {AuraBanSponge.AUTHOR}
 )
-public class AuraBanSponge {
+public class AuraBanSponge implements AuraBanBase {
   public static final String ID = "@id@";
   public static final String NAME = "@name@";
   public static final String VERSION = "@version@";
