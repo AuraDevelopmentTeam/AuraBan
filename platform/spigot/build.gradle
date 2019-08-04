@@ -1,0 +1,11 @@
+apply from: "../../GradleCommon/common.gradle"
+
+repositories {
+    // Additional repositories
+}
+
+dependencies {
+    shadow (project(":AuraBan-common")) {
+        exclude module: "lombok"
+    }
+}

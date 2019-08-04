@@ -8,4 +8,16 @@ dependencies {
     shadow (project(":AuraBan-api")) {
         exclude module: "lombok"
     }
+    shadow (project(":AuraBan-bungeecord")) {
+        transitive = false
+    }
+    shadow (project(":AuraBan-velocity")) {
+        transitive = false
+    }
+    shadow (project(":AuraBan-spigot")) {
+        transitive = false
+    }
+    shadow (project(":AuraBan-sponge")) {
+        transitive = false
+    }
 }
