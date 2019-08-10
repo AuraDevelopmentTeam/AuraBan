@@ -1,11 +1,28 @@
 apply from: "../../GradleCommon/common.gradle"
 
+sourceSets {
+    main {
+        java {
+            srcDir project(":AuraBan-common").sourceSets.main.allSource
+        }
+    }
+}
+
 repositories {
     // Additional repositories
 }
 
 dependencies {
-    shadow (project(":AuraBan-common")) {
-        exclude module: "lombok"
-    }
+    compile project(":AuraBan-common")
+
+    shadow "me.lucko:jar-relocator:${project(":AuraBan-common").jarRelocator_version}"
 }
+
+shadowJar {
+    relocate("me.lucko", "${rootProject.group}.shadow.me.lucko")
+    relocate("org.objectweb.asm", "${rootProject.group}.shadow.org.objectweb.asm")
+
+    exclude "module-info.class"
+}
+
+println project(":AuraBan-sponge").sourceSets.main.allSource.dump()
