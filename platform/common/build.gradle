@@ -14,18 +14,24 @@ sourceSets {
 }
 
 repositories {
-    // Additional repositories
+    maven {
+        name "mikroskeem"
+        url "https://repo.wut.ee/repository/mikroskeem-repo/"
+    }
 }
 
 dependencies {
     compile project(":AuraBan-api")
 
+    shadow "eu.mikroskeem:picomaven:${picoMaven_version}"
     shadow "me.lucko:jar-relocator:${jarRelocator_version}"
 }
 
 shadowJar {
+    relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
+    relocate("licenses", "${rootProject.group}.shadow.licenses")
     relocate("me.lucko", "${rootProject.group}.shadow.me.lucko")
-    relocate("org.objectweb.asm", "${rootProject.group}.shadow.org.objectweb.asm")
+    relocate("org", "${rootProject.group}.shadow.org")
 
     exclude "module-info.class"
 }
