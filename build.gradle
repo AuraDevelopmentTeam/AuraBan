@@ -1,23 +1,47 @@
 apply from: "GradleCommon/common.gradle"
 
+evaluationDependsOn(":AuraBan-api")
+evaluationDependsOn(":AuraBan-bungeecord")
+evaluationDependsOn(":AuraBan-velocity")
+evaluationDependsOn(":AuraBan-spigot")
+evaluationDependsOn(":AuraBan-sponge")
+
+sourceSets {
+    main {
+        java {
+            srcDir project(":AuraBan-api").sourceSets.main.java.srcDirs
+            srcDir project(":AuraBan-bungeecord").sourceSets.main.java.srcDirs
+            srcDir project(":AuraBan-velocity").sourceSets.main.java.srcDirs
+            srcDir project(":AuraBan-spigot").sourceSets.main.java.srcDirs
+            srcDir project(":AuraBan-sponge").sourceSets.main.java.srcDirs
+        }
+        resources {
+            srcDir project(":AuraBan-api").sourceSets.main.resources.srcDirs
+            srcDir project(":AuraBan-bungeecord").sourceSets.main.resources.srcDirs
+            srcDir project(":AuraBan-velocity").sourceSets.main.resources.srcDirs
+            srcDir project(":AuraBan-spigot").sourceSets.main.resources.srcDirs
+            srcDir project(":AuraBan-sponge").sourceSets.main.resources.srcDirs
+        }
+    }
+}
+
 repositories {
     // Additional repositories
 }
 
 dependencies {
-    shadow (project(":AuraBan-api")) {
-        exclude module: "lombok"
-    }
-    shadow (project(":AuraBan-bungeecord")) {
-        transitive = false
-    }
-    shadow (project(":AuraBan-velocity")) {
-        transitive = false
-    }
-    shadow (project(":AuraBan-spigot")) {
-        transitive = false
-    }
-    shadow (project(":AuraBan-sponge")) {
-        transitive = false
-    }
+    compile project(":AuraBan-api")
+    compile project(":AuraBan-bungeecord")
+    compile project(":AuraBan-velocity")
+    compile project(":AuraBan-spigot")
+    compile project(":AuraBan-sponge")
+
+    shadow "me.lucko:jar-relocator:${project(":AuraBan-common").jarRelocator_version}"
+}
+
+shadowJar {
+    relocate("me.lucko", "${rootProject.group}.shadow.me.lucko")
+    relocate("org.objectweb.asm", "${rootProject.group}.shadow.org.objectweb.asm")
+
+    exclude "module-info.class"
 }

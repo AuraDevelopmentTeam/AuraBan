@@ -1,9 +1,14 @@
 apply from: "../../GradleCommon/common.gradle"
 
+evaluationDependsOn(":AuraBan-common")
+
 sourceSets {
     main {
         java {
-            srcDir project(":AuraBan-common").sourceSets.main.allSource
+            srcDir project(":AuraBan-common").sourceSets.main.java.srcDirs
+        }
+        resources {
+            srcDir project(":AuraBan-common").sourceSets.main.resources.srcDirs
         }
     }
 }
