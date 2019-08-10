@@ -8,4 +8,6 @@ dependencies {
     shadow (project(":AuraBan-api")) {
         exclude module: "lombok"
     }
+    
+    shadowRelocate "me.lucko:jar-relocator:${jarRelocator_version}"
 }
