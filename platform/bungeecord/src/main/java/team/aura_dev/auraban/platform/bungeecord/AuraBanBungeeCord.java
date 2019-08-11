@@ -14,4 +14,9 @@ public class AuraBanBungeeCord extends Plugin implements AuraBanBase {
   public File getConfigDir() {
     return getDataFolder();
   }
+
+  @Override
+  public void onEnable() {
+    startPlugin();
+  }
 }

@@ -5,6 +5,8 @@ import java.io.File;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
@@ -34,5 +36,10 @@ public class AuraBanSponge implements AuraBanBase {
 
     this.configDir = configDir;
     this.logger = logger;
+  }
+
+  @Listener
+  public void init(GameInitializationEvent event) {
+    startPlugin();
   }
 }

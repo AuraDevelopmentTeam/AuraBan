@@ -1,6 +1,8 @@
 package team.aura_dev.auraban.platform.velocity;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -38,5 +40,10 @@ public class AuraBanVelocity implements AuraBanBase {
     this.server = server;
     this.logger = logger;
     this.configDir = dataDir.toFile();
+  }
+
+  @Subscribe
+  public void onProxyInitialization(ProxyInitializeEvent event) {
+    startPlugin();
   }
 }

@@ -14,4 +14,9 @@ public class AuraBanSpigot extends JavaPlugin implements AuraBanBase {
   public File getConfigDir() {
     return getDataFolder();
   }
+
+  @Override
+  public void onEnable() {
+    startPlugin();
+  }
 }
