@@ -1,3 +1,10 @@
 package team.aura_dev.auraban.api;
 
-public interface AuraBanApi {}
+public interface AuraBanApi {
+  public static final String ID = "@id@";
+  public static final String NAME = "@name@";
+  public static final String VERSION = "@version@";
+  public static final String DESCRIPTION = "@description@";
+  public static final String URL = "https://github.com/AuraDevelopmentTeam/AuraBan";
+  public static final String AUTHOR = "The_BrainStone";
+}
