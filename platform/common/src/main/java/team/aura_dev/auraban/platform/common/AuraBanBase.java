@@ -1,8 +1,8 @@
 package team.aura_dev.auraban.platform.common;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import team.aura_dev.auraban.api.AuraBanApi;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
@@ -22,11 +22,11 @@ public interface AuraBanBase extends AuraBanApi {
     return new File(getConfigDir(), "libs");
   }
 
-  public default List<RuntimeDependency> getEarlyDependencies() {
+  public default Collection<RuntimeDependency> getEarlyDependencies() {
     return Collections.emptyList();
   }
 
-  public default List<RuntimeDependency> getDependencies() {
+  public default Collection<RuntimeDependency> getDependencies() {
     return Collections.emptyList();
   }
 }
