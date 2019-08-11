@@ -51,3 +51,23 @@ shadowJar {
 
     exclude "module-info.class"
 }
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "lang"
+        exclude "assets/*/lang"
+        exclude "*.conf"
+        exclude pngPatterns
+        exclude "**/*.ogg"
+
+        expand \
+            "id": rootProject.pluginId,
+            "name": rootProject.pluginName,
+            "version": rootProject.version,
+            "group": rootProject.group,
+            "description": rootProject.description,
+            "build": rootProject.buildNum,
+            "buildType": rootProject.buildType,
+            "minecraftVersion": rootProject.minecraft_version
+    }
+}
