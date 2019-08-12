@@ -62,7 +62,7 @@ public class RuntimeDependency {
   @RequiredArgsConstructor
   @Getter
   public static enum Maven {
-    MAVEN_CENTRAL("https://repo1.maven.org/maven2/");
+    MAVEN_CENTRAL("https://repo1.maven.org/maven2");
 
     private final String urlString;
 
