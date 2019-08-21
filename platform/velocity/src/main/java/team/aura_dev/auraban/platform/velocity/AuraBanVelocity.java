@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import lombok.Getter;
-import org.slf4j.Logger;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.api.AuraBanApi;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
@@ -27,16 +26,24 @@ import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 )
 public class AuraBanVelocity implements AuraBanBase {
   private final ProxyServer server;
-  @Getter private final Logger logger;
   @Getter private final File configDir;
 
   @Inject
-  public AuraBanVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDir) {
+  public AuraBanVelocity(ProxyServer server, @DataDirectory Path dataDir) {
     AuraBan.setApi(this);
 
     this.server = server;
-    this.logger = logger;
     this.configDir = dataDir.toFile();
+  }
+
+  @Override
+  public String getBasePlatform() {
+    return "Velocity";
+  }
+
+  @Override
+  public String getPlatformVariant() {
+    return server.getVersion().getName();
   }
 
   @Subscribe

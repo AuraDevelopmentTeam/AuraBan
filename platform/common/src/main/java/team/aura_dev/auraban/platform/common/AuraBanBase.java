@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.api.AuraBanApi;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
@@ -13,10 +12,27 @@ import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 public interface AuraBanBase extends AuraBanApi {
   public static final Logger logger = LoggerFactory.getLogger(NAME);
 
+  public String getBasePlatform();
+
+  public String getPlatformVariant();
+
+  public default String getFullPlatform() {
+    return getBasePlatform() + " - " + getPlatformVariant();
+  }
+
   public File getConfigDir();
 
   public default void preInitPlugin() {
-    // TODO: ASCII-Art
+    // Get logger without name to nicely print the banner
+    final Logger bannerLogger = LoggerFactory.getLogger("");
+
+    // TODO: Figure out how to print bold (§l (both before and after) doesn't work)
+    // Print ASCII banner
+    bannerLogger.info("  §a            §4 __");
+    bannerLogger.info("  §a /\\     _ _ §4|__) _  _    §aAuraBan §4v" + VERSION);
+    bannerLogger.info("  §a/--\\|_|| (_|§4|__)(_|| )   §8Proudly running on " + getFullPlatform());
+    bannerLogger.info("");
+
     logger.info("Preinitializing " + NAME + " Version " + VERSION);
 
     if (VERSION.contains("SNAPSHOT")) {
@@ -26,9 +42,6 @@ public interface AuraBanBase extends AuraBanApi {
       logger.info("This is a unreleased development version!");
       logger.info("Things might not work properly!");
     }
-
-    logger.debug("Initializing API");
-    AuraBan.setApi(this);
 
     logger.info("Downloading early dependencies");
     DependencyDownloader.downloadAndInjectInClasspath(getEarlyDependencies(), getLibsDir());

@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import lombok.Getter;
 import org.slf4j.Logger;
+import org.spongepowered.api.Platform;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -26,14 +28,22 @@ import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 )
 public class AuraBanSponge implements AuraBanBase {
   @Getter private final File configDir;
-  @Getter private final Logger logger;
 
   @Inject
   public AuraBanSponge(@ConfigDir(sharedRoot = false) File configDir, Logger logger) {
     AuraBan.setApi(this);
 
     this.configDir = configDir;
-    this.logger = logger;
+  }
+
+  @Override
+  public String getBasePlatform() {
+    return "Sponge";
+  }
+
+  @Override
+  public String getPlatformVariant() {
+    return Sponge.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName();
   }
 
   @Listener
