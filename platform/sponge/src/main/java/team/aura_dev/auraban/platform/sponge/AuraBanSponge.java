@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.api.AuraBanApi;
@@ -36,8 +37,13 @@ public class AuraBanSponge implements AuraBanBase {
   }
 
   @Listener
+  public void preInit(GamePreInitializationEvent event) {
+    preInitPlugin();
+  }
+
+  @Listener
   public void init(GameInitializationEvent event) {
-    startPlugin();
+    initPlugin();
   }
 
   @Override

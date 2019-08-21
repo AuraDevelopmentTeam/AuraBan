@@ -41,7 +41,8 @@ public class AuraBanVelocity implements AuraBanBase {
 
   @Subscribe
   public void onProxyInitialization(ProxyInitializeEvent event) {
-    startPlugin();
+    preInitPlugin();
+    initPlugin();
   }
 
   @Override

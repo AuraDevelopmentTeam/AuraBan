@@ -20,7 +20,8 @@ public class AuraBanBungeeCord extends Plugin implements AuraBanBase {
 
   @Override
   public void onEnable() {
-    startPlugin();
+    preInitPlugin();
+    initPlugin();
   }
 
   @Override

@@ -20,7 +20,8 @@ public class AuraBanSpigot extends JavaPlugin implements AuraBanBase {
 
   @Override
   public void onEnable() {
-    startPlugin();
+    preInitPlugin();
+    initPlugin();
   }
 
   @Override
