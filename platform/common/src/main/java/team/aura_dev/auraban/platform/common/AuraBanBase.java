@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.api.AuraBanApi;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
@@ -25,6 +26,9 @@ public interface AuraBanBase extends AuraBanApi {
       logger.info("This is a unreleased development version!");
       logger.info("Things might not work properly!");
     }
+
+    logger.debug("Initializing API");
+    AuraBan.setApi(this);
 
     logger.info("Downloading early dependencies");
     DependencyDownloader.downloadAndInjectInClasspath(getEarlyDependencies(), getLibsDir());
