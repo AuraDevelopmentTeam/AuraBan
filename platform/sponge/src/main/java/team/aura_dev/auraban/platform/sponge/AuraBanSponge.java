@@ -2,6 +2,8 @@ package team.aura_dev.auraban.platform.sponge;
 
 import com.google.inject.Inject;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
@@ -11,6 +13,7 @@ import org.spongepowered.api.plugin.Plugin;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.api.AuraBanApi;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
 @Plugin(
   id = AuraBanApi.ID,
@@ -35,5 +38,10 @@ public class AuraBanSponge implements AuraBanBase {
   @Listener
   public void init(GameInitializationEvent event) {
     startPlugin();
+  }
+
+  @Override
+  public Collection<RuntimeDependency> getDependencies() {
+    return Arrays.asList(RuntimeDependency.HIKARI_CP);
   }
 }
