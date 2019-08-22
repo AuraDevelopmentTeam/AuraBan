@@ -10,8 +10,12 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
 public class AuraBanBungeeCord extends Plugin implements AuraBanBase {
+  private final ProxyServer server;
+
   public AuraBanBungeeCord() {
     AuraBan.setApi(this);
+
+    server = ProxyServer.getInstance();
   }
 
   @Override
@@ -21,7 +25,7 @@ public class AuraBanBungeeCord extends Plugin implements AuraBanBase {
 
   @Override
   public String getPlatformVariant() {
-    return ProxyServer.getInstance().getName();
+    return server.getName();
   }
 
   @Override
