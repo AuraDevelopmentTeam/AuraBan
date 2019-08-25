@@ -129,7 +129,7 @@ public class DependencyDownloader {
   private static Relocation toRelocationRule(Dependency dependency) {
     final String group = getDependencyPackage(dependency);
 
-    return new Relocation(group, "@group@.shadow" + group);
+    return new Relocation(group, "@group@.shadow." + group);
   }
 
   private static void processDownloadResult(
@@ -179,7 +179,7 @@ public class DependencyDownloader {
   }
 
   private static String getDependencyPackage(Dependency dependency) {
-    return dependency.getGroupId() + '.' + dependency.getArtifactId();
+    return dependency.getGroupId();
   }
 
   private static String getDependencyName(Dependency dependency) {
