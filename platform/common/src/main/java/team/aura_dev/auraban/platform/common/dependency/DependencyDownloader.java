@@ -113,7 +113,7 @@ public class DependencyDownloader {
       return allDownloads.stream();
     } catch (InterruptedException | ExecutionException e) {
       // Rethrow because we rely on this working
-      throw new IllegalArgumentException("Error while trying to download a dependency", e);
+      throw new DependencyDownloadException("Error while trying to download a dependency", e);
     }
   }
 
@@ -121,8 +121,9 @@ public class DependencyDownloader {
     AuraBanBase.logger.info(result.toString());
 
     if (!result.isSuccess()) {
-      throw new IllegalArgumentException(
-          "Downloading the dependency " + getDependencyName(result.getDependency()) + " failed");
+      throw new DependencyDownloadException(
+          "Downloading the dependency " + getDependencyName(result.getDependency()) + " failed",
+          result.getDownloadException());
     }
   }
 
@@ -154,7 +155,7 @@ public class DependencyDownloader {
             relocator.run();
           } catch (IOException e) {
             // Rethrow because we rely on this working
-            throw new IllegalArgumentException("Unable to relocate", e);
+            throw new DependencyDownloadException("Unable to relocate", e);
           }
         }
 
@@ -175,7 +176,7 @@ public class DependencyDownloader {
         | IllegalArgumentException
         | InvocationTargetException e) {
       // Rethrow because we rely on this working
-      throw new IllegalArgumentException(
+      throw new DependencyDownloadException(
           "Error while trying to inject a dependency in the classloader", e);
     }
   }
