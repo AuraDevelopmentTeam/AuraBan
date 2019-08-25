@@ -147,13 +147,15 @@ public class DependencyDownloader {
         final File output =
             new File(input.getParentFile(), input.getName().replace(".jar", "") + "_relocated.jar");
 
-        JarRelocator relocator = new JarRelocator(input, output, relocationRules);
+        if (!output.exists()) {
+          JarRelocator relocator = new JarRelocator(input, output, relocationRules);
 
-        try {
-          relocator.run();
-        } catch (IOException e) {
-          // Rethrow because we rely on this working
-          throw new IllegalArgumentException("Unable to relocate", e);
+          try {
+            relocator.run();
+          } catch (IOException e) {
+            // Rethrow because we rely on this working
+            throw new IllegalArgumentException("Unable to relocate", e);
+          }
         }
 
         downloadedFiles.add(output.toPath());
