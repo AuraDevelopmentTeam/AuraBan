@@ -26,7 +26,7 @@ public class RuntimeDependency {
               "2.7.9",
               "2002335357f6c75336692f93004004e3",
               "a83113d2c091d0d0f853dad3217bd7df3beb6ae3")
-          .relocate(true)
+          .relocate()
           .build();
 
   private final String groupId;
@@ -66,6 +66,20 @@ public class RuntimeDependency {
       this.version(version);
       this.md5Hash(md5Hash);
       this.sha1Hash(sha1Hash);
+    }
+
+    public RuntimeDependencyBuilder transitive() {
+      transitive = true;
+      transitive$set = true;
+
+      return this;
+    }
+
+    public RuntimeDependencyBuilder relocate() {
+      relocate = true;
+      relocate$set = true;
+
+      return this;
     }
   }
 
