@@ -4,6 +4,7 @@ import eu.mikroskeem.picomaven.DownloadResult;
 import eu.mikroskeem.picomaven.PicoMaven;
 import eu.mikroskeem.picomaven.artifact.Dependency;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -11,10 +12,18 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
+import me.lucko.jarrelocator.JarRelocator;
+import me.lucko.jarrelocator.Relocation;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 
 @UtilityClass
@@ -28,9 +37,6 @@ public class DependencyDownloader {
       method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
       method.setAccessible(true);
     } catch (NoSuchMethodException | SecurityException e) {
-      // TODO: Properly log exception.
-      e.printStackTrace();
-
       // Rethrow so leaving the fields uninitialized is no error
       throw new IllegalStateException(
           "Error while trying to make adding new URLs to the classloader possible", e);
@@ -60,43 +66,101 @@ public class DependencyDownloader {
                     .collect(Collectors.toList()));
 
     try (PicoMaven picoMaven = picoMavenBase.build()) {
-      picoMaven
-          .downloadAllArtifacts()
-          .values()
-          .parallelStream()
-          .forEach(DependencyDownloader::processDownload);
+      Set<Dependency> relocationDependencies =
+          Collections.synchronizedSet(
+              dependencies
+                  .stream()
+                  .filter(RuntimeDependency::isRelocate)
+                  .map(RuntimeDependency::getDependency)
+                  .collect(Collectors.toCollection(HashSet::new)));
 
-      // TODO: Process the dependencies, add them to the classpath and relocate them
+      List<DownloadResult> downloads =
+          picoMaven
+              .downloadAllArtifacts()
+              .values()
+              .parallelStream()
+              .flatMap(future -> processDownload(future, relocationDependencies))
+              .peek(DependencyDownloader::checkDownload)
+              .collect(Collectors.toList());
+
+      List<Relocation> relocationRules =
+          downloads
+              .stream()
+              .map(DownloadResult::getDependency)
+              .filter(relocationDependencies::contains)
+              .map(DependencyDownloader::toRelocationRule)
+              .collect(Collectors.toList());
+
+      downloads.forEach(
+          download -> processDownloadResult(download, relocationDependencies, relocationRules));
     }
   }
 
-  private static void processDownload(Future<DownloadResult> future) {
+  private static Stream<DownloadResult> processDownload(
+      Future<DownloadResult> future, Set<Dependency> relocationDependencies) {
     try {
       final DownloadResult result = future.get();
 
-      AuraBanBase.logger.info(result.toString());
+      final List<DownloadResult> allDownloads = result.getTransitiveDependencies();
 
-      if (!result.isSuccess()) {
-        final Dependency dependency = result.getDependency();
-
-        throw new IllegalArgumentException(
-            "Downloading the dependency "
-                + dependency.getGroupId()
-                + ':'
-                + dependency.getArtifactId()
-                + ':'
-                + dependency.getVersion()
-                + " failed");
+      if (relocationDependencies.contains(result.getDependency())) {
+        relocationDependencies.addAll(
+            allDownloads.stream().map(DownloadResult::getDependency).collect(Collectors.toList()));
       }
 
-      result.getAllDownloadedFiles().forEach(DependencyDownloader::injectInClasspath);
-    } catch (InterruptedException | ExecutionException e) {
-      // TODO: Properly log exception.
-      e.printStackTrace();
+      allDownloads.add(0, result);
 
+      return allDownloads.stream();
+    } catch (InterruptedException | ExecutionException e) {
       // Rethrow because we rely on this working
       throw new IllegalArgumentException("Error while trying to download a dependency", e);
     }
+  }
+
+  private static void checkDownload(DownloadResult result) {
+    AuraBanBase.logger.info(result.toString());
+
+    if (!result.isSuccess()) {
+      throw new IllegalArgumentException(
+          "Downloading the dependency " + getDependencyName(result.getDependency()) + " failed");
+    }
+  }
+
+  private static Relocation toRelocationRule(Dependency dependency) {
+    final String group = getDependencyPackage(dependency);
+
+    return new Relocation(group, "@group@.shadow" + group);
+  }
+
+  private static void processDownloadResult(
+      DownloadResult result,
+      Set<Dependency> relocationDependencies,
+      List<Relocation> relocationRules) {
+    List<Path> downloadedFiles = result.getAllDownloadedFiles();
+
+    if (relocationDependencies.contains(result.getDependency())) {
+      List<Path> originalDownloadedFiles = downloadedFiles;
+      downloadedFiles = new LinkedList<>();
+
+      for (Path inputPath : originalDownloadedFiles) {
+        final File input = inputPath.toFile();
+        final File output =
+            new File(input.getParentFile(), input.getName().replace(".jar", "") + "_relocated.jar");
+
+        JarRelocator relocator = new JarRelocator(input, output, relocationRules);
+
+        try {
+          relocator.run();
+        } catch (IOException e) {
+          // Rethrow because we rely on this working
+          throw new IllegalArgumentException("Unable to relocate", e);
+        }
+
+        downloadedFiles.add(output.toPath());
+      }
+    }
+
+    downloadedFiles.forEach(DependencyDownloader::injectInClasspath);
   }
 
   private static void injectInClasspath(Path jarFile) {
@@ -108,12 +172,21 @@ public class DependencyDownloader {
         | IllegalAccessException
         | IllegalArgumentException
         | InvocationTargetException e) {
-      // TODO: Properly log exception.
-      e.printStackTrace();
-
       // Rethrow because we rely on this working
       throw new IllegalArgumentException(
           "Error while trying to inject a dependency in the classloader", e);
     }
+  }
+
+  private static String getDependencyPackage(Dependency dependency) {
+    return dependency.getGroupId() + '.' + dependency.getArtifactId();
+  }
+
+  private static String getDependencyName(Dependency dependency) {
+    return dependency.getGroupId()
+        + ':'
+        + dependency.getArtifactId()
+        + ':'
+        + dependency.getVersion();
   }
 }
