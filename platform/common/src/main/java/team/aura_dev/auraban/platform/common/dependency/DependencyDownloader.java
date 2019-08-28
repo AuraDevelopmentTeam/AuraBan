@@ -26,10 +26,12 @@ import me.lucko.jarrelocator.JarRelocator;
 import me.lucko.jarrelocator.Relocation;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 
+// TODO: Logging!
 @UtilityClass
 public class DependencyDownloader {
   private static final URLClassLoader classLoader;
   private static final Method method;
+  private static final List<Relocation> relocationRules = new LinkedList<>();
 
   static {
     try {
@@ -83,13 +85,13 @@ public class DependencyDownloader {
               .peek(DependencyDownloader::checkDownload)
               .collect(Collectors.toList());
 
-      List<Relocation> relocationRules =
+      relocationRules.addAll(
           downloads
               .stream()
               .map(DownloadResult::getDependency)
               .filter(relocationDependencies::contains)
               .map(DependencyDownloader::toRelocationRule)
-              .collect(Collectors.toList());
+              .collect(Collectors.toSet()));
 
       downloads.forEach(
           download -> processDownloadResult(download, relocationDependencies, relocationRules));
