@@ -1,6 +1,6 @@
 name: ${name}
 id: ${id}
-main: ${group}.platform.spigot.AuraBanSpigot
+main: ${group}.platform.spigot.AuraBanSpigotBootstrap
 version: ${version}
 author: BrainStone
 description: ${description}

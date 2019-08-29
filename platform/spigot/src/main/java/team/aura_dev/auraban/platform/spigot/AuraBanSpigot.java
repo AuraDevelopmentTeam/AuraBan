@@ -4,13 +4,15 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
-public class AuraBanSpigot extends JavaPlugin implements AuraBanBase {
-  public AuraBanSpigot() {
+public class AuraBanSpigot extends AuraBanBase {
+  public AuraBanSpigot(File configDir) {
+    super(configDir);
+
+    // Instance is initialized
     AuraBan.setApi(this);
   }
 
@@ -22,17 +24,6 @@ public class AuraBanSpigot extends JavaPlugin implements AuraBanBase {
   @Override
   public String getPlatformVariant() {
     return Bukkit.getName();
-  }
-
-  @Override
-  public File getConfigDir() {
-    return getDataFolder();
-  }
-
-  @Override
-  public void onEnable() {
-    preInitPlugin();
-    initPlugin();
   }
 
   @Override
