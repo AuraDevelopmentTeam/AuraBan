@@ -4,9 +4,10 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class AuraBanBungeeCordBootstrap extends Plugin {
-  private final AuraBanBungeeCord plugin;
+  private AuraBanBungeeCord plugin;
 
-  public AuraBanBungeeCordBootstrap() {
+  @Override
+  public void onLoad() {
     plugin = new AuraBanBungeeCord(ProxyServer.getInstance(), getDataFolder());
   }
 
