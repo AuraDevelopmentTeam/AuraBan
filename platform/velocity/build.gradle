@@ -16,7 +16,7 @@ sourceSets {
 repositories {
     maven {
         name "mikroskeem"
-        url "https://repo.wut.ee/repository/mikroskeem-repo/"
+        url "https://repo.wut.ee/repository/mikroskeem-repo"
     }
 }
 

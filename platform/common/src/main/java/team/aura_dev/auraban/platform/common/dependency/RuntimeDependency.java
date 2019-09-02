@@ -28,6 +28,17 @@ public class RuntimeDependency {
               "a83113d2c091d0d0f853dad3217bd7df3beb6ae3")
           .relocate()
           .build();
+  public static final RuntimeDependency CONFIGURATE_HOCON =
+      RuntimeDependency.builder(
+              "org.spongepowered",
+              "configurate-hocon",
+              "3.6.1",
+              "6395403afce7b9bbf4e26ef74c13da9a",
+              "e3f199dbd91de753a70f63606f530fdb8644bbd5")
+          .maven(Maven.SPONGE)
+          .relocate()
+          .transitive()
+          .build();
 
   private final String groupId;
   private final String artifactId;
@@ -48,7 +59,7 @@ public class RuntimeDependency {
         artifactId,
         version,
         null,
-        false,
+        transitive,
         Arrays.asList(
             ArtifactChecksum.md5HexSumOf(md5Hash), ArtifactChecksum.sha1HexSumOf(sha1Hash)));
   }
@@ -86,7 +97,8 @@ public class RuntimeDependency {
   @RequiredArgsConstructor
   @Getter
   public static enum Maven {
-    MAVEN_CENTRAL("https://repo1.maven.org/maven2");
+    MAVEN_CENTRAL("https://repo1.maven.org/maven2"),
+    SPONGE("https://repo.spongepowered.org/maven");
 
     private final String urlString;
 

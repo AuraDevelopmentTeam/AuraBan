@@ -16,13 +16,21 @@ sourceSets {
 repositories {
     maven {
         name "mikroskeem"
-        url "https://repo.wut.ee/repository/mikroskeem-repo/"
+        url "https://repo.wut.ee/repository/mikroskeem-repo"
+    }
+    maven {
+        name "sponge"
+        url "https://repo.spongepowered.org/maven"
     }
 }
 
 dependencies {
     compile project(":AuraBan-api")
 
+    // Normal dependencies
+    compile "org.spongepowered:configurate-hocon:${configurate_version}"
+
+    // Shadow dependencies
     shadow "eu.mikroskeem:picomaven:${picoMaven_version}"
     shadow "org.slf4j:slf4j-api:${slf4j_version}"
     shadow "me.lucko:jar-relocator:${jarRelocator_version}"

@@ -96,6 +96,12 @@ public class DependencyDownloader {
       downloads.forEach(
           download -> processDownloadResult(download, relocationDependencies, relocationRules));
     }
+
+    // TODO: Relocate own classes during runtime
+
+    checkClass("com.zaxxer.hikari.HikariDataSource");
+    checkClass("@group@.shadow.com.zaxxer.hikari.HikariDataSource");
+    checkClass("team.aura_dev.auraban.shadow.com.zaxxer.hikari.HikariDataSource");
   }
 
   private static Stream<DownloadResult> processDownload(
@@ -193,5 +199,19 @@ public class DependencyDownloader {
         + dependency.getArtifactId()
         + ':'
         + dependency.getVersion();
+  }
+
+  private static void checkClass(String className) {
+    AuraBanBase.logger.info(className + ": " + doesClassExist(className));
+  }
+
+  private static boolean doesClassExist(String className) {
+    try {
+      Class.forName(className);
+
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
   }
 }
