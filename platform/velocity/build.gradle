@@ -25,6 +25,7 @@ dependencies {
 
     shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"
     shadow "me.lucko:jar-relocator:${project(":AuraBan-common").jarRelocator_version}"
+    shadow "net.bytebuddy:byte-buddy-agent:${project(":AuraBan-common").byteBuddy_version}"
 }
 
 shadowJar {
@@ -34,6 +35,7 @@ shadowJar {
     relocate("org.apache", "${rootProject.group}.shadow.org.apache")
     relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")
     relocate("org.objectweb", "${rootProject.group}.shadow.org.objectweb")
+    relocate("net.bytebuddy", "${rootProject.group}.shadow.net.bytebuddy")
 
     exclude "module-info.class"
 }

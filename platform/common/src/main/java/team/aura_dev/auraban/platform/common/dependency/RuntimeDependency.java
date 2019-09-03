@@ -36,7 +36,7 @@ public class RuntimeDependency {
               "6395403afce7b9bbf4e26ef74c13da9a",
               "e3f199dbd91de753a70f63606f530fdb8644bbd5")
           .maven(Maven.SPONGE)
-          .relocate()
+          .relocate("ninja.leaping.configurate")
           .transitive()
           .build();
 
@@ -49,6 +49,7 @@ public class RuntimeDependency {
   @Builder.Default private final Maven maven = Maven.MAVEN_CENTRAL;
   @Builder.Default private final boolean transitive = false;
   @Builder.Default private final boolean relocate = false;
+  @Builder.Default private final String relocateBaseName = null;
 
   @Getter(lazy = true)
   private final Dependency dependency = generateDependency();
@@ -62,6 +63,10 @@ public class RuntimeDependency {
         transitive,
         Arrays.asList(
             ArtifactChecksum.md5HexSumOf(md5Hash), ArtifactChecksum.sha1HexSumOf(sha1Hash)));
+  }
+
+  public String getRelocateBaseName() {
+    return (relocateBaseName == null) ? groupId : relocateBaseName;
   }
 
   public static RuntimeDependencyBuilder builder(
@@ -82,6 +87,15 @@ public class RuntimeDependency {
     public RuntimeDependencyBuilder transitive() {
       transitive = true;
       transitive$set = true;
+
+      return this;
+    }
+
+    public RuntimeDependencyBuilder relocate(String relocateBaseName) {
+      relocate = true;
+      relocate$set = true;
+      this.relocateBaseName = relocateBaseName;
+      relocateBaseName$set = true;
 
       return this;
     }

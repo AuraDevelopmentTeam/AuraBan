@@ -5,6 +5,7 @@ import eu.mikroskeem.picomaven.PicoMaven;
 import eu.mikroskeem.picomaven.artifact.Dependency;
 import java.io.File;
 import java.io.IOException;
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import me.lucko.jarrelocator.JarRelocator;
 import me.lucko.jarrelocator.Relocation;
+import net.bytebuddy.agent.ByteBuddyAgent;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 
 // TODO: Logging!
@@ -92,6 +94,8 @@ public class DependencyDownloader {
               .filter(relocationDependencies::contains)
               .map(DependencyDownloader::toRelocationRule)
               .collect(Collectors.toSet()));
+      relocationRules.add(
+          new Relocation("ninja.leaping.configurate", "@group@.shadow.ninja.leaping.configurate"));
 
       downloads.forEach(
           download -> processDownloadResult(download, relocationDependencies, relocationRules));
@@ -99,9 +103,13 @@ public class DependencyDownloader {
 
     // TODO: Relocate own classes during runtime
 
-    checkClass("com.zaxxer.hikari.HikariDataSource");
-    checkClass("@group@.shadow.com.zaxxer.hikari.HikariDataSource");
-    checkClass("team.aura_dev.auraban.shadow.com.zaxxer.hikari.HikariDataSource");
+    Instrumentation instrumentation = ByteBuddyAgent.install();
+    instrumentation.addTransformer(
+        new DynamicLibraryReferenceTransformer(
+            "@group@", "ninja.leaping.configurate", "@group@.shadow.ninja.leaping.configurate"),
+        true);
+
+    checkClass("@group@.shadow.ninja.leaping.configurate.HoconConfigurationLoader");
   }
 
   private static Stream<DownloadResult> processDownload(
