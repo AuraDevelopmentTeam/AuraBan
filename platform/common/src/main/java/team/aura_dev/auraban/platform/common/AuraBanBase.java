@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import team.aura_dev.auraban.api.AuraBanApi;
+import team.aura_dev.auraban.platform.common.config.ConfigTest;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
@@ -66,6 +67,7 @@ public abstract class AuraBanBase implements AuraBanApi {
 
     // load config
     // TODO
+    ConfigTest.test();
   }
 
   public final void initPlugin() {
