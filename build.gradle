@@ -39,6 +39,7 @@ dependencies {
     compile project(":AuraBan-spigot")
     compile project(":AuraBan-sponge")
 
+    shadow "com.ea.agentloader:ea-agent-loader:${project(":AuraBan-common").agentLoader_version}"
     shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"
     shadow "org.slf4j:slf4j-api:${project(":AuraBan-common").slf4j_version}"
     shadow "org.slf4j:slf4j-jdk14:${project(":AuraBan-common").slf4j_version}"
@@ -47,6 +48,7 @@ dependencies {
 }
 
 shadowJar {
+    relocate("com.ea.agentloader", "${rootProject.group}.shadow.com.ea.agentloader")
     relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
     relocate("licenses", "${rootProject.group}.shadow.licenses")
     relocate("me.lucko", "${rootProject.group}.shadow.me.lucko")

@@ -31,6 +31,7 @@ dependencies {
     compile "org.spongepowered:configurate-hocon:${configurate_version}"
 
     // Shadow dependencies
+    shadow "com.ea.agentloader:ea-agent-loader:${agentLoader_version}"
     shadow "eu.mikroskeem:picomaven:${picoMaven_version}"
     shadow "org.slf4j:slf4j-api:${slf4j_version}"
     shadow "me.lucko:jar-relocator:${jarRelocator_version}"
@@ -38,6 +39,7 @@ dependencies {
 }
 
 shadowJar {
+    relocate("com.ea.agentloader", "${rootProject.group}.shadow.com.ea.agentloader")
     relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
     relocate("licenses", "${rootProject.group}.shadow.licenses")
     relocate("me.lucko", "${rootProject.group}.shadow.me.lucko")
