@@ -87,8 +87,7 @@ public abstract class AuraBanBase implements AuraBanApi {
   }
 
   public static AuraBanBase initializePlugin(Object bootstrapPlugin, Object... params) {
-    return initializePlugin(
-        bootstrapPlugin.getClass().getCanonicalName().replace("Bootstrap", ""), params);
+    return initializePlugin(bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), params);
   }
 
   public static AuraBanBase initializePlugin(String pluginClassName, Object... params) {
