@@ -18,6 +18,8 @@ public class AuraBanBungeeCord extends AuraBanBase {
 
     // Instance is initialized
     AuraBan.setApi(this);
+
+    logger.info(getClass().getClassLoader().getClass().getCanonicalName());
   }
 
   @Override

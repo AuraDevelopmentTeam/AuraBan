@@ -5,11 +5,8 @@ import eu.mikroskeem.picomaven.PicoMaven;
 import eu.mikroskeem.picomaven.artifact.Dependency;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,21 +26,8 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 // TODO: Logging!
 @UtilityClass
 public class DependencyDownloader {
-  private static final URLClassLoader classLoader;
-  private static final Method method;
+  private static final DependencyClassLoader classLoader = AuraBanBase.getDependencyClassLoader();
   private static final List<Relocation> relocationRules = new LinkedList<>();
-
-  static {
-    try {
-      classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-      method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-      method.setAccessible(true);
-    } catch (NoSuchMethodException | SecurityException e) {
-      // Rethrow so leaving the fields uninitialized is no error
-      throw new IllegalStateException(
-          "Error while trying to make adding new URLs to the classloader possible", e);
-    }
-  }
 
   public static void downloadAndInjectInClasspath(
       Collection<RuntimeDependency> dependencies, File libPath) {
@@ -178,11 +162,8 @@ public class DependencyDownloader {
     try {
       URL jarFileUrl = new URL("jar", "", "file:" + jarFile.toAbsolutePath().toString() + "!/");
 
-      method.invoke(classLoader, jarFileUrl);
-    } catch (MalformedURLException
-        | IllegalAccessException
-        | IllegalArgumentException
-        | InvocationTargetException e) {
+      classLoader.addURL(jarFileUrl);
+    } catch (MalformedURLException | IllegalArgumentException e) {
       // Rethrow because we rely on this working
       throw new DependencyDownloadException(
           "Error while trying to inject a dependency in the classloader", e);
