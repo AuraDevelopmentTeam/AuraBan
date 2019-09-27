@@ -95,7 +95,8 @@ public class DependencyDownloader {
     try {
       final DownloadResult result = future.get();
 
-      final List<DownloadResult> allDownloads = result.getTransitiveDependencies();
+      final List<DownloadResult> allDownloads =
+          new LinkedList<>(result.getTransitiveDependencies());
 
       if (relocationDependencies.contains(result.getDependency())) {
         relocationDependencies.addAll(
