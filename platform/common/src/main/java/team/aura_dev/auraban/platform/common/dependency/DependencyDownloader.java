@@ -190,7 +190,8 @@ public class DependencyDownloader {
 
   private static boolean doesClassExist(String className) {
     try {
-      Class.forName(className);
+      // Class.forName(className);
+      Class.forName(className, true, classLoader);
 
       return true;
     } catch (ClassNotFoundException e) {
