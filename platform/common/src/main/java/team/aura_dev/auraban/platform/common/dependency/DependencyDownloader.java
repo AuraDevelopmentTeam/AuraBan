@@ -22,11 +22,13 @@ import lombok.experimental.UtilityClass;
 import me.lucko.jarrelocator.JarRelocator;
 import me.lucko.jarrelocator.Relocation;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
 
 // TODO: Logging!
 @UtilityClass
 public class DependencyDownloader {
-  private static final DependencyClassLoader classLoader = AuraBanBase.getDependencyClassLoader();
+  private static final DependencyClassLoader classLoader =
+      AuraBanBaseBootstrap.getDependencyClassLoader();
   private static final List<Relocation> relocationRules = new LinkedList<>();
 
   public static void downloadAndInjectInClasspath(

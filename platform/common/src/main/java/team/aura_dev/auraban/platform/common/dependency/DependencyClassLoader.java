@@ -10,7 +10,10 @@ public class DependencyClassLoader extends URLClassLoader {
   }
 
   public DependencyClassLoader(URLClassLoader parent) {
-    super(parent.getURLs(), parent);
+    // Steal the plugin {@link ClassLoader}'s URLs and parent.
+    // Because else the plugin class would be loaded with the plugin {@link ClassLoader} and classes
+    // below that wouldn't be loaded at all.
+    super(parent.getURLs(), parent.getParent());
   }
 
   @Override

@@ -1,18 +1,18 @@
 package team.aura_dev.auraban.platform.spigot;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
 
 public class AuraBanSpigotBootstrap extends JavaPlugin {
-  private final AuraBanBase plugin;
+  private final AuraBanBaseBootstrap bootstrapPlugin;
 
   public AuraBanSpigotBootstrap() {
-    plugin = AuraBanBase.initializePlugin(this, getDataFolder());
+    bootstrapPlugin = new AuraBanBaseBootstrap(this, getDataFolder());
   }
 
   @Override
   public void onEnable() {
-    plugin.preInitPlugin();
-    plugin.initPlugin();
+    bootstrapPlugin.preInitPlugin();
+    bootstrapPlugin.initPlugin();
   }
 }
