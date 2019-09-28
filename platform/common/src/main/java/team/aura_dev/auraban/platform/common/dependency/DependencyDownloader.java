@@ -55,9 +55,9 @@ public class DependencyDownloader {
         new PicoMaven.Builder()
             .withDownloadPath(libPath.toPath())
             .withRepositoryURLs(
-                dependencies
-                    .stream()
-                    .map(RuntimeDependency::getMaven)
+                Stream.concat(
+                        Stream.of(RuntimeDependency.Maven.MAVEN_CENTRAL),
+                        dependencies.stream().map(RuntimeDependency::getMaven))
                     .distinct()
                     .map(RuntimeDependency.Maven::getUrl)
                     .collect(Collectors.toList()))
