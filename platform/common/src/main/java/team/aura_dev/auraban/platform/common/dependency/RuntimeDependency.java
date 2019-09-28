@@ -1,7 +1,7 @@
 package team.aura_dev.auraban.platform.common.dependency;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import eu.mikroskeem.picomaven.artifact.ArtifactChecksum;
+import eu.mikroskeem.picomaven.artifact.ArtifactChecksums;
 import eu.mikroskeem.picomaven.artifact.Dependency;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,7 +61,7 @@ public class RuntimeDependency {
         null,
         transitive,
         Arrays.asList(
-            ArtifactChecksum.md5HexSumOf(md5Hash), ArtifactChecksum.sha1HexSumOf(sha1Hash)));
+            ArtifactChecksums.md5HexSumOf(md5Hash), ArtifactChecksums.sha1HexSumOf(sha1Hash)));
   }
 
   public static RuntimeDependencyBuilder builder(
