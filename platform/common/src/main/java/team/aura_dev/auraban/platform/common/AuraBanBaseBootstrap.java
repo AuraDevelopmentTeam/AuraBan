@@ -9,6 +9,13 @@ import lombok.Getter;
 import team.aura_dev.auraban.platform.common.dependency.DependencyClassLoader;
 
 public class AuraBanBaseBootstrap {
+  public static final String ID = "@id@";
+  public static final String NAME = "@name@";
+  public static final String VERSION = "@version@";
+  public static final String DESCRIPTION = "@description@";
+  public static final String URL = "https://github.com/AuraDevelopmentTeam/AuraBan";
+  public static final String AUTHOR = "The_BrainStone";
+
   @Getter
   private static final DependencyClassLoader dependencyClassLoader =
       AccessController.doPrivileged(

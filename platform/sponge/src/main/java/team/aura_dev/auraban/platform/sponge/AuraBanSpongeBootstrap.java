@@ -7,31 +7,31 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
-import team.aura_dev.auraban.api.AuraBanApi;
+import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
 
 @Plugin(
-  id = AuraBanApi.ID,
-  name = AuraBanApi.NAME,
-  version = AuraBanApi.VERSION,
-  description = AuraBanApi.DESCRIPTION,
-  url = AuraBanApi.URL,
-  authors = {AuraBanApi.AUTHOR}
+  id = AuraBanBaseBootstrap.ID,
+  name = AuraBanBaseBootstrap.NAME,
+  version = AuraBanBaseBootstrap.VERSION,
+  description = AuraBanBaseBootstrap.DESCRIPTION,
+  url = AuraBanBaseBootstrap.URL,
+  authors = {AuraBanBaseBootstrap.AUTHOR}
 )
 public class AuraBanSpongeBootstrap {
-  private final AuraBanSponge plugin;
+  private final AuraBanBaseBootstrap bootstrapPlugin;
 
   @Inject
   public AuraBanSpongeBootstrap(@ConfigDir(sharedRoot = false) File configDir) {
-    plugin = new AuraBanSponge(configDir);
+    bootstrapPlugin = new AuraBanBaseBootstrap(this, configDir);
   }
 
   @Listener
   public void preInit(GamePreInitializationEvent event) {
-    plugin.preInitPlugin();
+    bootstrapPlugin.preInitPlugin();
   }
 
   @Listener
   public void init(GameInitializationEvent event) {
-    plugin.initPlugin();
+    bootstrapPlugin.initPlugin();
   }
 }

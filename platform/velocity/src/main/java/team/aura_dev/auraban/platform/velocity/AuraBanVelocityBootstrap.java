@@ -7,27 +7,27 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.nio.file.Path;
-import team.aura_dev.auraban.api.AuraBanApi;
+import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
 
 @Plugin(
-  id = AuraBanApi.ID,
-  name = AuraBanApi.NAME,
-  version = AuraBanApi.VERSION,
-  description = AuraBanApi.DESCRIPTION,
-  url = AuraBanApi.URL,
-  authors = {AuraBanApi.AUTHOR}
+  id = AuraBanBaseBootstrap.ID,
+  name = AuraBanBaseBootstrap.NAME,
+  version = AuraBanBaseBootstrap.VERSION,
+  description = AuraBanBaseBootstrap.DESCRIPTION,
+  url = AuraBanBaseBootstrap.URL,
+  authors = {AuraBanBaseBootstrap.AUTHOR}
 )
 public class AuraBanVelocityBootstrap {
-  private final AuraBanVelocity plugin;
+  private final AuraBanBaseBootstrap bootstrapPlugin;
 
   @Inject
   public AuraBanVelocityBootstrap(ProxyServer server, @DataDirectory Path dataDir) {
-    plugin = new AuraBanVelocity(server, dataDir.toFile());
+    bootstrapPlugin = new AuraBanBaseBootstrap(this, server, dataDir.toFile());
   }
 
   @Subscribe
   public void onProxyInitialization(ProxyInitializeEvent event) {
-    plugin.preInitPlugin();
-    plugin.initPlugin();
+    bootstrapPlugin.preInitPlugin();
+    bootstrapPlugin.initPlugin();
   }
 }
