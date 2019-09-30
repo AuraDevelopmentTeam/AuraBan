@@ -26,7 +26,6 @@ public class RuntimeDependency {
               "2.7.9",
               "2002335357f6c75336692f93004004e3",
               "a83113d2c091d0d0f853dad3217bd7df3beb6ae3")
-          .relocate()
           .build();
   public static final RuntimeDependency CONFIGURATE_HOCON =
       RuntimeDependency.builder(
@@ -36,7 +35,6 @@ public class RuntimeDependency {
               "6395403afce7b9bbf4e26ef74c13da9a",
               "e3f199dbd91de753a70f63606f530fdb8644bbd5")
           .maven(Maven.SPONGE)
-          .relocate()
           .transitive()
           .build();
 
@@ -48,7 +46,6 @@ public class RuntimeDependency {
   private final String sha1Hash;
   @Builder.Default private final Maven maven = Maven.MAVEN_CENTRAL;
   @Builder.Default private final boolean transitive = false;
-  @Builder.Default private final boolean relocate = false;
 
   @Getter(lazy = true)
   private final Dependency dependency = generateDependency();
@@ -82,13 +79,6 @@ public class RuntimeDependency {
     public RuntimeDependencyBuilder transitive() {
       transitive = true;
       transitive$set = true;
-
-      return this;
-    }
-
-    public RuntimeDependencyBuilder relocate() {
-      relocate = true;
-      relocate$set = true;
 
       return this;
     }

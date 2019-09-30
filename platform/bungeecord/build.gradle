@@ -26,16 +26,13 @@ dependencies {
     shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"
     shadow "org.slf4j:slf4j-api:${project(":AuraBan-common").slf4j_version}"
     shadow "org.slf4j:slf4j-jdk14:${project(":AuraBan-common").slf4j_version}"
-    shadow "me.lucko:jar-relocator:${project(":AuraBan-common").jarRelocator_version}"
 }
 
 shadowJar {
     relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
     relocate("licenses", "${rootProject.group}.shadow.licenses")
-    relocate("me.lucko", "${rootProject.group}.shadow.me.lucko")
     relocate("org.apache", "${rootProject.group}.shadow.org.apache")
     relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")
-    relocate("org.objectweb", "${rootProject.group}.shadow.org.objectweb")
 
     exclude "module-info.class"
 }
