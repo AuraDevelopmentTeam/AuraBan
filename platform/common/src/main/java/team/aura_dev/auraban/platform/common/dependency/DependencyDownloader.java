@@ -65,9 +65,6 @@ public class DependencyDownloader {
           .flatMap(List::stream)
           .forEach(DependencyDownloader::injectInClasspath);
     }
-
-    checkClass("com.zaxxer.hikari.HikariDataSource");
-    checkClass("ninja.leaping.configurate.hocon.HoconConfigurationLoader");
   }
 
   private static Stream<DownloadResult> processDownload(Future<DownloadResult> future) {
@@ -113,19 +110,5 @@ public class DependencyDownloader {
         + dependency.getArtifactId()
         + ':'
         + dependency.getVersion();
-  }
-
-  private static void checkClass(String className) {
-    AuraBanBase.logger.info(className + ": " + doesClassExist(className));
-  }
-
-  private static boolean doesClassExist(String className) {
-    try {
-      Class.forName(className);
-
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
   }
 }
