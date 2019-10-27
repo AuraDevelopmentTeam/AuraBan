@@ -2,11 +2,8 @@ package team.aura_dev.auraban.platform.velocity;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
 public class AuraBanVelocity extends AuraBanBase {
   private final ProxyServer server;
@@ -28,10 +25,5 @@ public class AuraBanVelocity extends AuraBanBase {
   @Override
   public String getPlatformVariant() {
     return server.getVersion().getName();
-  }
-
-  @Override
-  public Collection<RuntimeDependency> getEarlyDependencies() {
-    return Arrays.asList(RuntimeDependency.CONFIGURATE_HOCON);
   }
 }

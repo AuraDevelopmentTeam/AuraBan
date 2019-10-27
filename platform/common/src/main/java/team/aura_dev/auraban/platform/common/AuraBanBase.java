@@ -51,7 +51,15 @@ public abstract class AuraBanBase implements AuraBanApi {
   }
 
   public Collection<RuntimeDependency> getEarlyDependencies() {
-    return Collections.emptyList();
+    final List<RuntimeDependency> dependencies = new LinkedList<>();
+
+    // We need Configurate for the config
+    dependencies.add(RuntimeDependency.CONFIGURATE_HOCON);
+
+    // We don't need to download dependencies already present
+    dependencies.removeAll(getPlatformDependencies());
+
+    return dependencies;
   }
 
   public Collection<RuntimeDependency> getDependencies() {

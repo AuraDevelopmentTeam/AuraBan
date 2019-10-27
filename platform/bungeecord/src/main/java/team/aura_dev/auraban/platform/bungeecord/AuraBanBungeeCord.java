@@ -1,12 +1,9 @@
 package team.aura_dev.auraban.platform.bungeecord;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
 import net.md_5.bungee.api.ProxyServer;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
 public class AuraBanBungeeCord extends AuraBanBase {
   private final ProxyServer server;
@@ -30,10 +27,5 @@ public class AuraBanBungeeCord extends AuraBanBase {
   @Override
   public String getPlatformVariant() {
     return server.getName();
-  }
-
-  @Override
-  public Collection<RuntimeDependency> getEarlyDependencies() {
-    return Arrays.asList(RuntimeDependency.CONFIGURATE_HOCON);
   }
 }
