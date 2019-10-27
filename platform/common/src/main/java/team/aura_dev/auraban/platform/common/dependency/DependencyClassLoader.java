@@ -31,11 +31,12 @@ public class DependencyClassLoader extends URLClassLoader {
 
   @Override
   protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-    // has the class loaded already?
+    // Is the Class loaded already?
     Class<?> loadedClass = findLoadedClass(name);
 
-    // Reuse existing instances of own classes
-    if ((loadedClass == null) && (name.startsWith("@group@"))) {
+    // Reuse existing instances of own Classes if loaded in parent ClassLoader
+    // (Like the bootstrap Classes or this Class(Loader))
+    if ((loadedClass == null) && name.startsWith("@group@")) {
       try {
         loadedClass = (Class<?>) findLoadedClassMethod.invoke(parent, name);
       } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -43,19 +44,25 @@ public class DependencyClassLoader extends URLClassLoader {
       }
     }
 
-    if (loadedClass == null) {
+    // Never load API classes with this ClassLoader
+    if ((loadedClass == null) && !name.startsWith("@group@.api")) {
       try {
-        // find the class from given jar urls
+        // Find the Class from given jar URLs
         loadedClass = findClass(name);
       } catch (ClassNotFoundException e) {
-        // class does not exist in the given urls.
-        // Let's try finding it in our parent classloader.
-        // this'll throw ClassNotFoundException in failure.
-        loadedClass = super.loadClass(name, resolve);
+        // Ignore
       }
     }
 
-    if (resolve) { // marked to resolve
+    // The Class hasn't been found yet
+    // Let's try finding it in our parent ClassLoader
+    // This'll throw ClassNotFoundException in failure
+    if (loadedClass == null) {
+      loadedClass = super.loadClass(name, resolve);
+    }
+
+    // Marked to resolve
+    if (resolve) {
       resolveClass(loadedClass);
     }
 
