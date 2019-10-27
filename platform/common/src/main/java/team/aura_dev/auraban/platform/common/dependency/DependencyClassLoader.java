@@ -5,21 +5,41 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-/** A custom {@link ClassLoader} implementation that allows adding URLs. */
+/**
+ * A custom {@link ClassLoader} implementation that allows adding {@link URL}s during runtime.
+ *
+ * <p>This class also ensures that {@link Class}es found in this ClassLoader's URL list are
+ * considered first when loading a Class. This means that even if the parent ClassLoader has a Class
+ * loaded with the exact same name this ClassLoader will load it again. This allows the user of this
+ * Class to make sure that the URLs added will be always used. Which in consequence makes Classes
+ * using this ClassLoader sandboxed from the rest of the runtime (regarding URLs added to this
+ * ClassLoader). Very useful to ensure versions of libraries are exactly the ones added and no
+ * conflicts with other plugins that add the same libraries to their jars.
+ *
+ * @author Yannick Schinko
+ */
 public class DependencyClassLoader extends URLClassLoader {
   private static final Method findLoadedClassMethod = getFindLoadedClassMethod();
 
   protected final ClassLoader parent;
 
+  /**
+   * Constructor that automatically detects the parent {@link ClassLoader} by using its own {@link
+   * ClassLoader}.
+   */
   public DependencyClassLoader() {
     this(DependencyClassLoader.class.getClassLoader());
   }
 
+  /**
+   * Constructor that allows you to specify the parent {@link ClassLoader} you want to use.
+   *
+   * @param parent parent {@link ClassLoader} to be used if a {@link Class} cannot be found in the
+   *     own {@link URL}s.
+   */
   public DependencyClassLoader(ClassLoader parent) {
-    // Steal the plugin {@link ClassLoader}'s URLs and parent.
-    // Because else the plugin class would be loaded with the plugin {@link ClassLoader} and classes
-    // below that wouldn't be loaded at all.
-    super(getAuraBanURL(), parent);
+    // Start of with adding its own jar URL
+    super(getOwnJarURL(), parent);
 
     this.parent = parent;
   }
@@ -69,7 +89,7 @@ public class DependencyClassLoader extends URLClassLoader {
     return loadedClass;
   }
 
-  private static URL[] getAuraBanURL() {
+  private static URL[] getOwnJarURL() {
     return new URL[] {
       DependencyClassLoader.class.getProtectionDomain().getCodeSource().getLocation()
     };
