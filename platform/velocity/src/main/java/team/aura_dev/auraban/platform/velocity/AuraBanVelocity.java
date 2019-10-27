@@ -34,9 +34,4 @@ public class AuraBanVelocity extends AuraBanBase {
   public Collection<RuntimeDependency> getEarlyDependencies() {
     return Arrays.asList(RuntimeDependency.CONFIGURATE_HOCON);
   }
-
-  @Override
-  public Collection<RuntimeDependency> getDependencies() {
-    return Arrays.asList(RuntimeDependency.HIKARI_CP);
-  }
 }

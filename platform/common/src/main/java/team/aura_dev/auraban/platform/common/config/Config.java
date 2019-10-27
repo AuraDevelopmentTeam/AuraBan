@@ -12,6 +12,9 @@ import lombok.SneakyThrows;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.storage.StorageEngineData;
+import team.aura_dev.auraban.platform.common.storage.engine.H2StorageEngineData;
+import team.aura_dev.auraban.platform.common.storage.engine.MySQLStorageEngineData;
 
 @ConfigSerializable
 @Getter
@@ -30,7 +33,7 @@ public class Config {
   @Getter
   public static class Storage {
     @Setting(comment = "The storage engine that should be used.\n" + "Allowed values: H2, MySQL")
-    private StorageEngine storageEngine = StorageEngine.H2;
+    private StorageEngineType storageEngine = StorageEngineType.H2;
 
     @Setting(comment = "Settings for the h2 storage engine")
     private H2 h2 = new H2();
@@ -39,19 +42,31 @@ public class Config {
     private MySQL mysql = new MySQL();
 
     public boolean isH2() {
-      return getStorageEngine() == Config.Storage.StorageEngine.H2;
+      return getStorageEngine() == Config.Storage.StorageEngineType.H2;
     }
 
     public boolean isMySQL() {
-      return getStorageEngine() == Config.Storage.StorageEngine.MySQL;
+      return getStorageEngine() == Config.Storage.StorageEngineType.MySQL;
     }
 
-    public static enum StorageEngine {
+    public StorageEngineData getStorageEngineData() {
+      switch (getStorageEngine()) {
+        case H2:
+          return new H2StorageEngineData(getH2());
+        case MySQL:
+          return new MySQLStorageEngineData(getMysql());
+        default:
+          throw new IllegalStateException(
+              "Unknown storage engin \"" + getStorageEngine().name() + '"');
+      }
+    }
+
+    public static enum StorageEngineType {
       H2,
       MySQL;
 
       public static final String allowedValues =
-          Arrays.stream(Config.Storage.StorageEngine.values())
+          Arrays.stream(Config.Storage.StorageEngineType.values())
               .map(Enum::name)
               .collect(Collectors.joining(", "));
     }

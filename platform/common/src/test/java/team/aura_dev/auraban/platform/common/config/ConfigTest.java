@@ -14,6 +14,6 @@ public class ConfigTest {
 
   @Test
   public void allowedValuesTest() {
-    assertEquals("H2, MySQL", Config.Storage.StorageEngine.allowedValues);
+    assertEquals("H2, MySQL", Config.Storage.StorageEngineType.allowedValues);
   }
 }

@@ -3,6 +3,8 @@ package team.aura_dev.auraban.platform.common;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +12,8 @@ import team.aura_dev.auraban.api.AuraBanApi;
 import team.aura_dev.auraban.platform.common.config.ConfigLoader;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
+import team.aura_dev.auraban.platform.common.storage.StorageEngine;
+import team.aura_dev.auraban.platform.common.storage.StorageEngineData;
 
 public abstract class AuraBanBase implements AuraBanApi {
   public static final Logger logger = LoggerFactory.getLogger(NAME);
@@ -19,7 +23,9 @@ public abstract class AuraBanBase implements AuraBanApi {
   @Getter protected final Path configDir;
   @Getter protected final Path libsDir;
 
-  private ConfigLoader loader;
+  private ConfigLoader configLoader;
+  private StorageEngineData storageEngineData;
+  private StorageEngine storageEngine;
 
   protected AuraBanBase(Path configDir) {
     this.configDir = configDir;
@@ -49,6 +55,25 @@ public abstract class AuraBanBase implements AuraBanApi {
   }
 
   public Collection<RuntimeDependency> getDependencies() {
+    final List<RuntimeDependency> dependencies = new LinkedList<>();
+
+    // We need all dependencies of the storage type
+    dependencies.addAll(storageEngineData.getRequiredRuntimeDependencies());
+
+    // We don't need to download dependencies already present
+    dependencies.removeAll(getPlatformDependencies());
+
+    return dependencies;
+  }
+
+  /**
+   * This method returns a {@link Collection} of all the dependencies that are already present on
+   * the target platform.<br>
+   * This allows making sure that they are not downloaded unnecessarily.
+   *
+   * @return a {@link Collection} of already present dependencies
+   */
+  public Collection<RuntimeDependency> getPlatformDependencies() {
     return Collections.emptyList();
   }
 
@@ -79,14 +104,20 @@ public abstract class AuraBanBase implements AuraBanApi {
     logger.info("Downloading early dependencies");
     DependencyDownloader.downloadAndInjectInClasspath(getEarlyDependencies(), getLibsDir());
 
-    loader = new ConfigLoader(this);
-    loader.loadConfig();
+    configLoader = new ConfigLoader(this);
+    configLoader.loadConfig();
   }
 
   public final void initPlugin() {
     logger.info("Initializing " + NAME + " Version " + VERSION);
 
+    // Get the storage engine information first
+    storageEngineData = configLoader.getConfig().getStorage().getStorageEngineData();
+
     DependencyDownloader.downloadAndInjectInClasspath(getDependencies(), getLibsDir());
+
+    logger.info("Storage Engine: " + storageEngineData.getName());
+    storageEngine = storageEngineData.createInstance();
 
     // TODO
   }

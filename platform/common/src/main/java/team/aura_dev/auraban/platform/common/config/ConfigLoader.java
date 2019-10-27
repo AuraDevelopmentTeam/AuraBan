@@ -51,7 +51,8 @@ public class ConfigLoader {
       final String defaultStorageEngine = (new Config.Storage()).getStorageEngine().name();
 
       AuraBanBase.logger.error(message);
-      AuraBanBase.logger.warn("Possible values are: " + Config.Storage.StorageEngine.allowedValues);
+      AuraBanBase.logger.warn(
+          "Possible values are: " + Config.Storage.StorageEngineType.allowedValues);
       AuraBanBase.logger.warn(
           "To fix your config we changed the storage engine to " + defaultStorageEngine);
 

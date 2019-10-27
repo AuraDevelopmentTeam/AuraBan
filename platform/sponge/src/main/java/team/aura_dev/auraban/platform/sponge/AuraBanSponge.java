@@ -28,7 +28,7 @@ public class AuraBanSponge extends AuraBanBase {
   }
 
   @Override
-  public Collection<RuntimeDependency> getDependencies() {
-    return Arrays.asList(RuntimeDependency.HIKARI_CP);
+  public Collection<RuntimeDependency> getPlatformDependencies() {
+    return Arrays.asList(RuntimeDependency.CONFIGURATE_HOCON, RuntimeDependency.HIKARI_CP);
   }
 }
