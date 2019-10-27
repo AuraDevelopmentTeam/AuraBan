@@ -13,6 +13,7 @@ import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 public abstract class AuraBanBase implements AuraBanApi {
   public static final Logger logger = LoggerFactory.getLogger(NAME);
 
+  @Getter private static AuraBanBase instance = null;
 
   @Getter protected final Path configDir;
   @Getter protected final Path libsDir;
@@ -20,6 +21,12 @@ public abstract class AuraBanBase implements AuraBanApi {
   protected AuraBanBase(Path configDir) {
     this.configDir = configDir;
     this.libsDir = configDir.resolve("libs");
+
+    if (instance != null) {
+      throw new IllegalStateException("AuraBan has already been initialized!");
+    }
+
+    instance = this;
   }
 
   public abstract String getBasePlatform();
