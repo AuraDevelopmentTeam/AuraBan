@@ -3,9 +3,10 @@ package team.aura_dev.auraban.platform.common.dependency;
 import eu.mikroskeem.picomaven.DownloadResult;
 import eu.mikroskeem.picomaven.PicoMaven;
 import eu.mikroskeem.picomaven.artifact.Dependency;
-import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,14 +26,16 @@ public class DependencyDownloader {
       AuraBanBaseBootstrap.getDependencyClassLoader();
 
   public static void downloadAndInjectInClasspath(
-      Collection<RuntimeDependency> dependencies, File libPath) {
-    if (!(libPath.exists() || libPath.mkdirs())) {
-      throw new RuntimeException("Can't create the dirs");
+      Collection<RuntimeDependency> dependencies, Path libPath) {
+    try {
+      Files.createDirectories(libPath);
+    } catch (IOException e) {
+      throw new RuntimeException("Can't create the dirs", e);
     }
 
     PicoMaven.Builder picoMavenBase =
         new PicoMaven.Builder()
-            .withDownloadPath(libPath.toPath())
+            .withDownloadPath(libPath)
             .withRepositoryURLs(
                 Stream.concat(
                         Stream.of(RuntimeDependency.Maven.MAVEN_CENTRAL),

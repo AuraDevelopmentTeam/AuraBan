@@ -1,6 +1,5 @@
 package team.aura_dev.auraban.platform.common.dependency;
 
-import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 
 /**
@@ -57,7 +56,7 @@ public class DependencyDownloadException extends IllegalArgumentException {
   private static String modifyMessage(String message) {
     return message
         + "\nIf you see this error for the first time delete the \""
-        + ((AuraBanBase) AuraBan.getApi()).getLibsDir().getAbsolutePath()
+        + AuraBanBase.getInstance().getLibsDir().toAbsolutePath()
         + "\" folder and restart the server."
         + "\nIf this error persists feel free to report it to the plugin support.";
   }

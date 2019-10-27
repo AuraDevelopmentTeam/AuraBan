@@ -1,6 +1,6 @@
 package team.aura_dev.auraban.platform.bungeecord;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import net.md_5.bungee.api.ProxyServer;
@@ -11,7 +11,7 @@ import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 public class AuraBanBungeeCord extends AuraBanBase {
   private final ProxyServer server;
 
-  public AuraBanBungeeCord(ProxyServer server, File configDir) {
+  public AuraBanBungeeCord(ProxyServer server, Path configDir) {
     super(configDir);
 
     this.server = server;

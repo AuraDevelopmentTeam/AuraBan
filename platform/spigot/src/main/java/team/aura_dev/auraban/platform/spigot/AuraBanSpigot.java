@@ -1,6 +1,6 @@
 package team.aura_dev.auraban.platform.spigot;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import org.bukkit.Bukkit;
@@ -9,7 +9,7 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
 public class AuraBanSpigot extends AuraBanBase {
-  public AuraBanSpigot(File configDir) {
+  public AuraBanSpigot(Path configDir) {
     super(configDir);
 
     // Instance is initialized

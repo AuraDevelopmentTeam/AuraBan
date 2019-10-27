@@ -1,6 +1,6 @@
 package team.aura_dev.auraban.platform.common;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import lombok.Getter;
@@ -13,12 +13,13 @@ import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 public abstract class AuraBanBase implements AuraBanApi {
   public static final Logger logger = LoggerFactory.getLogger(NAME);
 
-  @Getter protected final File configDir;
-  @Getter protected final File libsDir;
 
-  protected AuraBanBase(File configDir) {
+  @Getter protected final Path configDir;
+  @Getter protected final Path libsDir;
+
+  protected AuraBanBase(Path configDir) {
     this.configDir = configDir;
-    this.libsDir = new File(configDir, "libs");
+    this.libsDir = configDir.resolve("libs");
   }
 
   public abstract String getBasePlatform();

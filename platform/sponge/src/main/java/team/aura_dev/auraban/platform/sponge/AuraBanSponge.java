@@ -1,6 +1,6 @@
 package team.aura_dev.auraban.platform.sponge;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import org.spongepowered.api.Platform;
@@ -10,7 +10,7 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
 public class AuraBanSponge extends AuraBanBase {
-  public AuraBanSponge(File configDir) {
+  public AuraBanSponge(Path configDir) {
     super(configDir);
 
     // Instance is initialized

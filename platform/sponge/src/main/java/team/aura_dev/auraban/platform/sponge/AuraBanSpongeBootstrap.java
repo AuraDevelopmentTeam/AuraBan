@@ -1,7 +1,7 @@
 package team.aura_dev.auraban.platform.sponge;
 
 import com.google.inject.Inject;
-import java.io.File;
+import java.nio.file.Path;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -21,7 +21,7 @@ public class AuraBanSpongeBootstrap {
   private final AuraBanBaseBootstrap bootstrapPlugin;
 
   @Inject
-  public AuraBanSpongeBootstrap(@ConfigDir(sharedRoot = false) File configDir) {
+  public AuraBanSpongeBootstrap(@ConfigDir(sharedRoot = false) Path configDir) {
     bootstrapPlugin = new AuraBanBaseBootstrap(this, configDir);
   }
 
