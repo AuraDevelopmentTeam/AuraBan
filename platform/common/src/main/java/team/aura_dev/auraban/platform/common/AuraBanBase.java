@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import team.aura_dev.auraban.api.AuraBanApi;
+import team.aura_dev.auraban.platform.common.config.ConfigLoader;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 
@@ -17,6 +18,8 @@ public abstract class AuraBanBase implements AuraBanApi {
 
   @Getter protected final Path configDir;
   @Getter protected final Path libsDir;
+
+  private ConfigLoader loader;
 
   protected AuraBanBase(Path configDir) {
     this.configDir = configDir;
@@ -37,6 +40,10 @@ public abstract class AuraBanBase implements AuraBanApi {
     return getBasePlatform() + " - " + getPlatformVariant();
   }
 
+  public Path getConfigFile() {
+    return getConfigDir().resolve(ID + ".conf");
+  }
+
   public Collection<RuntimeDependency> getEarlyDependencies() {
     return Collections.emptyList();
   }
@@ -48,7 +55,7 @@ public abstract class AuraBanBase implements AuraBanApi {
   // ============================================================================================
   // Actual plugin functionality starts here
   // ============================================================================================
-  public final void preInitPlugin() {
+  public final void preInitPlugin() throws Exception {
     // Get logger without name to nicely print the banner
     final Logger bannerLogger = LoggerFactory.getLogger("");
 
@@ -72,8 +79,8 @@ public abstract class AuraBanBase implements AuraBanApi {
     logger.info("Downloading early dependencies");
     DependencyDownloader.downloadAndInjectInClasspath(getEarlyDependencies(), getLibsDir());
 
-    // load config
-    // TODO
+    loader = new ConfigLoader(this);
+    loader.loadConfig();
   }
 
   public final void initPlugin() {
