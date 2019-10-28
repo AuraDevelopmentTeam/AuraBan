@@ -16,7 +16,6 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
-import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
 
 // TODO: Logging!
@@ -83,8 +82,6 @@ public class DependencyDownloader {
   }
 
   private static void checkDownload(DownloadResult result) {
-    AuraBanBase.logger.info(result.toString());
-
     if (!result.isSuccess()) {
       throw new DependencyDownloadException(
           "Downloading the dependency " + getDependencyName(result.getDependency()) + " failed",
