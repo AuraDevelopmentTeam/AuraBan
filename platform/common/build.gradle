@@ -29,6 +29,8 @@ dependencies {
 
     // Normal dependencies
     compile "org.spongepowered:configurate-hocon:${configurate_version}"
+    compile "com.h2database:h2:${h2_version}"
+    compile "com.zaxxer:HikariCP:${hikariCP_version}"
 
     // Shadow dependencies
     shadow "eu.mikroskeem:picomaven:${picoMaven_version}"

@@ -1,5 +1,6 @@
 package team.aura_dev.auraban.platform.common.storage.engine;
 
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.config.Config;
@@ -18,8 +19,7 @@ public class H2StorageEngineData implements StorageEngineData {
 
   @Override
   public List<RuntimeDependency> getRequiredRuntimeDependencies() {
-    // TODO Auto-generated method stub
-    return null;
+    return Arrays.asList(RuntimeDependency.H2_DATABASE);
   }
 
   @Override

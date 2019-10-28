@@ -127,6 +127,9 @@ public abstract class AuraBanBase implements AuraBanApi {
     logger.info("Storage Engine: " + storageEngineData.getName());
     storageEngine = storageEngineData.createInstance();
 
+    logger.info("Intializing Storage Engine...");
+    storageEngine.initialize();
+
     // TODO
   }
 }

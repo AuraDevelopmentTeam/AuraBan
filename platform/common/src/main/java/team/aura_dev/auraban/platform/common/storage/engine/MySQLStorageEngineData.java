@@ -19,7 +19,7 @@ public class MySQLStorageEngineData implements StorageEngineData {
 
   @Override
   public List<RuntimeDependency> getRequiredRuntimeDependencies() {
-    return Arrays.asList(RuntimeDependency.HIKARI_CP);
+    return Arrays.asList(RuntimeDependency.HIKARI_CP, RuntimeDependency.MARIADB_CLIENT);
   }
 
   @Override

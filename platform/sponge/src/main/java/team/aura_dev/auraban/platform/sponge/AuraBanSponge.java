@@ -29,6 +29,11 @@ public class AuraBanSponge extends AuraBanBase {
 
   @Override
   public Collection<RuntimeDependency> getPlatformDependencies() {
-    return Arrays.asList(RuntimeDependency.CONFIGURATE_HOCON, RuntimeDependency.HIKARI_CP);
+    // MARIADB_CLIENT is present but outdated, so we use the newer version
+    // HIKARI_CP is also fairly old/outdated and might need to removed from this list too
+    return Arrays.asList(
+        RuntimeDependency.CONFIGURATE_HOCON,
+        RuntimeDependency.H2_DATABASE,
+        RuntimeDependency.HIKARI_CP);
   }
 }
