@@ -10,7 +10,8 @@ public class H2StorageEngineTest {
   public void getConnectingURLStringTest() throws Exception {
     try (final H2StorageEngine simple = new H2StorageEngine(StringUtilitiesTest.SIMPLE_PATH);
         final H2StorageEngine complicated =
-            new H2StorageEngine(StringUtilitiesTest.COMPLICATED_PATH)) {
+            new H2StorageEngine(StringUtilitiesTest.COMPLICATED_PATH);
+        final H2StorageEngine windows = new H2StorageEngine(StringUtilitiesTest.WINDOWS_PATH)) {
       // Replacing the backslash if we are on Windows
       assertEquals(
           "jdbc:h2:foo/bar/foobar;AUTO_SERVER=TRUE",
@@ -18,6 +19,9 @@ public class H2StorageEngineTest {
       assertEquals(
           "jdbc:h2:test/%25%7E%3B%C3%A4%C3%B6%C3%A9%E6%BC%A2;AUTO_SERVER=TRUE",
           complicated.getConnectingURLString().replace('\\', '/'));
+      assertEquals(
+          "jdbc:h2:C:\\test+folder\\%C3%A4%C3%B6%C3%A9%E6%BC%A2;AUTO_SERVER=TRUE",
+          windows.getConnectingURLString());
     }
   }
 }
