@@ -21,7 +21,9 @@ public class StringUtilities {
   }
 
   public static String urlEncodePath(Path path) {
-    final String halfFixed = StringUtils.replace(urlEncode(path.toString()), "%5C", "\\");
+    final String halfFixed =
+        StringUtils.replace(
+            StringUtils.replace(urlEncode(path.toString()), "%5C", "\\"), "%2F", "/");
     final Matcher matcher = WINDOWS_DRIVE_LETTER.matcher(halfFixed);
 
     return matcher.replaceAll("$1:");
