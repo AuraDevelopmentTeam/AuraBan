@@ -1,6 +1,7 @@
 package team.aura_dev.auraban.platform.common;
 
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -116,7 +117,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     configLoader.loadConfig();
   }
 
-  public final void initPlugin() {
+  public final void initPlugin() throws SQLException {
     logger.info("Initializing " + NAME + " Version " + VERSION);
 
     // Get the storage engine information first
