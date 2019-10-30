@@ -2,6 +2,7 @@ package team.aura_dev.auraban.platform.common.storage.engine;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 
@@ -14,6 +15,7 @@ public class MySQLStorageEngine implements StorageEngine {
   private final String database;
   private final String user;
   private final String password;
+  private final Map<String, String> properties;
 
   HikariDataSource dataSource;
 
@@ -26,6 +28,12 @@ public class MySQLStorageEngine implements StorageEngine {
     config.addDataSourceProperty("cachePrepStmts", true);
     config.addDataSourceProperty("prepStmtCacheSize", 250);
     config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+
+    for (Map.Entry<String, String> property : properties.entrySet()) {
+      config.addDataSourceProperty(property.getKey(), property.getValue());
+    }
+
+    config.setPoolName("AuraBan-MySQL-Pool");
 
     dataSource = new HikariDataSource(config);
   }

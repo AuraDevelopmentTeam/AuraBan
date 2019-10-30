@@ -29,6 +29,7 @@ public class MySQLStorageEngineData implements StorageEngineData {
         configData.getPort(),
         configData.getDatabase(),
         configData.getUser(),
-        configData.getPassword());
+        configData.getPassword(),
+        configData.getProperties());
   }
 }

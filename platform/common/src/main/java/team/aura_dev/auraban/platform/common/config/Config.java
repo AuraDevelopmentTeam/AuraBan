@@ -2,6 +2,8 @@ package team.aura_dev.auraban.platform.common.config;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import ninja.leaping.configurate.objectmapping.Setting;
@@ -30,10 +32,10 @@ public class Config {
     @Setting(comment = "The storage engine that should be used.\n" + "Allowed values: H2, MySQL")
     private StorageEngineType storageEngine = StorageEngineType.H2;
 
-    @Setting(comment = "Settings for the h2 storage engine")
+    @Setting(comment = "Settings for the h2 storage engine.")
     private H2 h2 = new H2();
 
-    @Setting(value = "MySQL", comment = "Settings for the MySQL storage engine")
+    @Setting(value = "MySQL", comment = "Settings for the MySQL storage engine.")
     private MySQL mysql = new MySQL();
 
     public boolean isH2() {
@@ -90,8 +92,19 @@ public class Config {
       @Setting private String user = "auraban";
       @Setting private String password = "sup3rS3cur3Pa55w0rd!";
 
-      @Setting(comment = "Prefix for the plugin tables")
+      @Setting(comment = "Prefix for the plugin tables.")
       private String tablePrefix = "auraban_";
+
+      @Setting(comment = "This setting allows you to define extra properties for connections.")
+      private Map<String, String> properties = propertiesDefaultValue();
+
+      private static Map<String, String> propertiesDefaultValue() {
+        Map<String, String> out = new HashMap<>();
+        out.put("useUnicode", "true");
+        out.put("characterEncoding", "utf8");
+
+        return out;
+      }
     }
   }
 }
