@@ -10,7 +10,6 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.storage.StorageEngineData;
 import team.aura_dev.auraban.platform.common.storage.engine.H2StorageEngineData;
 import team.aura_dev.auraban.platform.common.storage.engine.MySQLStorageEngineData;
-import team.aura_dev.auraban.platform.common.util.StringUtilities;
 
 @ConfigSerializable
 @Getter
@@ -93,14 +92,6 @@ public class Config {
 
       @Setting(comment = "Prefix for the plugin tables")
       private String tablePrefix = "auraban_";
-
-      public String getUserEncoded() {
-        return StringUtilities.urlEncode(getUser());
-      }
-
-      public String getPasswordEncoded() {
-        return StringUtilities.urlEncode(getPassword());
-      }
     }
   }
 }

@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
-import team.aura_dev.auraban.platform.common.util.StringUtilities;
 
 @RequiredArgsConstructor
 public class H2StorageEngine implements StorageEngine {
@@ -29,6 +28,6 @@ public class H2StorageEngine implements StorageEngine {
 
   @VisibleForTesting
   String getConnectingURLString() {
-    return String.format(URLFormat, StringUtilities.urlEncodePath(databasePath));
+    return String.format(URLFormat, databasePath.toFile());
   }
 }
