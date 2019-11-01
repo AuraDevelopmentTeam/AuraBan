@@ -2,13 +2,15 @@ package team.aura_dev.auraban.platform.common.storage.engine;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.storage.StorageEngine;
+import team.aura_dev.auraban.platform.common.storage.SQLStorageEngine;
 
 @RequiredArgsConstructor
-public class MySQLStorageEngine implements StorageEngine {
+public class MySQLStorageEngine extends SQLStorageEngine {
   private static final String URLFormat = "jdbc:mysql://%s:%d/%s";
 
   // Credentials
@@ -29,12 +31,7 @@ public class MySQLStorageEngine implements StorageEngine {
   private HikariDataSource dataSource;
 
   @Override
-  public void initialize() {
-    connect();
-    createTables();
-  }
-
-  private void connect() {
+  protected void connect() {
     final String connectionURL = String.format(URLFormat, host, port, database);
 
     AuraBanBase.logger.debug("Connecting to \"" + connectionURL + '"');
@@ -60,8 +57,14 @@ public class MySQLStorageEngine implements StorageEngine {
     dataSource = new HikariDataSource(config);
   }
 
-  private void createTables() {
+  @Override
+  protected void createTables() {
     // TODO
+  }
+
+  @Override
+  protected Connection getConnection() throws SQLException {
+    return dataSource.getConnection();
   }
 
   @Override
