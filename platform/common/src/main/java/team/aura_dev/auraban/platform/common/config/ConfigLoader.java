@@ -2,8 +2,6 @@ package team.aura_dev.auraban.platform.common.config;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.reflect.TypeToken;
-import com.typesafe.config.ConfigParseOptions;
-import com.typesafe.config.ConfigRenderOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,8 +51,11 @@ public class ConfigLoader {
                         + "+-----------------------------------------------------------------------------------------------------------------------+ #\n"
                         + "######################################################################################################################### #"))
         .setHeaderMode(HeaderMode.PRESET)
-        .setRenderOptions(ConfigRenderOptions.defaults().setOriginComments(false).setJson(false))
-        .setParseOptions(ConfigParseOptions.defaults())
+        // These two are commented out because those are the defaults anyways. Additionally
+        // SpongeForge relocates HOCON classes, so we can't reference them directly anyways.
+        //
+        // .setRenderOptions(ConfigRenderOptions.defaults().setOriginComments(false).setJson(false))
+        // .setParseOptions(ConfigParseOptions.defaults())
         .setPath(plugin.getConfigFile())
         .build();
   }
