@@ -2,27 +2,14 @@ package team.aura_dev.auraban.platform.common.config;
 
 import static org.junit.Assert.assertEquals;
 
-import java.nio.file.Paths;
 import org.junit.Test;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.AuraBanTest;
 
 public class ConfigLoaderTest {
   @Test
   public void getBannerTest() {
-    // Mock plugin
-    final AuraBanBase plugin =
-        new AuraBanBase(Paths.get("")) {
-          @Override
-          public String getBasePlatform() {
-            return "Testing";
-          }
-
-          @Override
-          public String getPlatformVariant() {
-            return "Unittests";
-          }
-        };
-
+    final AuraBanBase plugin = new AuraBanTest();
     final ConfigLoader loader = new ConfigLoader(plugin);
 
     assertEquals(
