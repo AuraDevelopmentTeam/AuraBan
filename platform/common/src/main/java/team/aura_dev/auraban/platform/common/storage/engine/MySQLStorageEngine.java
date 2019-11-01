@@ -44,9 +44,16 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     config.setMaxLifetime(maximumLifetime);
     config.setMaximumPoolSize(maximumPoolSize);
     config.setMinimumIdle(minimumIdle);
+
     config.addDataSourceProperty("cachePrepStmts", true);
+    config.addDataSourceProperty("useServerPrepStmts", true);
     config.addDataSourceProperty("prepStmtCacheSize", 250);
     config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+    config.addDataSourceProperty("cacheCallableStmts", true);
+    config.addDataSourceProperty("alwaysSendSetIsolation", false);
+    config.addDataSourceProperty("cacheServerConfiguration", true);
+    config.addDataSourceProperty("elideSetAutoCommits", true);
+    config.addDataSourceProperty("useLocalSessionState", true);
 
     for (Map.Entry<String, String> property : properties.entrySet()) {
       config.addDataSourceProperty(property.getKey(), property.getValue());
