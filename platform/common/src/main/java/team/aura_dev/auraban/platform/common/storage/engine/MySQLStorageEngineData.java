@@ -24,12 +24,19 @@ public class MySQLStorageEngineData implements StorageEngineData {
 
   @Override
   public StorageEngine createInstance() {
+    final Config.Storage.MySQL.Credentials crendentials = configData.getCrendentials();
+    final Config.Storage.MySQL.PoolSettings poolSettings = configData.getPoolSettings();
+
     return new MySQLStorageEngine(
-        configData.getHost(),
-        configData.getPort(),
-        configData.getDatabase(),
-        configData.getUser(),
-        configData.getPassword(),
-        configData.getProperties());
+        crendentials.getHost(),
+        crendentials.getPort(),
+        crendentials.getDatabase(),
+        crendentials.getUser(),
+        crendentials.getPassword(),
+        poolSettings.getConnectionTimeout(),
+        poolSettings.getMaximumLifetime(),
+        poolSettings.getMaximumPoolSize(),
+        poolSettings.getMinimumIdle(),
+        poolSettings.getProperties());
   }
 }
