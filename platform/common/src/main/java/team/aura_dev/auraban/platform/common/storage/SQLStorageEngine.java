@@ -19,4 +19,17 @@ public abstract class SQLStorageEngine implements StorageEngine {
   protected abstract void createTables() throws SQLException;
 
   protected abstract Connection getConnection() throws SQLException;
+
+  @Override
+  public void close() throws SQLException {
+    closeConnections();
+  }
+
+  protected void closeConnections() throws SQLException {
+    final Connection connection = getConnection();
+
+    if (connection != null) {
+      connection.close();
+    }
+  }
 }

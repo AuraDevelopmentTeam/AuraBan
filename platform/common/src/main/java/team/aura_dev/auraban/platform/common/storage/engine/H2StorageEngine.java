@@ -34,9 +34,4 @@ public class H2StorageEngine extends SQLStorageEngine {
   protected Connection getConnection() {
     return connection;
   }
-
-  @Override
-  public void close() throws Exception {
-    if (connection != null) connection.close();
-  }
 }

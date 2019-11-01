@@ -68,7 +68,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @Override
-  public void close() throws Exception {
-    dataSource.close();
+  public void close() {
+    if (dataSource != null) dataSource.close();
   }
 }
