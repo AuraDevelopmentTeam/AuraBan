@@ -130,6 +130,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     // Get the storage engine information first
     storageEngineData = configLoader.getConfig().getStorage().getStorageEngineData();
 
+    logger.info("Downloading dependencies");
     DependencyDownloader.downloadAndInjectInClasspath(getDependencies(), getLibsDir());
 
     logger.info("Storage Engine: " + storageEngineData.getName());
