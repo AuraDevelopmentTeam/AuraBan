@@ -1,9 +1,15 @@
 package team.aura_dev.auraban.platform.bungeecord;
 
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.UUID;
+import javax.annotation.Nonnull;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import team.aura_dev.auraban.api.AuraBan;
+import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.storage.PlayerDataCommon;
 
 public class AuraBanBungeeCord extends AuraBanBase {
   private final ProxyServer server;
@@ -25,5 +31,12 @@ public class AuraBanBungeeCord extends AuraBanBase {
   @Override
   public String getPlatformVariant() {
     return server.getName();
+  }
+
+  @Override
+  public Optional<PlayerData> getPlayerData(@Nonnull UUID uuid) {
+    final Optional<ProxiedPlayer> player = Optional.ofNullable(server.getPlayer(uuid));
+
+    return player.map(p -> new PlayerDataCommon(uuid, p.getName()));
   }
 }

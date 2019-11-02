@@ -2,6 +2,7 @@ package team.aura_dev.auraban.platform.common.storage;
 
 import java.util.UUID;
 import lombok.Data;
+import team.aura_dev.auraban.api.player.PlayerData;
 
 /**
  * Simple class to represent players in a platform independent way.
@@ -10,9 +11,9 @@ import lombok.Data;
  * nickname) then it needs to override this class.
  */
 @Data
-public class PlayerData {
+public class PlayerDataCommon implements PlayerData {
   private final UUID uuid;
-  private final String userName;
+  private final String playerName;
 
   /**
    * A nice name for the player.<br>
@@ -20,7 +21,8 @@ public class PlayerData {
    *
    * @return a nicer variant of the player name
    */
+  @Override
   public String getDisplayName() {
-    return userName;
+    return playerName;
   }
 }
