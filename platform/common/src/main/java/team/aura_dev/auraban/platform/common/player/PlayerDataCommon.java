@@ -1,8 +1,11 @@
 package team.aura_dev.auraban.platform.common.player;
 
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import team.aura_dev.auraban.api.player.PlayerData;
 
 /**
@@ -12,10 +15,11 @@ import team.aura_dev.auraban.api.player.PlayerData;
  * nickname) then it needs to override this class.
  */
 @Data
+@Getter(onMethod = @__({@Nonnull}))
 @EqualsAndHashCode(of = "uuid")
 public class PlayerDataCommon implements PlayerData {
-  private final UUID uuid;
-  private final String playerName;
+  @NonNull private final UUID uuid;
+  @NonNull private final String playerName;
 
   /**
    * A nice name for the player.<br>
@@ -24,6 +28,7 @@ public class PlayerDataCommon implements PlayerData {
    * @return a nicer variant of the player name
    */
   @Override
+  @Nonnull
   public String getDisplayName() {
     return playerName;
   }
