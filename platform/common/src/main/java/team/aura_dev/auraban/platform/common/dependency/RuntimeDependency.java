@@ -41,8 +41,8 @@ public class RuntimeDependency {
               "com.h2database",
               "h2",
               "1.4.200",
-              "c83ebc02d415bdbd509aadc7d9e6bb0c",
-              "f525d3ebc6c52ca22e8eee10a7f47a3b743794e1")
+              "18c05829a03b92c0880f22a3c4d1d11d",
+              "f7533fe7cb8e99c87a43d325a77b4b678ad9031a")
           .build();
   public static final RuntimeDependency HIKARI_CP =
       RuntimeDependency.builder(
