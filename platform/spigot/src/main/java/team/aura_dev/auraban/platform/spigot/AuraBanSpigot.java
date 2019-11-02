@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.storage.PlayerDataCommon;
+import team.aura_dev.auraban.platform.common.player.PlayerDataCommon;
 
 public class AuraBanSpigot extends AuraBanBase {
   public AuraBanSpigot(Path configDir) {

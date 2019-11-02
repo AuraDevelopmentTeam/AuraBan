@@ -1,4 +1,4 @@
-package team.aura_dev.auraban.platform.common.storage;
+package team.aura_dev.auraban.platform.common.player;
 
 import java.util.UUID;
 import lombok.Data;
