@@ -2,6 +2,7 @@ package team.aura_dev.auraban.platform.common.player;
 
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import team.aura_dev.auraban.api.player.PlayerData;
 
 /**
@@ -11,6 +12,7 @@ import team.aura_dev.auraban.api.player.PlayerData;
  * nickname) then it needs to override this class.
  */
 @Data
+@EqualsAndHashCode(of = "uuid")
 public class PlayerDataCommon implements PlayerData {
   private final UUID uuid;
   private final String playerName;
