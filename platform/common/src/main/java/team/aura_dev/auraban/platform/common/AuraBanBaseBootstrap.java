@@ -44,9 +44,12 @@ public class AuraBanBaseBootstrap {
   private void callMethod(String name, Class<?>[] types, Object... params) {
     try {
       pluginClass.getMethod(name, types).invoke(plugin, params);
+    } catch (InvocationTargetException e) {
+      // Properly unwrap the InvocationTargetException
+      throw new IllegalStateException(
+          "Calling " + name + " resulted in an exception", e.getTargetException());
     } catch (IllegalAccessException
         | IllegalArgumentException
-        | InvocationTargetException
         | NoSuchMethodException
         | SecurityException e) {
       throw new IllegalStateException("Calling " + name + " failed", e);
@@ -69,6 +72,10 @@ public class AuraBanBaseBootstrap {
               .findFirst()
               .orElseThrow(NoSuchMethodException::new);
       return constructor.newInstance(params);
+    } catch (InvocationTargetException e) {
+      // Properly unwrap the InvocationTargetException
+      throw new IllegalStateException(
+          "Loading the plugin class resulted in an exception ", e.getTargetException());
     } catch (Exception e) {
       // Catch all checked and unchecked exceptions
       throw new IllegalStateException("Loading the plugin class failed", e);
