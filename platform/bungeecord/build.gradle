@@ -1,6 +1,12 @@
 apply from: "../../GradleCommon/common.gradle"
 
+import org.apache.tools.ant.filters.ReplaceTokens
+
 evaluationDependsOn(":AuraBan-common")
+
+configurations {
+    slf4j
+}
 
 sourceSets {
     main {
@@ -23,7 +29,18 @@ repositories {
 dependencies {
     compile project(":AuraBan-common")
 
+    // Shadow dependencies
     shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"
+
+    // SLF4J files
+    slf4j "org.slf4j:slf4j-api:${project(":AuraBan-common").slf4j_version}"
+    slf4j "org.slf4j:slf4j-jdk14:${project(":AuraBan-common").slf4j_version}"
+}
+
+processSources {
+    filter (ReplaceTokens, tokens: [
+        "slf4jVersion": project(":AuraBan-common").slf4j_version
+    ])
 }
 
 shadowJar {
@@ -33,4 +50,9 @@ shadowJar {
     relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")
 
     exclude "module-info.class"
+
+    from(project.configurations.slf4j.files) {
+        into "org/slf4j"
+        rename '(.*).jar', '$1.zip'
+    }
 }
