@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.storage.SQLStorageEngine;
+import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 @RequiredArgsConstructor
 public class MySQLStorageEngine extends SQLStorageEngine {
@@ -29,6 +29,16 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
   // Data Source
   private HikariDataSource dataSource;
+
+  @Override
+  protected Connection getConnection() throws SQLException {
+    return dataSource.getConnection();
+  }
+
+  @Override
+  protected boolean useSafePreparedStatements() {
+    return true;
+  }
 
   @Override
   protected void connect() {
@@ -68,12 +78,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
   @Override
   protected void createTables() {
-    // TODO
-  }
-
-  @Override
-  protected Connection getConnection() throws SQLException {
-    return dataSource.getConnection();
+    ;
   }
 
   @Override

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.storage.SQLStorageEngine;
+import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 @RequiredArgsConstructor
 public class H2StorageEngine extends SQLStorageEngine {
