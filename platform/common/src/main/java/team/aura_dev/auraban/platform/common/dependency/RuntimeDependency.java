@@ -6,9 +6,12 @@ import eu.mikroskeem.picomaven.artifact.Dependency;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Singular;
 import lombok.SneakyThrows;
 import lombok.Value;
 
@@ -31,6 +34,12 @@ public class RuntimeDependency {
               "e3f199dbd91de753a70f63606f530fdb8644bbd5")
           .maven(Maven.SPONGE)
           .transitive()
+          .exclusion("com.google.code.findbugs:jsr305")
+          .exclusion("com.google.errorprone:error_prone_annotations")
+          .exclusion("com.google.j2objc:j2objc-annotations")
+          // org.codehaus.mojo gets relocated. That's why we need to make sure we don't have a
+          // literal "org.codehaus.mojo" in any strings
+          .exclusion("org.Codehaus.mojo:animal-sniffer-annotations".toLowerCase())
           .build();
 
   ////////////////////////////////////////////////////////
@@ -69,9 +78,13 @@ public class RuntimeDependency {
   private final String sha1Hash;
   @Builder.Default private final Maven maven = Maven.MAVEN_CENTRAL;
   @Builder.Default private final boolean transitive = false;
+  @Singular private final List<String> exclusions;
 
   @Getter(lazy = true)
   private final Dependency dependency = generateDependency();
+
+  @Getter(lazy = true)
+  private final List<TransitivePatternExcluder> exclusionPatterns = generateExclusionPatterns();
 
   private final Dependency generateDependency() {
     return new Dependency(
@@ -82,6 +95,14 @@ public class RuntimeDependency {
         transitive,
         Arrays.asList(
             ArtifactChecksums.md5HexSumOf(md5Hash), ArtifactChecksums.sha1HexSumOf(sha1Hash)));
+  }
+
+  private final List<TransitivePatternExcluder> generateExclusionPatterns() {
+    return exclusions
+        .stream()
+        .map(exclusion -> exclusion.split(":"))
+        .map(TransitivePatternExcluder::new)
+        .collect(Collectors.toList());
   }
 
   public static RuntimeDependencyBuilder builder(

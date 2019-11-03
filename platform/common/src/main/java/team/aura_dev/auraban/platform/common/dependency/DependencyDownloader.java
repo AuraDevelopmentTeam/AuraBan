@@ -46,6 +46,12 @@ public class DependencyDownloader {
                 dependencies
                     .stream()
                     .map(RuntimeDependency::getDependency)
+                    .collect(Collectors.toList()))
+            .withTransitiveDependencyProcessors(
+                dependencies
+                    .stream()
+                    .map(RuntimeDependency::getExclusionPatterns)
+                    .flatMap(List::stream)
                     .collect(Collectors.toList()));
 
     try (PicoMaven picoMaven = picoMavenBase.build()) {
