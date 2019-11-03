@@ -59,10 +59,6 @@ import lombok.Getter;
  * ResultSet rs = p.executeQuery();
  * </pre>
  */
-// @SuppressFBWarnings( // TODO: Remove  when fixed in SpotBugs
-//  value = "RV_RETURN_VALUE_IGNORED",
-//  justification = "Return values can be safely ignored as they are for chaining only."
-// )
 public class NamedPreparedStatement implements PreparedStatement {
   /**
    * The statement this object is wrapping.
@@ -76,14 +72,13 @@ public class NamedPreparedStatement implements PreparedStatement {
 
   /**
    * Parses a query with named parameters. The parameter-index mappings are put into the map, and
-   * the parsed query is returned. DO NOT CALL FROM CLIENT CODE. This method is non-private so JUnit
-   * code can test it.
+   * the parsed query is returned.
    *
    * @param query query to parse
    * @param mapBuilder map builder to hold parameter-index mappings
    * @return the parsed query
    */
-  protected static final String parse(
+  private static final String parse(
       String query, ImmutableMap.Builder<String, List<Integer>> mapBuilder) {
     final Map<String, List<Integer>> helperMap = new HashMap<>();
     final int length = query.length();
