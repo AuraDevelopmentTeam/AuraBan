@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
@@ -14,18 +15,19 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   private static final String URLFormat = "jdbc:mysql://%s:%d/%s";
 
   // Credentials
-  private final String host;
+  @NonNull private final String host;
   private final int port;
-  private final String database;
-  private final String user;
-  private final String password;
+  @NonNull private final String database;
+  @NonNull private final String user;
+  @NonNull private final String password;
+  @NonNull private final String tablePrefix;
 
   // Pool Settings
   private final long connectionTimeout;
   private final long maximumLifetime;
   private final int maximumPoolSize;
   private final int minimumIdle;
-  private final Map<String, String> properties;
+  @NonNull private final Map<String, String> properties;
 
   // Data Source
   private HikariDataSource dataSource;

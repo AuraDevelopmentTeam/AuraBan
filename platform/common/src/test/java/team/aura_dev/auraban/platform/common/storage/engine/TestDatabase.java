@@ -75,6 +75,7 @@ public class TestDatabase {
             "test",
             "test",
             "",
+            "",
             poolSettings.getConnectionTimeout(),
             poolSettings.getMaximumLifetime(),
             poolSettings.getMaximumPoolSize(),

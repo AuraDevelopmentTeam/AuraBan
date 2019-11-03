@@ -33,6 +33,7 @@ public class MySQLStorageEngineData implements StorageEngineData {
         crendentials.getDatabase(),
         crendentials.getUser(),
         crendentials.getPassword(),
+        crendentials.getTablePrefix(),
         poolSettings.getConnectionTimeout(),
         poolSettings.getMaximumLifetime(),
         poolSettings.getMaximumPoolSize(),
