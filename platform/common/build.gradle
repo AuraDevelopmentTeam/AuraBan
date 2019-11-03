@@ -35,6 +35,11 @@ dependencies {
     // Shadow dependencies
     shadow "eu.mikroskeem:picomaven:${picoMaven_version}"
     shadow "org.slf4j:slf4j-api:${slf4j_version}"
+
+    // Test dependencies
+    testCompile "ch.vorburger.mariaDB4j:mariaDB4j:2.4.0"
+    testRuntime "org.mariadb.jdbc:mariadb-java-client:2.5.1"
+    testRuntime "org.slf4j:slf4j-nop:${slf4j_version}"
 }
 
 shadowJar {
