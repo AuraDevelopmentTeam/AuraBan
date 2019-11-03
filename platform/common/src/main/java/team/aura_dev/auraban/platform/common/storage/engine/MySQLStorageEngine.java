@@ -37,10 +37,12 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     AuraBanBase.logger.debug("Connecting to \"" + connectionURL + '"');
 
     HikariConfig config = new HikariConfig();
+    config.setDriverClassName("org.mariadb.jdbc.Driver");
     config.setJdbcUrl(connectionURL);
     config.setUsername(user);
     config.setPassword(password);
     config.setConnectionTimeout(connectionTimeout);
+    config.setInitializationFailTimeout(connectionTimeout);
     config.setMaxLifetime(maximumLifetime);
     config.setMaximumPoolSize(maximumPoolSize);
     config.setMinimumIdle(minimumIdle);
