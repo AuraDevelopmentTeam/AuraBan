@@ -24,8 +24,6 @@ dependencies {
     compile project(":AuraBan-common")
 
     shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"
-    shadow "org.slf4j:slf4j-api:${project(":AuraBan-common").slf4j_version}"
-    shadow "org.slf4j:slf4j-jdk14:${project(":AuraBan-common").slf4j_version}"
 }
 
 shadowJar {
