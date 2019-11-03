@@ -39,7 +39,9 @@ dependencies {
     compile project(":AuraBan-spigot")
     compile project(":AuraBan-sponge")
 
-    shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"
+    shadow("eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}") {
+        exclude group: "org.slf4j"
+    }
 }
 
 shadowJar {
