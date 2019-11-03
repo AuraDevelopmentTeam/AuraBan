@@ -48,9 +48,9 @@ public class RuntimeDependency {
       RuntimeDependency.builder(
               "com.zaxxer",
               "HikariCP",
-              "2.7.9",
-              "2002335357f6c75336692f93004004e3",
-              "a83113d2c091d0d0f853dad3217bd7df3beb6ae3")
+              "3.4.1",
+              "930d5942faeb0d1e82173cb19aa85be6",
+              "842894380a73b72c2ecd9e483403e4d5ef7d8b76")
           .build();
   public static final RuntimeDependency MARIADB_CLIENT =
       RuntimeDependency.builder(
