@@ -9,12 +9,9 @@ public class AuraBanBungeeCordBootstrap extends Plugin {
 
   @Override
   public void onLoad() {
-    bootstrapPlugin =
-        new AuraBanBaseBootstrap(
-            this,
-            getDataFolder().toPath().resolve("libs"),
-            ProxyServer.getInstance(),
-            getDataFolder().toPath());
+    bootstrapPlugin = new AuraBanBaseBootstrap();
+    bootstrapPlugin.checkAndLoadSLF4J(getDataFolder().toPath().resolve("libs"));
+    bootstrapPlugin.initializePlugin(this, ProxyServer.getInstance(), getDataFolder().toPath());
   }
 
   @Override

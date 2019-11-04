@@ -22,7 +22,8 @@ public class AuraBanSpongeBootstrap {
 
   @Inject
   public AuraBanSpongeBootstrap(@ConfigDir(sharedRoot = false) Path configDir) {
-    bootstrapPlugin = new AuraBanBaseBootstrap(this, null, configDir);
+    bootstrapPlugin = new AuraBanBaseBootstrap();
+    bootstrapPlugin.initializePlugin(this, configDir);
   }
 
   @Listener

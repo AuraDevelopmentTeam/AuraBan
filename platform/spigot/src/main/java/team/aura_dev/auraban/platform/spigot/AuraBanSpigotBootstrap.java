@@ -7,9 +7,9 @@ public class AuraBanSpigotBootstrap extends JavaPlugin {
   private final AuraBanBaseBootstrap bootstrapPlugin;
 
   public AuraBanSpigotBootstrap() {
-    bootstrapPlugin =
-        new AuraBanBaseBootstrap(
-            this, getDataFolder().toPath().resolve("libs"), getDataFolder().toPath());
+    bootstrapPlugin = new AuraBanBaseBootstrap();
+    bootstrapPlugin.checkAndLoadSLF4J(getDataFolder().toPath().resolve("libs"));
+    bootstrapPlugin.initializePlugin(this, getDataFolder().toPath());
   }
 
   @Override

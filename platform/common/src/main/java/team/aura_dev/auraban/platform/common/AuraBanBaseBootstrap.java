@@ -26,15 +26,40 @@ public class AuraBanBaseBootstrap {
       AccessController.doPrivileged(
           (PrivilegedAction<DependencyClassLoader>) DependencyClassLoader::new);
 
-  private final Object plugin;
-  private final Class<?> pluginClass;
+  private Object plugin;
+  private Class<?> pluginClass;
 
-  public AuraBanBaseBootstrap(Object caller, Object... params) {
-    this(caller, null, params);
+  /**
+   * Checks if SLF4J is present and loads it if not.
+   *
+   * @param libsPath Where to unpack the jar files to
+   */
+  public void checkAndLoadSLF4J(Path libsPath) {
+    try {
+      Class.forName("org.slf4j.StaticLoggerBinder");
+
+      // Class is present, we don't need to load SLF4J
+      return;
+    } catch (ClassNotFoundException e) {
+      // Ignore and continue. We need to load SLF4J
+    }
+
+    try {
+      extractAndInjectSLF4JLib(libsPath, "api");
+      extractAndInjectSLF4JLib(libsPath, "jdk14");
+    } catch (IOException e) {
+      throw new IllegalStateException("Unexpected IOException while trying to load SLF4J", e);
+    }
   }
 
-  public AuraBanBaseBootstrap(Object caller, Path libsPath, Object... params) {
-    plugin = initializePlugin(caller, libsPath, params);
+  /**
+   * Bootstraps the actual plugin class.
+   *
+   * @param params parameters forwarded to the plugin class constructor
+   */
+  public void initializePlugin(Object bootstrapPlugin, Object... params) {
+    plugin =
+        initializePlugin(bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), params);
     pluginClass = plugin.getClass();
   }
 
@@ -65,17 +90,8 @@ public class AuraBanBaseBootstrap {
     }
   }
 
-  private static Object initializePlugin(Object bootstrapPlugin, Path libsPath, Object... params) {
-    return initializePlugin(
-        bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), libsPath, params);
-  }
-
-  private static Object initializePlugin(String pluginClassName, Path libsPath, Object... params) {
+  private static Object initializePlugin(String pluginClassName, Object... params) {
     try {
-      if (libsPath != null) {
-        checkAndLoadSLF4J(libsPath);
-      }
-
       final Class<?> pluginClass = dependencyClassLoader.loadClass(pluginClassName);
       // Checking if the parameter count matches is good enough of a way to find the matching
       // constructor in this case
@@ -94,20 +110,6 @@ public class AuraBanBaseBootstrap {
       // Catch all checked and unchecked exceptions
       throw new IllegalStateException("Loading the plugin class failed", e);
     }
-  }
-
-  private static void checkAndLoadSLF4J(Path libsPath) throws IOException {
-    try {
-      Class.forName("org.slf4j.StaticLoggerBinder");
-
-      // Class is present, we don't need to load SLF4J
-      return;
-    } catch (ClassNotFoundException e) {
-      // Ignore and continue. We need to load SLF4J
-    }
-
-    extractAndInjectSLF4JLib(libsPath, "api");
-    extractAndInjectSLF4JLib(libsPath, "jdk14");
   }
 
   @SuppressFBWarnings(

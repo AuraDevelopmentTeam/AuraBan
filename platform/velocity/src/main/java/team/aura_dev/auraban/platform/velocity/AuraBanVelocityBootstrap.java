@@ -22,7 +22,8 @@ public class AuraBanVelocityBootstrap {
 
   @Inject
   public AuraBanVelocityBootstrap(ProxyServer server, @DataDirectory Path dataDir) {
-    bootstrapPlugin = new AuraBanBaseBootstrap(this, server, dataDir);
+    bootstrapPlugin = new AuraBanBaseBootstrap();
+    bootstrapPlugin.initializePlugin(this, server, dataDir);
   }
 
   @Subscribe
