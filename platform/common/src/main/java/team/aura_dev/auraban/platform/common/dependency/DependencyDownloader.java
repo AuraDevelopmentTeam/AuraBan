@@ -29,7 +29,7 @@ public class DependencyDownloader {
     try {
       Files.createDirectories(libPath);
     } catch (IOException e) {
-      throw new RuntimeException("Can't create the dirs", e);
+      throw new IllegalStateException("Can't create the library dirs", e);
     }
 
     PicoMaven.Builder picoMavenBase =
