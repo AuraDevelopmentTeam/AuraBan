@@ -56,7 +56,8 @@ public class AuraBanBaseBootstrap {
   /**
    * Bootstraps the actual plugin class.
    *
-   * @param bootstrapPlugin the instance of the bootstrap class. Used to determine the actual plugin name
+   * @param bootstrapPlugin the instance of the bootstrap class. Used to determine the actual plugin
+   *     name
    * @param params parameters forwarded to the plugin class constructor
    */
   public void initializePlugin(Object bootstrapPlugin, Object... params) {
