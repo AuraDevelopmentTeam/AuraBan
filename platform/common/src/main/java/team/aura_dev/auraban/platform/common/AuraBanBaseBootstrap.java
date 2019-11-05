@@ -37,7 +37,7 @@ public class AuraBanBaseBootstrap {
    */
   public void checkAndLoadSLF4J(Path libsPath, String version) {
     try {
-      Class.forName("org.slf4j.StaticLoggerBinder");
+      Class.forName("org.slf4j.impl.StaticLoggerBinder");
 
       // Class is present, we don't need to load SLF4J
       return;
