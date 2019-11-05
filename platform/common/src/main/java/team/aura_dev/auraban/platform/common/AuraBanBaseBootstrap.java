@@ -33,8 +33,9 @@ public class AuraBanBaseBootstrap {
    * Checks if SLF4J is present and loads it if not.
    *
    * @param libsPath Where to unpack the jar files to
+   * @param version which version of the slf4j-plugin-xxx to use
    */
-  public void checkAndLoadSLF4J(Path libsPath) {
+  public void checkAndLoadSLF4J(Path libsPath, String version) {
     try {
       Class.forName("org.slf4j.StaticLoggerBinder");
 
@@ -46,7 +47,7 @@ public class AuraBanBaseBootstrap {
 
     try {
       extractAndInjectSLF4JLib(libsPath, "api");
-      extractAndInjectSLF4JLib(libsPath, "jdk14");
+      extractAndInjectSLF4JLib(libsPath, "plugin-" + version + "-@slf4jPluginVersion@");
     } catch (IOException e) {
       throw new IllegalStateException("Unexpected IOException while trying to load SLF4J", e);
     }
@@ -55,6 +56,7 @@ public class AuraBanBaseBootstrap {
   /**
    * Bootstraps the actual plugin class.
    *
+   * @param bootstrapPlugin the instance of the bootstrap class. Used to determine the actual plugin name
    * @param params parameters forwarded to the plugin class constructor
    */
   public void initializePlugin(Object bootstrapPlugin, Object... params) {

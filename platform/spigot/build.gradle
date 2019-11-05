@@ -5,7 +5,9 @@ import org.apache.tools.ant.filters.ReplaceTokens
 evaluationDependsOn(":AuraBan-common")
 
 configurations {
-    slf4j
+    slf4j {
+        transitive = false
+    }
 }
 
 sourceSets {
@@ -34,12 +36,17 @@ dependencies {
 
     // SLF4J files
     slf4j "org.slf4j:slf4j-api:${project(":AuraBan-common").slf4j_version}"
-    slf4j "org.slf4j:slf4j-jdk14:${project(":AuraBan-common").slf4j_version}"
+    slf4j "dev.aura.lib.slf4j-plugin.spigot:slf4j-plugin-spigot:${project(":AuraBan-common").slf4jPlugin_version}:${project(":AuraBan-common").slf4j_version}"
 }
 
 processSources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "slf4jVersion", project(":AuraBan-common").slf4j_version
+    inputs.property "slf4jPluginVersion", project(":AuraBan-common").slf4jPlugin_version
+
     filter (ReplaceTokens, tokens: [
-        "slf4jVersion": project(":AuraBan-common").slf4j_version
+        "slf4jVersion": project(":AuraBan-common").slf4j_version,
+        "slf4jPluginVersion": project(":AuraBan-common").slf4jPlugin_version
     ])
 }
 

@@ -30,7 +30,8 @@ dependencies {
 
 processSources {
     filter (ReplaceTokens, tokens: [
-        "slf4jVersion": project(":AuraBan-common").slf4j_version
+        "slf4jVersion": project(":AuraBan-common").slf4j_version,
+        "slf4jPluginVersion": project(":AuraBan-common").slf4jPlugin_version
     ])
 }
 
