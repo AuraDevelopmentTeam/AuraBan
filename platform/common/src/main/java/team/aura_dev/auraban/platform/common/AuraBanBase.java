@@ -103,9 +103,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     final Logger bannerLogger = LoggerFactory.getLogger("");
 
     // Print ASCII banner
-    for (final String bannerLine : getAsciiBanner()) {
-      bannerLogger.info(bannerLine);
-    }
+    getAsciiBanner().forEach(bannerLogger::info);
 
     logger.info("Preinitializing " + NAME + " Version " + VERSION);
 
