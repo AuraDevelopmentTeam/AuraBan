@@ -3,11 +3,13 @@ package team.aura_dev.auraban.platform.common.storage.engine;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 @RequiredArgsConstructor
@@ -81,6 +83,28 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   @Override
   protected void createTables() {
     ;
+  }
+
+  @Override
+  protected int getTableVersion(String tableName) throws SQLException {
+    try (final NamedPreparedStatement statement =
+        prepareStatement(
+            "SELECT `table_comment` FROM `information_schema`.`tables` WHERE `table_schema` = :database AND `table_name` = :table")) {
+      statement.setString("database", database);
+      statement.setString("table", tableName);
+
+      try (final ResultSet result = statement.executeQuery()) {
+        final String version = result.getString(1);
+
+        if (!version.isEmpty() && (version.charAt(0) == 'v')) {
+          return Integer.parseInt(version.substring(1));
+        }
+      }
+    } catch (NumberFormatException e) {
+      // Ignore and return default value
+    }
+
+    return 0;
   }
 
   @Override

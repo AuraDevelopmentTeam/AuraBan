@@ -35,6 +35,12 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @Override
+  protected int getTableVersion(String tableName) throws SQLException {
+    // TODO
+    return 0;
+  }
+
+  @Override
   protected Connection getConnection() {
     return connection;
   }
