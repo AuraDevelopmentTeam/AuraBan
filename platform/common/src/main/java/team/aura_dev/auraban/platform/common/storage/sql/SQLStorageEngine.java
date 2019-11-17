@@ -1,6 +1,7 @@
 package team.aura_dev.auraban.platform.common.storage.sql;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 
@@ -83,7 +84,44 @@ public abstract class SQLStorageEngine implements StorageEngine {
 
   protected abstract void createTables() throws SQLException;
 
+  /**
+   * This method determines the version of a certain table scheme.<br>
+   * It is recommended that all tables always are at the same version.
+   *
+   * @param tableName the name of the table
+   * @return the version of the table (starting at <code>1</code>), <code>0</code> if the table
+   *     doesn't exist or <code>-1</code> if the version could not be determined.
+   * @throws SQLException if a database access error occurs
+   */
   protected abstract int getTableVersion(String tableName) throws SQLException;
+
+  protected abstract void renameConflictingTable(String tableName) throws SQLException;
+
+  ////////////////////////////////////////////////////////
+  // Logging Helper Methods
+  ////////////////////////////////////////////////////////
+
+  protected void warnAboutInvalidTable(String tableName) {
+    logger.warn(
+        "Found an already existing table of the name \""
+            + tableName
+            + "\" that has an unknown table scheme.");
+    logger.warn("We will be renaming it to \"conflict_" + tableName + '"');
+    logger.warn("Make sure nothing else tries to work with a table named \"" + tableName + '"');
+  }
+
+  protected void logTableCreation(String tableName) {
+    logger.debug("Table \"" + tableName + "\" doesn't exist. Creating it now.");
+  }
+
+  protected void logTableUpgrade(String tableName, int oldScheme) {
+    logTableUpgrade(tableName, oldScheme, oldScheme + 1);
+  }
+
+  protected void logTableUpgrade(String tableName, int oldScheme, int newScheme) {
+    logger.debug(
+        "Upgrading table \"" + tableName + "\" from v" + oldScheme + " to v" + newScheme + '.');
+  }
 
   ////////////////////////////////////////////////////////
   // Deinitialization Methods

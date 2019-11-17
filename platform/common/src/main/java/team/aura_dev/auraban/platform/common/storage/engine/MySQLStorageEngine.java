@@ -7,12 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
-@RequiredArgsConstructor
 public class MySQLStorageEngine extends SQLStorageEngine {
   private static final String URLFormat = "jdbc:mysql://%s:%d/%s";
 
@@ -30,6 +28,37 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   private final int maximumPoolSize;
   private final int minimumIdle;
   @NonNull private final Map<String, String> properties;
+
+  // Table Names
+  private final String tablePlayers;
+
+  public MySQLStorageEngine(
+      @NonNull final String host,
+      final int port,
+      @NonNull final String database,
+      @NonNull final String user,
+      @NonNull final String password,
+      @NonNull final String tablePrefix,
+      final long connectionTimeout,
+      final long maximumLifetime,
+      final int maximumPoolSize,
+      final int minimumIdle,
+      @NonNull final Map<String, String> properties) {
+    this.host = host;
+    this.port = port;
+    this.database = database;
+    this.user = user;
+    this.password = password;
+    this.tablePrefix = tablePrefix;
+
+    this.connectionTimeout = connectionTimeout;
+    this.maximumLifetime = maximumLifetime;
+    this.maximumPoolSize = maximumPoolSize;
+    this.minimumIdle = minimumIdle;
+    this.properties = properties;
+
+    this.tablePlayers = tablePrefix + "players";
+  }
 
   // Data Source
   private HikariDataSource dataSource;
@@ -81,8 +110,20 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @Override
-  protected void createTables() {
-    ;
+  protected void createTables() throws SQLException {
+    switch (getTableVersion(tablePlayers)) {
+      case 1: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable(tablePlayers);
+      case 0: // Table doesn't exist
+        executeUpdateQuery(
+            "CREATE TABLE `"
+                + tablePlayers
+                + "` ( `id` INT NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`uuid`)) COMMENT = 'v1' DEFAULT CHARSET = utf8");
+    }
   }
 
   @Override
@@ -94,6 +135,10 @@ public class MySQLStorageEngine extends SQLStorageEngine {
       statement.setString("table", tableName);
 
       try (final ResultSet result = statement.executeQuery()) {
+        if (!result.next()) {
+          return 0;
+        }
+
         final String version = result.getString(1);
 
         if (!version.isEmpty() && (version.charAt(0) == 'v')) {
@@ -101,10 +146,16 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         }
       }
     } catch (NumberFormatException e) {
-      // Ignore and return default value
+      // Ignore and return error value
     }
 
-    return 0;
+    return -1;
+  }
+
+  @Override
+  protected void renameConflictingTable(String tableName) throws SQLException {
+    warnAboutInvalidTable(tableName);
+    executeUpdateQuery("RENAME TABLE `" + tableName + "` TO `conflict_" + tableName + "`");
   }
 
   @Override

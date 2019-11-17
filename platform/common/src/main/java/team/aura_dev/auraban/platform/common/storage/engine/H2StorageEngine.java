@@ -41,6 +41,12 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @Override
+  protected void renameConflictingTable(String tableName) throws SQLException {
+    warnAboutInvalidTable(tableName);
+    // TODO
+  }
+
+  @Override
   protected Connection getConnection() {
     return connection;
   }
