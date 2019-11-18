@@ -30,8 +30,18 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @Override
-  protected void createTables() {
-    // TODO
+  protected void createTables() throws SQLException {
+    switch (getTableVersion("players")) {
+      case 1: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable("players");
+      case 0: // Table doesn't exist
+        executeUpdateQuery(
+            "CREATE TABLE players ( ID INT NOT NULL AUTO_INCREMENT, UUID BINARY(16) NOT NULL, NAME VARCHAR(16) NOT NULL, PRIMARY KEY (ID), UNIQUE (UUID)) COMMENT 'v1' DEFAULT CHARSET UTF8");
+    }
   }
 
   @Override
@@ -43,7 +53,7 @@ public class H2StorageEngine extends SQLStorageEngine {
   @Override
   protected void renameConflictingTable(String tableName) throws SQLException {
     warnAboutInvalidTable(tableName);
-    // TODO
+    executeUpdateQuery("ALTER TABLE " + tableName + " RENAME TO conflict_" + tableName + "");
   }
 
   @Override
