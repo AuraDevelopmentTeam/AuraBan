@@ -120,6 +120,13 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   @Override
   protected void createTables() throws SQLException {
     switch (getTableVersion(tablePlayers)) {
+        // case x: // Version below
+        // logTableUpgrade(tablePlayers, x);
+        // upgrade queries from x to y go here
+        // case y: // Version below
+        // logTableUpgrade(tablePlayers, y);
+        // upgrade queries from y to SCHEME_VERSION go here
+        // set table version
       case SCHEME_VERSION: // Current version
       default: // Versions above the current version
         break;
