@@ -2,6 +2,7 @@ package team.aura_dev.auraban.platform.common.storage.engine;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -109,6 +110,10 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     dataSource = new HikariDataSource(config);
   }
 
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
   @Override
   protected void createTables() throws SQLException {
     switch (getTableVersion(tablePlayers)) {

@@ -1,5 +1,6 @@
 package team.aura_dev.auraban.platform.common.storage.engine;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,6 +30,10 @@ public class H2StorageEngine extends SQLStorageEngine {
     connection = DriverManager.getConnection(connectionURL);
   }
 
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
   @Override
   protected void createTables() throws SQLException {
     switch (getTableVersion("players")) {
