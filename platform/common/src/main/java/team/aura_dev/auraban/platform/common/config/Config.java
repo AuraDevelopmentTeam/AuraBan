@@ -148,10 +148,16 @@ public class Config {
         @Setting(comment = "This setting allows you to define extra properties for connections.")
         private Map<String, String> properties = propertiesDefaultValue();
 
+        public Map<String, String> getProperties() {
+          properties.putIfAbsent("characterEncoding", "utf8mb4");
+
+          return properties;
+        }
+
         private static Map<String, String> propertiesDefaultValue() {
           Map<String, String> out = new HashMap<>();
+          out.put("characterEncoding", "utf8mb4");
           out.put("useUnicode", "true");
-          out.put("characterEncoding", "utf8");
 
           return out;
         }

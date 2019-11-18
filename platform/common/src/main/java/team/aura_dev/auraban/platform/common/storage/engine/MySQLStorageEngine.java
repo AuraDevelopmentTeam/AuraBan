@@ -14,6 +14,7 @@ import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 public class MySQLStorageEngine extends SQLStorageEngine {
   private static final String URLFormat = "jdbc:mysql://%s:%d/%s";
+  private static final int SCHEME_VERSION = 1;
 
   // Credentials
   @NonNull private final String host;
@@ -29,9 +30,13 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   private final int maximumPoolSize;
   private final int minimumIdle;
   @NonNull private final Map<String, String> properties;
+  private final String encoding;
 
   // Table Names
   private final String tablePlayers;
+
+  // Data Source
+  private HikariDataSource dataSource;
 
   public MySQLStorageEngine(
       @NonNull final String host,
@@ -57,12 +62,10 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     this.maximumPoolSize = maximumPoolSize;
     this.minimumIdle = minimumIdle;
     this.properties = properties;
+    this.encoding = properties.get("characterEncoding");
 
     this.tablePlayers = tablePrefix + "players";
   }
-
-  // Data Source
-  private HikariDataSource dataSource;
 
   @Override
   protected Connection getConnection() throws SQLException {
@@ -117,7 +120,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   @Override
   protected void createTables() throws SQLException {
     switch (getTableVersion(tablePlayers)) {
-      case 1: // Current version
+      case SCHEME_VERSION: // Current version
       default: // Versions above the current version
         break;
       case -1: // Version could not be determined
@@ -127,7 +130,10 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         executeUpdateQuery(
             "CREATE TABLE `"
                 + tablePlayers
-                + "` ( `id` INT NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`uuid`)) COMMENT = 'v1' DEFAULT CHARSET = utf8");
+                + "` ( `id` INT NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`uuid`)) COMMENT = 'v"
+                + SCHEME_VERSION
+                + "' DEFAULT CHARSET = "
+                + encoding);
     }
   }
 
@@ -135,7 +141,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   protected int getTableVersion(String tableName) throws SQLException {
     try (final NamedPreparedStatement statement =
         prepareStatement(
-            "SELECT `table_comment` FROM `information_schema`.`tables` WHERE `table_schema` = :database AND `table_name` = :table")) {
+            "SELECT `table_comment` FROM `information_schema`.`tables` WHERE `table_schema` = :database AND `table_name` = :table LIMIT 1")) {
       statement.setString("database", database);
       statement.setString("table", tableName);
 

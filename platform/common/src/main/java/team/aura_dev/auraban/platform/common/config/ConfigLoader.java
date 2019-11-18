@@ -136,13 +136,6 @@ public class ConfigLoader {
 
     CommentedConfigurationNode node = loader.load();
 
-    final Object globalValue = node.getNode("global").getValue();
-
-    if (globalValue != null) {
-      node.getNode("general").setValue(globalValue);
-      node.removeChild("global");
-    }
-
     try {
       config = node.<Config>getValue(configToken, Config::new);
     } catch (ObjectMappingException e) {
@@ -162,6 +155,9 @@ public class ConfigLoader {
 
       config = node.<Config>getValue(configToken, Config::new);
     }
+
+    // Make sure the character encoding is set
+    config.getStorage().getMysql().getPoolSettings().getProperties();
 
     AuraBanBase.logger.debug("Saving/Formatting config...");
     node.setValue(configToken, config);
