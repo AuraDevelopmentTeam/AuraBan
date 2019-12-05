@@ -14,17 +14,19 @@ import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 @RequiredArgsConstructor
 public class H2StorageEngine extends SQLStorageEngine {
-  private static final String URLFormat = "jdbc:h2:%s;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=FALSE";
+  private static final String URLFormat = "jdbc:h2:%s;AUTO_SERVER=%s;DATABASE_TO_UPPER=FALSE";
   private static final int SCHEME_VERSION = 1;
 
   private final Path databasePath;
+  private final boolean shareDatabase;
 
   private Connection connection = null;
 
   @Override
   @SneakyThrows(ClassNotFoundException.class)
   protected void connect() throws SQLException {
-    final String connectionURL = String.format(URLFormat, databasePath.toFile());
+    final String connectionURL =
+        String.format(URLFormat, databasePath.toFile(), shareDatabase ? "TRUE" : "FALSE");
 
     AuraBanBase.logger.debug("Connecting to \"" + connectionURL + '"');
 

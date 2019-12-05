@@ -78,6 +78,13 @@ public class Config {
       )
       private String databaseFile = "bandata";
 
+      @Setting(
+        comment =
+            "Enable this setting if you want to use the same database file for multiple instances.\n"
+                + "Disable it if you don't do it (the default) because it causes a performance penalty."
+      )
+      private boolean shareDatabase = false;
+
       public Path getAbsoluteDatabasePath() {
         return AuraBanBase.getInstance().getConfigDir().resolve(getDatabaseFile()).toAbsolutePath();
       }

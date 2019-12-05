@@ -24,6 +24,6 @@ public class H2StorageEngineData implements StorageEngineData {
 
   @Override
   public StorageEngine createInstance() {
-    return new H2StorageEngine(configData.getAbsoluteDatabasePath());
+    return new H2StorageEngine(configData.getAbsoluteDatabasePath(), configData.getShareDatabase());
   }
 }
