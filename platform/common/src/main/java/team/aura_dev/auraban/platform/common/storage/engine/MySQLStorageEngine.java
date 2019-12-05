@@ -34,6 +34,10 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
   // Table Names
   private final String tablePlayers;
+  private final String tableBans;
+  private final String tableVBansResolved;
+  private final String tableVCurrentBans;
+  private final String tableVCurrentBansResolved;
 
   // Data Source
   private HikariDataSource dataSource;
@@ -65,6 +69,10 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     this.encoding = properties.get("characterEncoding");
 
     this.tablePlayers = tablePrefix + "players";
+    this.tableBans = tablePrefix + "bans";
+    this.tableVBansResolved = tablePrefix + "bans_resolved";
+    this.tableVCurrentBans = tablePrefix + "current_bans";
+    this.tableVCurrentBansResolved = tablePrefix + "current_bans_resolved";
   }
 
   @Override
@@ -134,13 +142,66 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         // Also logs a warning
         renameConflictingTable(tablePlayers);
       case 0: // Table doesn't exist
+        // players
         executeUpdateQuery(
+            // Table name
             "CREATE TABLE `"
                 + tablePlayers
-                + "` ( `id` INT NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`uuid`)) COMMENT = 'v"
+                // Columns
+                + "` ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , "
+                // Keys
+                + "PRIMARY KEY (`id`), UNIQUE (`uuid`)"
+                // Comment and Encoding
+                + ") COMMENT = 'v"
                 + SCHEME_VERSION
                 + "' DEFAULT CHARSET = "
                 + encoding);
+    }
+
+    switch (getTableVersion(tableBans)) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable(tableBans);
+      case 0: // Table doesn't exist
+        // bans
+        executeUpdateQuery(
+            // Table name
+            "CREATE TABLE `"
+                + tableBans
+                // Columns
+                + "` ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `player_id` INT UNSIGNED NOT NULL , `operator_id` INT UNSIGNED NOT NULL , `end` DATETIME NULL , `reason` TEXT NOT NULL , "
+                // Keys
+                + "PRIMARY KEY (`id`), INDEX (`player_id`), INDEX (`end`) , "
+                // Foreign Keys
+                + "FOREIGN KEY (`player_id`) REFERENCES `"
+                + tablePlayers
+                + "` (`id`) , FOREIGN KEY (`operator_id`) REFERENCES `"
+                + tablePlayers
+                + "` (`id`)"
+                // Comment and Encoding
+                + ") COMMENT = 'v"
+                + SCHEME_VERSION
+                + "' DEFAULT CHARSET = "
+                + encoding);
+        // bans_resolved
+        executeUpdateQuery(getResolvedBanViewQuery(tableBans, tableVBansResolved));
+        // current_bans
+        executeUpdateQuery(
+            // View name
+            "CREATE OR REPLACE VIEW `"
+                + tableVCurrentBans
+                + "` AS "
+                // Columns
+                + "SELECT `id` , `player_id` , `operator_id` , `end` , `reason` "
+                // Table
+                + "FROM `auraban_bans`"
+                // Condition
+                + " WHERE (`end` IS NULL) OR (`end` > NOW())");
+        // current_bans_resolved
+        executeUpdateQuery(getResolvedBanViewQuery(tableVCurrentBans, tableVCurrentBansResolved));
     }
   }
 
@@ -174,6 +235,27 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   protected void renameConflictingTable(String tableName) throws SQLException {
     warnAboutInvalidTable(tableName);
     executeUpdateQuery("RENAME TABLE `" + tableName + "` TO `conflict_" + tableName + "`");
+  }
+
+  private String getResolvedBanViewQuery(String baseTableName, String viewName) {
+    return // View name
+    "CREATE OR REPLACE VIEW `"
+        + viewName
+        + "` AS "
+        // Columns
+        + "SELECT `"
+        + baseTableName
+        + "`.`id` , `player`.`uuid` AS `player_uuid` , `player`.`name` AS `player_name` , `operator`.`uuid` AS `operator_uuid` , `operator`.`name` AS `operator_name` , `end` , `reason` "
+        // Table
+        + "FROM `"
+        + baseTableName
+        + "`"
+        // Joins
+        + "LEFT JOIN `"
+        + tablePlayers
+        + "` AS `player` ON `player`.`id` = `player_id` LEFT JOIN `"
+        + tablePlayers
+        + "` AS `operator` ON `operator`.`id` = `operator_id`";
   }
 
   @Override
