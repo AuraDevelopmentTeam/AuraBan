@@ -66,7 +66,7 @@ public class H2StorageEngine extends SQLStorageEngine {
         // players
         executeUpdateQuery(
             // Table name
-            "CREATE TABLE players ( "
+            "CREATE TABLE players ("
                 // Columns
                 + "id INT NOT NULL AUTO_INCREMENT, uuid BINARY(16) NOT NULL, name VARCHAR(16) NOT NULL, "
                 // Keys
@@ -85,20 +85,20 @@ public class H2StorageEngine extends SQLStorageEngine {
         // bans
         executeUpdateQuery(
             // Table name
-            "CREATE TABLE bans ( "
+            "CREATE TABLE bans ("
                 // Columns
-                + "id INT NOT NULL AUTO_INCREMENT, player_id INT NOT NULL, operator_id INT NOT NULL, end TIMESTAMP NULL, reason VARCHAR NOT NULL, "
+                + "id INT NOT NULL AUTO_INCREMENT, player_id INT NOT NULL, operator_id INT NOT NULL, end DATETIME NULL, reason VARCHAR(1024) NOT NULL, "
                 // Keys
                 + "PRIMARY KEY (id), INDEX (player_id), INDEX (end), "
                 // Foreign keys
-                + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (operator_id) REFERENCES players (id))");
+                + "FOREIGN KEY (player_id) REFERENCES players(id), FOREIGN KEY (operator_id) REFERENCES players(id))");
         setTableVersion("bans");
         // bans_resolved
         executeUpdateQuery(getResolvedBanViewQuery("bans"));
         // current_bans
         executeUpdateQuery(
             // View Name
-            "CREATE OR REPLACE VIEW current_bans AS"
+            "CREATE OR REPLACE VIEW current_bans AS "
                 // Columns
                 + "SELECT id, player_id, operator_id, end, reason "
                 // Table
