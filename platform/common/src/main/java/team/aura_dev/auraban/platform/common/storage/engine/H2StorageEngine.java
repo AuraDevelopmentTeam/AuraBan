@@ -39,8 +39,14 @@ public class H2StorageEngine extends SQLStorageEngine {
   )
   @Override
   protected void createTables() throws SQLException {
+    // table_versions
     executeUpdateQuery(
-        "CREATE TABLE IF NOT EXISTS table_versions ( name VARCHAR(128) NOT NULL, version INT NOT NULL, PRIMARY KEY (name))");
+        // Table name
+        "CREATE TABLE IF NOT EXISTS table_versions ( "
+            // Columns
+            + "name VARCHAR(128) NOT NULL, version INT NOT NULL, "
+            // Keys
+            + "PRIMARY KEY (name))");
 
     switch (getTableVersion("players")) {
         // case x: // Version below
@@ -57,9 +63,50 @@ public class H2StorageEngine extends SQLStorageEngine {
         // Also logs a warning
         renameConflictingTable("players");
       case 0: // Table doesn't exist
+        // players
         executeUpdateQuery(
-            "CREATE TABLE players ( id INT NOT NULL AUTO_INCREMENT, uuid BINARY(16) NOT NULL, name VARCHAR(16) NOT NULL, PRIMARY KEY (id), UNIQUE (uuid))");
+            // Table name
+            "CREATE TABLE players ( "
+                // Columns
+                + "id INT NOT NULL AUTO_INCREMENT, uuid BINARY(16) NOT NULL, name VARCHAR(16) NOT NULL, "
+                // Keys
+                + "PRIMARY KEY (id), UNIQUE (uuid))");
         setTableVersion("players");
+    }
+
+    switch (getTableVersion("bans")) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable("players");
+      case 0: // Table doesn't exist
+        // bans
+        executeUpdateQuery(
+            // Table name
+            "CREATE TABLE bans ( "
+                // Columns
+                + "id INT NOT NULL AUTO_INCREMENT, player_id INT NOT NULL, operator_id INT NOT NULL, end TIMESTAMP NULL, reason VARCHAR NOT NULL, "
+                // Keys
+                + "PRIMARY KEY (id), INDEX (player_id), INDEX (end), "
+                // Foreign keys
+                + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (operator_id) REFERENCES players (id))");
+        setTableVersion("bans");
+        // bans_resolved
+        executeUpdateQuery(getResolvedBanViewQuery("bans"));
+        // current_bans
+        executeUpdateQuery(
+            // View Name
+            "CREATE OR REPLACE VIEW current_bans AS"
+                // Columns
+                + "SELECT id, player_id, operator_id, end, reason "
+                // Table
+                + "FROM bans"
+                // Condition
+                + "WHERE (end IS NULL) OR (end > CURRENT_TIMESTAMP)");
+        // current_bans_resolved
+        executeUpdateQuery(getResolvedBanViewQuery("current_bans"));
     }
   }
 
@@ -111,6 +158,23 @@ public class H2StorageEngine extends SQLStorageEngine {
 
       statement.executeUpdate();
     }
+  }
+
+  private String getResolvedBanViewQuery(String baseTableName) {
+    return // View Name
+    "CREATE OR REPLACE VIEW "
+        + baseTableName
+        + "_resolved AS "
+        // Columns
+        + "SELECT "
+        + baseTableName
+        + ".id, player.uuid player_uuid, player.name player_name, operator.uuid operator_uuid, operator.name operator_name, end, reason "
+        // Table
+        + "FROM `"
+        + baseTableName
+        + "` "
+        // Joins
+        + "LEFT OUTER JOIN players player ON player.id = player_id LEFT OUTER JOIN players operator ON operator.id = operator_id";
   }
 
   @Override

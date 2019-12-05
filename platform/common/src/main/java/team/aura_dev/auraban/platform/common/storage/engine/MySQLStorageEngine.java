@@ -144,11 +144,12 @@ public class MySQLStorageEngine extends SQLStorageEngine {
       case 0: // Table doesn't exist
         // players
         executeUpdateQuery(
-            // Table name
+            // Table Name
             "CREATE TABLE `"
                 + tablePlayers
+                + "` ( "
                 // Columns
-                + "` ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , "
+                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , "
                 // Keys
                 + "PRIMARY KEY (`id`), UNIQUE (`uuid`)"
                 // Comment and Encoding
@@ -168,11 +169,12 @@ public class MySQLStorageEngine extends SQLStorageEngine {
       case 0: // Table doesn't exist
         // bans
         executeUpdateQuery(
-            // Table name
+            // Table Name
             "CREATE TABLE `"
                 + tableBans
+                + "` ( "
                 // Columns
-                + "` ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `player_id` INT UNSIGNED NOT NULL , `operator_id` INT UNSIGNED NOT NULL , `end` DATETIME NULL , `reason` TEXT NOT NULL , "
+                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `player_id` INT UNSIGNED NOT NULL , `operator_id` INT UNSIGNED NOT NULL , `end` DATETIME NULL , `reason` TEXT NOT NULL , "
                 // Keys
                 + "PRIMARY KEY (`id`), INDEX (`player_id`), INDEX (`end`) , "
                 // Foreign Keys
@@ -190,7 +192,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         executeUpdateQuery(getResolvedBanViewQuery(tableBans, tableVBansResolved));
         // current_bans
         executeUpdateQuery(
-            // View name
+            // View Name
             "CREATE OR REPLACE VIEW `"
                 + tableVCurrentBans
                 + "` AS "
@@ -238,7 +240,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   private String getResolvedBanViewQuery(String baseTableName, String viewName) {
-    return // View name
+    return // View Name
     "CREATE OR REPLACE VIEW `"
         + viewName
         + "` AS "
@@ -249,7 +251,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         // Table
         + "FROM `"
         + baseTableName
-        + "`"
+        + "` "
         // Joins
         + "LEFT JOIN `"
         + tablePlayers
