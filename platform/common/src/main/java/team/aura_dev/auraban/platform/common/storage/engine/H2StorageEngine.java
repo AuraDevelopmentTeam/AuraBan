@@ -41,6 +41,7 @@ public class H2StorageEngine extends SQLStorageEngine {
   )
   @Override
   protected void createTables() throws SQLException {
+    logTableCreation("table_versions");
     // table_versions
     executeUpdateQuery(
         // Table name
@@ -65,6 +66,7 @@ public class H2StorageEngine extends SQLStorageEngine {
         // Also logs a warning
         renameConflictingTable("players");
       case 0: // Table doesn't exist
+        logTableCreation("players");
         // players
         executeUpdateQuery(
             // Table name
@@ -84,6 +86,7 @@ public class H2StorageEngine extends SQLStorageEngine {
         // Also logs a warning
         renameConflictingTable("players");
       case 0: // Table doesn't exist
+        logTableCreation("bans");
         // bans
         executeUpdateQuery(
             // Table name
@@ -91,9 +94,11 @@ public class H2StorageEngine extends SQLStorageEngine {
                 // Columns
                 + "id INT NOT NULL AUTO_INCREMENT, player_id INT NOT NULL, operator_id INT NOT NULL, end DATETIME NULL, reason VARCHAR(1024) NOT NULL, "
                 // Keys
-                + "PRIMARY KEY (id), INDEX (player_id), INDEX (end), "
+                + "PRIMARY KEY (id), "
                 // Foreign keys
-                + "FOREIGN KEY (player_id) REFERENCES players(id), FOREIGN KEY (operator_id) REFERENCES players(id))");
+                + "FOREIGN KEY (player_id) REFERENCES players(id), FOREIGN KEY (operator_id) REFERENCES players(id));"
+                // Indexes
+                + "CREATE INDEX ON bans(end)");
         setTableVersion("bans");
         // bans_resolved
         executeUpdateQuery(getResolvedBanViewQuery("bans"));
@@ -104,7 +109,7 @@ public class H2StorageEngine extends SQLStorageEngine {
                 // Columns
                 + "SELECT id, player_id, operator_id, end, reason "
                 // Table
-                + "FROM bans"
+                + "FROM bans "
                 // Condition
                 + "WHERE (end IS NULL) OR (end > CURRENT_TIMESTAMP)");
         // current_bans_resolved

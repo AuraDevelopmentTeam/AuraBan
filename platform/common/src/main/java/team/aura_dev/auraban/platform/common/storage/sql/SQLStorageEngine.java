@@ -3,6 +3,8 @@ package team.aura_dev.auraban.platform.common.storage.sql;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.slf4j.Logger;
+import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 
 /**
@@ -10,6 +12,8 @@ import team.aura_dev.auraban.platform.common.storage.StorageEngine;
  * Like running a query for example.
  */
 public abstract class SQLStorageEngine implements StorageEngine {
+  protected static final Logger logger = AuraBanBase.logger;
+
   ////////////////////////////////////////////////////////
   // Query Methods
   ////////////////////////////////////////////////////////
@@ -31,7 +35,7 @@ public abstract class SQLStorageEngine implements StorageEngine {
    * @see #prepareStatement(String)
    * @see NamedPreparedStatement
    */
-  protected NamedPreparedStatement getPreparedStatement(Connection connection, String query)
+  private NamedPreparedStatement getPreparedStatement(Connection connection, String query)
       throws SQLException {
     return useSafePreparedStatements()
         ? new SafeNamedPreparedStatement(connection, query)
@@ -48,6 +52,8 @@ public abstract class SQLStorageEngine implements StorageEngine {
    * @see NamedPreparedStatement
    */
   protected NamedPreparedStatement prepareStatement(String query) throws SQLException {
+    logger.trace("SQL: {}", query);
+
     final Connection connection = getConnection();
 
     return getPreparedStatement(connection, query);

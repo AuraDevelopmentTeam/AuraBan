@@ -142,6 +142,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         // Also logs a warning
         renameConflictingTable(tablePlayers);
       case 0: // Table doesn't exist
+        logTableCreation(tablePlayers);
         // players
         executeUpdateQuery(
             // Table Name
@@ -167,6 +168,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         // Also logs a warning
         renameConflictingTable(tableBans);
       case 0: // Table doesn't exist
+        logTableCreation(tableBans);
         // bans
         executeUpdateQuery(
             // Table Name
@@ -176,7 +178,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 // Columns
                 + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `player_id` INT UNSIGNED NOT NULL , `operator_id` INT UNSIGNED NOT NULL , `end` DATETIME NULL , `reason` TEXT NOT NULL , "
                 // Keys
-                + "PRIMARY KEY (`id`), INDEX (`player_id`), INDEX (`end`) , "
+                + "PRIMARY KEY (`id`), INDEX (`end`) , "
                 // Foreign Keys
                 + "FOREIGN KEY (`player_id`) REFERENCES `"
                 + tablePlayers
