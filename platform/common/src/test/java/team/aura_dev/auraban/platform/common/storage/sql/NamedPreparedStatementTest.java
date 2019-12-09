@@ -32,6 +32,7 @@ import team.aura_dev.auraban.platform.common.util.UuidUtils;
 public class NamedPreparedStatementTest {
   private static final int REPEATS = 1000;
 
+  private static final TestDatabase testDatabase = new TestDatabase();
   private static final String name1 = "obj1";
   private static final String name2 = "obj2";
   private static final String str1 = UUID.randomUUID().toString() + '\'';
@@ -81,12 +82,12 @@ public class NamedPreparedStatementTest {
 
   @BeforeClass
   public static void setUpBeforeClass() {
-    TestDatabase.startDatabase();
+    testDatabase.startDatabase();
   }
 
   @AfterClass
   public static void tearDownAfterClass() {
-    TestDatabase.stopDatabase();
+    testDatabase.stopDatabase();
   }
 
   private <T> void runSetterTest(Function<UUID, T> supplier, Setter<T> setter, Getter<T> getter) {
@@ -117,12 +118,12 @@ public class NamedPreparedStatementTest {
 
   @Before
   public void setUp() {
-    database = TestDatabase.getDatabaseInstance();
+    database = testDatabase.getDatabaseInstance();
   }
 
   @After
   public void tearDown() throws Exception {
-    TestDatabase.closeDatabaseInstance(database);
+    testDatabase.closeDatabaseInstance(database);
   }
 
   @Test

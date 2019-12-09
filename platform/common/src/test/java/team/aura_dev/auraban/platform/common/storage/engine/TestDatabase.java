@@ -9,21 +9,19 @@ import java.io.File;
 import java.io.IOException;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import team.aura_dev.auraban.platform.common.config.Config;
 
-@UtilityClass
 public class TestDatabase {
   private static final String baseDir = SystemUtils.JAVA_IO_TMPDIR + "/MariaDB4j/base/";
   private static final String localhost = "localhost";
-  private static DB databaseInstance;
-  @Getter private static String host;
-  @Getter private static int port;
+  private DB databaseInstance;
+  @Getter private String host;
+  @Getter private int port;
 
   @SneakyThrows(ManagedProcessException.class)
-  public static void startDatabase() {
+  public void startDatabase() {
     final int limit = 100;
     int count = 0;
     String actualBaseDir;
@@ -53,7 +51,7 @@ public class TestDatabase {
   }
 
   @SneakyThrows({ManagedProcessException.class})
-  public static void stopDatabase() {
+  public void stopDatabase() {
     databaseInstance.stop();
 
     try {
@@ -65,7 +63,7 @@ public class TestDatabase {
     }
   }
 
-  public static MySQLStorageEngine getDatabaseInstance() {
+  public MySQLStorageEngine getDatabaseInstance() {
     // Just use default values
     final Config.Storage.MySQL.PoolSettings poolSettings = new Config.Storage.MySQL.PoolSettings();
     final MySQLStorageEngine instance =
@@ -88,7 +86,7 @@ public class TestDatabase {
     return instance;
   }
 
-  public static void closeDatabaseInstance(MySQLStorageEngine database) {
+  public void closeDatabaseInstance(MySQLStorageEngine database) {
     database.close();
   }
 }
