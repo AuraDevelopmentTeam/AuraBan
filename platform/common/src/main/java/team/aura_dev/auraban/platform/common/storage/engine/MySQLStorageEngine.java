@@ -34,10 +34,13 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
   // Table Names
   private final String tablePlayers;
-  private final String tableBans;
-  private final String tableVBansResolved;
-  private final String tableVCurrentBans;
-  private final String tableVCurrentBansResolved;
+  private final String tableLadders;
+  private final String tablePunishments;
+  private final String tableVPunishmentsResolved;
+  private final String tableVCurrentPunishments;
+  private final String tableVCurrentPunishmentsResolved;
+  private final String tablePunishmentPoints;
+  private final String tableVPunishmentPointsResolved;
 
   // Data Source
   private HikariDataSource dataSource;
@@ -69,10 +72,13 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     this.encoding = properties.get("characterEncoding");
 
     this.tablePlayers = tablePrefix + "players";
-    this.tableBans = tablePrefix + "bans";
-    this.tableVBansResolved = tablePrefix + "bans_resolved";
-    this.tableVCurrentBans = tablePrefix + "current_bans";
-    this.tableVCurrentBansResolved = tablePrefix + "current_bans_resolved";
+    this.tableLadders = tablePrefix + "ladders";
+    this.tablePunishments = tablePrefix + "punishments";
+    this.tableVPunishmentsResolved = tablePrefix + "punishments_resolved";
+    this.tableVCurrentPunishments = tablePrefix + "current_punishments";
+    this.tableVCurrentPunishmentsResolved = tablePrefix + "current_punishments_resolved";
+    this.tablePunishmentPoints = tablePrefix + "punishment_points";
+    this.tableVPunishmentPointsResolved = tablePrefix + "punishment_points_resolved";
   }
 
   @Override
@@ -148,9 +154,9 @@ public class MySQLStorageEngine extends SQLStorageEngine {
             // Table Name
             "CREATE TABLE `"
                 + tablePlayers
-                + "` ( "
+                + "` ("
                 // Columns
-                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `uuid` BINARY(16) NOT NULL , `name` VARCHAR(16) NOT NULL , "
+                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `uuid` BINARY(16) NOT NULL, `name` VARCHAR(16) NOT NULL, "
                 // Keys
                 + "PRIMARY KEY (`id`), UNIQUE (`uuid`)"
                 // Comment and Encoding
@@ -160,52 +166,133 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + encoding);
     }
 
-    switch (getTableVersion(tableBans)) {
+    switch (getTableVersion(tableLadders)) {
       case SCHEME_VERSION: // Current version
       default: // Versions above the current version
         break;
       case -1: // Version could not be determined
         // Also logs a warning
-        renameConflictingTable(tableBans);
+        renameConflictingTable(tableLadders);
       case 0: // Table doesn't exist
-        logTableCreation(tableBans);
-        // bans
+        logTableCreation(tableLadders);
+        // ladders
         executeUpdateQuery(
             // Table Name
             "CREATE TABLE `"
-                + tableBans
-                + "` ( "
+                + tableLadders
+                + "` ("
                 // Columns
-                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT , `player_id` INT UNSIGNED NOT NULL , `operator_id` INT UNSIGNED NOT NULL , `end` DATETIME NULL , `reason` TEXT NOT NULL , "
+                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `name` VARCHAR(128) NOT NULL, "
                 // Keys
-                + "PRIMARY KEY (`id`), INDEX (`end`) , "
+                + "PRIMARY KEY (`id`), INDEX (`name`)"
+                // Comment and Encoding
+                + ") COMMENT = 'v"
+                + SCHEME_VERSION
+                + "' DEFAULT CHARSET = "
+                + encoding);
+    }
+
+    switch (getTableVersion(tablePunishments)) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable(tablePunishments);
+      case 0: // Table doesn't exist
+        logTableCreation(tablePunishments);
+        // punishments
+        executeUpdateQuery(
+            // Table Name
+            "CREATE TABLE `"
+                + tablePunishments
+                + "` ("
+                // Columns
+                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `player_id` INT UNSIGNED NOT NULL, `operator_id` INT UNSIGNED NOT NULL, `ladder_id` INT UNSIGNED NULL, `ladder_points` SMALLINT NULL, `end` DATETIME NULL, `reason` TEXT NOT NULL, "
+                // Keys
+                + "PRIMARY KEY (`id`), INDEX (`end`), "
                 // Foreign Keys
                 + "FOREIGN KEY (`player_id`) REFERENCES `"
                 + tablePlayers
-                + "` (`id`) , FOREIGN KEY (`operator_id`) REFERENCES `"
+                + "` (`id`), FOREIGN KEY (`operator_id`) REFERENCES `"
                 + tablePlayers
+                + "` (`id`), FOREIGN KEY (`ladder_id`) REFERENCES `"
+                + tableLadders
                 + "` (`id`)"
                 // Comment and Encoding
                 + ") COMMENT = 'v"
                 + SCHEME_VERSION
                 + "' DEFAULT CHARSET = "
                 + encoding);
-        // bans_resolved
-        executeUpdateQuery(getResolvedBanViewQuery(tableBans, tableVBansResolved));
-        // current_bans
+        // punishments_resolved
+        executeUpdateQuery(getResolvedBanViewQuery(tablePunishments, tableVPunishmentsResolved));
+        // current_punishments
         executeUpdateQuery(
             // View Name
             "CREATE OR REPLACE VIEW `"
-                + tableVCurrentBans
+                + tableVCurrentPunishments
                 + "` AS "
                 // Columns
-                + "SELECT `id` , `player_id` , `operator_id` , `end` , `reason` "
+                + "SELECT `id`, `player_id`, `operator_id`, `ladder_id`, `ladder_points`, `end`, `reason` "
                 // Table
-                + "FROM `auraban_bans`"
+                + "FROM `"
+                + tablePunishments
+                + "` "
                 // Condition
-                + " WHERE (`end` IS NULL) OR (`end` > NOW())");
-        // current_bans_resolved
-        executeUpdateQuery(getResolvedBanViewQuery(tableVCurrentBans, tableVCurrentBansResolved));
+                + "WHERE (`end` IS NULL) OR (`end` > NOW())");
+        // current_punishments_resolved
+        executeUpdateQuery(
+            getResolvedBanViewQuery(tableVCurrentPunishments, tableVCurrentPunishmentsResolved));
+    }
+
+    switch (getTableVersion(tablePunishmentPoints)) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable(tablePunishmentPoints);
+      case 0: // Table doesn't exist
+        logTableCreation(tablePunishmentPoints);
+        // punishment_points
+        executeUpdateQuery(
+            // Table Name
+            "CREATE TABLE `"
+                + tablePunishmentPoints
+                + "` ("
+                // Columns
+                + "`player_id` INT UNSIGNED NOT NULL, `ladder_id` INT UNSIGNED NOT NULL, `ladder_points` SMALLINT NOT NULL, "
+                // Keys
+                + "PRIMARY KEY (`player_id`, `ladder_id`), "
+                // Foreign Keys
+                + "FOREIGN KEY (`player_id`) REFERENCES `"
+                + tablePlayers
+                + "` (`id`), FOREIGN KEY (`ladder_id`) REFERENCES `"
+                + tableLadders
+                + "` (`id`)"
+                // Comment and Encoding
+                + ") COMMENT = 'v"
+                + SCHEME_VERSION
+                + "' DEFAULT CHARSET = "
+                + encoding);
+        // punishment_points_resolved
+        executeUpdateQuery(
+            // View Name
+            "CREATE OR REPLACE VIEW `"
+                + tableVPunishmentPointsResolved
+                + "` AS "
+                // Columns
+                + "SELECT `player`.`uuid` AS `player_uuid`, `player`.`name` AS `player_name`, `ladders`.`name` AS `ladder_name`, `ladder_points` "
+                // Table
+                + "FROM `"
+                + tablePunishmentPoints
+                + "` "
+                // Joins
+                + "LEFT JOIN `"
+                + tablePlayers
+                + "` AS `player` ON `player`.`id` = `player_id` LEFT JOIN `"
+                + tableLadders
+                + "` AS `ladders` ON `ladders`.`id` = `ladder_id`");
     }
   }
 
@@ -249,7 +336,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         // Columns
         + "SELECT `"
         + baseTableName
-        + "`.`id` , `player`.`uuid` AS `player_uuid` , `player`.`name` AS `player_name` , `operator`.`uuid` AS `operator_uuid` , `operator`.`name` AS `operator_name` , `end` , `reason` "
+        + "`.`id`, `player`.`uuid` AS `player_uuid`, `player`.`name` AS `player_name`, `operator`.`uuid` AS `operator_uuid`, `operator`.`name` AS `operator_name`, `ladders`.`name` AS `ladder_name`, `ladder_points`, `end`, `reason` "
         // Table
         + "FROM `"
         + baseTableName
@@ -259,7 +346,9 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         + tablePlayers
         + "` AS `player` ON `player`.`id` = `player_id` LEFT JOIN `"
         + tablePlayers
-        + "` AS `operator` ON `operator`.`id` = `operator_id`";
+        + "` AS `operator` ON `operator`.`id` = `operator_id` LEFT JOIN `"
+        + tableLadders
+        + "` AS `ladders` ON `ladders`.`id` = `ladder_id`";
   }
 
   @Override
