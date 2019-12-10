@@ -37,8 +37,22 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   private final String tableLadders;
   private final String tablePunishments;
   private final String tableVPunishmentsResolved;
-  private final String tableVCurrentPunishments;
-  private final String tableVCurrentPunishmentsResolved;
+  private final String tableVActivePunishments;
+  private final String tableVActivePunishmentsResolved;
+  private final String tableVWarnings;
+  private final String tableVWarningsResolved;
+  private final String tableVActiveWarnings;
+  private final String tableVActiveWarningsResolved;
+  private final String tableVKicks;
+  private final String tableVKicksResolved;
+  private final String tableVMutes;
+  private final String tableVMutesResolved;
+  private final String tableVActiveMutes;
+  private final String tableVActiveMutesResolved;
+  private final String tableVBans;
+  private final String tableVBansResolved;
+  private final String tableVActiveBans;
+  private final String tableVActiveBansResolved;
   private final String tablePunishmentPoints;
   private final String tableVPunishmentPointsResolved;
 
@@ -75,8 +89,22 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     this.tableLadders = tablePrefix + "ladders";
     this.tablePunishments = tablePrefix + "punishments";
     this.tableVPunishmentsResolved = tablePrefix + "punishments_resolved";
-    this.tableVCurrentPunishments = tablePrefix + "current_punishments";
-    this.tableVCurrentPunishmentsResolved = tablePrefix + "current_punishments_resolved";
+    this.tableVActivePunishments = tablePrefix + "active_punishments";
+    this.tableVActivePunishmentsResolved = tablePrefix + "active_punishments_resolved";
+    this.tableVWarnings = tablePrefix + "warnings";
+    this.tableVWarningsResolved = tablePrefix + "warnings_resolved";
+    this.tableVActiveWarnings = tablePrefix + "active_warnings";
+    this.tableVActiveWarningsResolved = tablePrefix + "active_warnings_resolved";
+    this.tableVKicks = tablePrefix + "kicks";
+    this.tableVKicksResolved = tablePrefix + "kicks_resolved";
+    this.tableVMutes = tablePrefix + "mutes";
+    this.tableVMutesResolved = tablePrefix + "mutes_resolved";
+    this.tableVActiveMutes = tablePrefix + "active_mutes";
+    this.tableVActiveMutesResolved = tablePrefix + "active_mutes_resolved";
+    this.tableVBans = tablePrefix + "bans";
+    this.tableVBansResolved = tablePrefix + "bans_resolved";
+    this.tableVActiveBans = tablePrefix + "active_bans";
+    this.tableVActiveBansResolved = tablePrefix + "active_bans_resolved";
     this.tablePunishmentPoints = tablePrefix + "punishment_points";
     this.tableVPunishmentPointsResolved = tablePrefix + "punishment_points_resolved";
   }
@@ -208,9 +236,9 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + tablePunishments
                 + "` ("
                 // Columns
-                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `player_id` INT UNSIGNED NOT NULL, `operator_id` INT UNSIGNED NOT NULL, `ladder_id` INT UNSIGNED NULL, `ladder_points` SMALLINT NULL, `end` DATETIME NULL, `reason` TEXT NOT NULL, "
+                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `player_id` INT UNSIGNED NOT NULL, `operator_id` INT UNSIGNED NOT NULL, `type` ENUM('warning', 'mute', 'kick', 'ban') NOT NULL, `ladder_id` INT UNSIGNED NULL, `ladder_points` SMALLINT NULL, `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP, `end` DATETIME NULL, `reason` TEXT NOT NULL, "
                 // Keys
-                + "PRIMARY KEY (`id`), INDEX (`end`), "
+                + "PRIMARY KEY (`id`), INDEX(`type`), INDEX (`end`), "
                 // Foreign Keys
                 + "FOREIGN KEY (`player_id`) REFERENCES `"
                 + tablePlayers
@@ -225,24 +253,45 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + "' DEFAULT CHARSET = "
                 + encoding);
         // punishments_resolved
-        executeUpdateQuery(getResolvedBanViewQuery(tablePunishments, tableVPunishmentsResolved));
-        // current_punishments
         executeUpdateQuery(
-            // View Name
-            "CREATE OR REPLACE VIEW `"
-                + tableVCurrentPunishments
-                + "` AS "
-                // Columns
-                + "SELECT `id`, `player_id`, `operator_id`, `ladder_id`, `ladder_points`, `end`, `reason` "
-                // Table
-                + "FROM `"
-                + tablePunishments
-                + "` "
-                // Condition
-                + "WHERE (`end` IS NULL) OR (`end` > NOW())");
-        // current_punishments_resolved
+            getResolvedPunishmentViewQuery(tablePunishments, tableVPunishmentsResolved));
+        // active_punishments
+        executeUpdateQuery(getActivePunishmentViewQuery(tablePunishments, tableVActivePunishments));
+        // active_punishments_resolved
         executeUpdateQuery(
-            getResolvedBanViewQuery(tableVCurrentPunishments, tableVCurrentPunishmentsResolved));
+            getResolvedPunishmentViewQuery(
+                tableVActivePunishments, tableVActivePunishmentsResolved));
+        // warnings
+        executeUpdateQuery(getPunishmentTypeViewQuery(tablePunishments, tableVWarnings, "warning"));
+        // warnings_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery(tableVWarnings, tableVWarningsResolved));
+        // active_warnings
+        executeUpdateQuery(getActivePunishmentViewQuery(tableVWarnings, tableVActiveWarnings));
+        // active_warnings_resolved
+        executeUpdateQuery(
+            getResolvedPunishmentViewQuery(tableVActiveWarnings, tableVActiveWarningsResolved));
+        // kicks
+        executeUpdateQuery(getPunishmentTypeViewQuery(tablePunishments, tableVKicks, "kick"));
+        // kicks_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery(tableVKicks, tableVKicksResolved));
+        // mutes
+        executeUpdateQuery(getPunishmentTypeViewQuery(tablePunishments, tableVMutes, "mute"));
+        // mutes_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery(tableVMutes, tableVMutesResolved));
+        // active_mutes
+        executeUpdateQuery(getActivePunishmentViewQuery(tableVMutes, tableVActiveMutes));
+        // active_mutes_resolved
+        executeUpdateQuery(
+            getResolvedPunishmentViewQuery(tableVActiveMutes, tableVActiveMutesResolved));
+        // bans
+        executeUpdateQuery(getPunishmentTypeViewQuery(tablePunishments, tableVBans, "ban"));
+        // bans_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery(tableVBans, tableVBansResolved));
+        // active_bans
+        executeUpdateQuery(getActivePunishmentViewQuery(tableVBans, tableVActiveBans));
+        // active_bans_resolved
+        executeUpdateQuery(
+            getResolvedPunishmentViewQuery(tableVActiveBans, tableVActiveBansResolved));
     }
 
     switch (getTableVersion(tablePunishmentPoints)) {
@@ -328,7 +377,39 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     executeUpdateQuery("RENAME TABLE `" + tableName + "` TO `conflict_" + tableName + "`");
   }
 
-  private String getResolvedBanViewQuery(String baseTableName, String viewName) {
+  private String getPunishmentTypeViewQuery(String baseTableName, String viewName, String type) {
+    return // View Name
+    "CREATE OR REPLACE VIEW `"
+        + viewName
+        + "` AS "
+        // Columns
+        + "SELECT `id`, `player_id`, `operator_id`, `type`, `ladder_id`, `ladder_points`, `timestamp`, `end`, `reason` "
+        // Table
+        + "FROM `"
+        + baseTableName
+        + "` "
+        // Condition
+        + "WHERE `type` = '"
+        + type
+        + "'";
+  }
+
+  private String getActivePunishmentViewQuery(String baseTableName, String viewName) {
+    return // View Name
+    "CREATE OR REPLACE VIEW `"
+        + viewName
+        + "` AS "
+        // Columns
+        + "SELECT `id`, `player_id`, `operator_id`, `type`, `ladder_id`, `ladder_points`, `timestamp`, `end`, `reason` "
+        // Table
+        + "FROM `"
+        + baseTableName
+        + "` "
+        // Condition
+        + "WHERE (`end` IS NULL) OR (`end` > NOW())";
+  }
+
+  private String getResolvedPunishmentViewQuery(String baseTableName, String viewName) {
     return // View Name
     "CREATE OR REPLACE VIEW `"
         + viewName
@@ -336,7 +417,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         // Columns
         + "SELECT `"
         + baseTableName
-        + "`.`id`, `player`.`uuid` AS `player_uuid`, `player`.`name` AS `player_name`, `operator`.`uuid` AS `operator_uuid`, `operator`.`name` AS `operator_name`, `ladders`.`name` AS `ladder_name`, `ladder_points`, `end`, `reason` "
+        + "`.`id`, `player`.`uuid` AS `player_uuid`, `player`.`name` AS `player_name`, `operator`.`uuid` AS `operator_uuid`, `operator`.`name` AS `operator_name`, `type`, `ladders`.`name` AS `ladder_name`, `ladder_points`, `timestamp`, `end`, `reason` "
         // Table
         + "FROM `"
         + baseTableName
