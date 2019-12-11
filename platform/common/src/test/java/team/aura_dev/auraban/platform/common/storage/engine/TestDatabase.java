@@ -9,31 +9,38 @@ import java.io.File;
 import java.io.IOException;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.Synchronized;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import team.aura_dev.auraban.platform.common.config.Config;
 
 public class TestDatabase {
   private static final String baseDir = SystemUtils.JAVA_IO_TMPDIR + "/MariaDB4j/base/";
+  private static final int dirLimit = 100;
   private static final String localhost = "localhost";
+
   private DB databaseInstance;
   @Getter private String host;
   @Getter private int port;
 
-  @SneakyThrows(ManagedProcessException.class)
-  public void startDatabase() {
-    final int limit = 100;
+  @Synchronized
+  private static String findAvailableDatabaseDir() {
     int count = 0;
     String actualBaseDir;
-    String actualDataDir;
 
     do {
       actualBaseDir = baseDir + count;
-    } while ((++count < limit) && (new File(actualBaseDir)).exists());
+    } while ((++count < dirLimit) && (new File(actualBaseDir)).exists());
 
-    Preconditions.checkElementIndex(count, limit, "count must be less than " + limit);
+    Preconditions.checkElementIndex(count, dirLimit, "count must be less than " + dirLimit);
 
-    actualDataDir = actualBaseDir + "/data";
+    return actualBaseDir;
+  }
+
+  @SneakyThrows(ManagedProcessException.class)
+  public void startDatabase() {
+    final String actualBaseDir = findAvailableDatabaseDir();
+    final String actualDataDir = actualBaseDir + "/data";
     final DBConfiguration config =
         DBConfigurationBuilder.newBuilder()
             .setPort(0)
@@ -50,7 +57,7 @@ public class TestDatabase {
     databaseInstance.createDB("test");
   }
 
-  @SneakyThrows({ManagedProcessException.class})
+  @SneakyThrows(ManagedProcessException.class)
   public void stopDatabase() {
     databaseInstance.stop();
 
