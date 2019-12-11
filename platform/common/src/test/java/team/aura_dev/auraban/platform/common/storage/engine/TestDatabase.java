@@ -7,6 +7,8 @@ import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
@@ -24,6 +26,7 @@ public class TestDatabase {
   @Getter private int port;
 
   @Synchronized
+  @SneakyThrows(IOException.class)
   private static String findAvailableDatabaseDir() {
     int count = 0;
     String actualBaseDir;
@@ -33,6 +36,9 @@ public class TestDatabase {
     } while ((++count < dirLimit) && (new File(actualBaseDir)).exists());
 
     Preconditions.checkElementIndex(count, dirLimit, "count must be less than " + dirLimit);
+
+    // Create the dir right here
+    Files.createDirectories(Paths.get(actualBaseDir));
 
     return actualBaseDir;
   }
