@@ -160,7 +160,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     justification = "Fallthrough behavior intended"
   )
   @Override
-  protected void createTables() throws SQLException {
+  protected void createTablePlayer() throws SQLException {
     switch (getTableVersion(tablePlayers)) {
         // case x: // Version below
         // logTableUpgrade(tablePlayers, x);
@@ -193,7 +193,14 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + "' DEFAULT CHARSET = "
                 + encoding);
     }
+  }
 
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTableLadders() throws SQLException {
     switch (getTableVersion(tableLadders)) {
       case SCHEME_VERSION: // Current version
       default: // Versions above the current version
@@ -219,7 +226,23 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + "' DEFAULT CHARSET = "
                 + encoding);
     }
+  }
 
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTableLadderSteps() throws SQLException {
+    // TODO
+  }
+
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTablePunishments() throws SQLException {
     switch (getTableVersion(tablePunishments)) {
       case SCHEME_VERSION: // Current version
       default: // Versions above the current version
@@ -293,7 +316,14 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         executeUpdateQuery(
             getResolvedPunishmentViewQuery(tableVActiveBans, tableVActiveBansResolved));
     }
+  }
 
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTablePunishmentPoints() throws SQLException {
     switch (getTableVersion(tablePunishmentPoints)) {
       case SCHEME_VERSION: // Current version
       default: // Versions above the current version

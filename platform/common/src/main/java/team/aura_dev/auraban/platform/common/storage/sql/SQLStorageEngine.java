@@ -84,7 +84,23 @@ public abstract class SQLStorageEngine implements StorageEngine {
 
   protected abstract void connect() throws SQLException;
 
-  protected abstract void createTables() throws SQLException;
+  protected void createTables() throws SQLException {
+    createTablePlayer();
+    createTableLadders();
+    createTableLadderSteps();
+    createTablePunishments();
+    createTablePunishmentPoints();
+  }
+
+  protected abstract void createTablePlayer() throws SQLException;
+
+  protected abstract void createTableLadders() throws SQLException;
+
+  protected abstract void createTableLadderSteps() throws SQLException;
+
+  protected abstract void createTablePunishments() throws SQLException;
+
+  protected abstract void createTablePunishmentPoints() throws SQLException;
 
   /**
    * This method determines the version of a certain table scheme.<br>

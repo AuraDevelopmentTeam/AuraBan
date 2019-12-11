@@ -35,10 +35,6 @@ public class H2StorageEngine extends SQLStorageEngine {
     connection = DriverManager.getConnection(connectionURL);
   }
 
-  @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
   @Override
   protected void createTables() throws SQLException {
     logTableCreation("table_versions");
@@ -51,6 +47,15 @@ public class H2StorageEngine extends SQLStorageEngine {
             // Keys
             + "PRIMARY KEY (name))");
 
+    super.createTables();
+  }
+
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTablePlayer() throws SQLException {
     switch (getTableVersion("players")) {
         // case x: // Version below
         // logTableUpgrade(tablePlayers, x);
@@ -77,7 +82,33 @@ public class H2StorageEngine extends SQLStorageEngine {
                 + "PRIMARY KEY (id), UNIQUE (uuid))");
         setTableVersion("players");
     }
+  }
 
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTableLadders() throws SQLException {
+    // TODO
+  }
+
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTableLadderSteps() throws SQLException {
+    // TODO
+  }
+
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTablePunishments() throws SQLException {
+    // TODO: rename to punishments
     switch (getTableVersion("bans")) {
       case SCHEME_VERSION: // Current version
       default: // Versions above the current version
@@ -115,6 +146,15 @@ public class H2StorageEngine extends SQLStorageEngine {
         // current_bans_resolved
         executeUpdateQuery(getResolvedBanViewQuery("current_bans"));
     }
+  }
+
+  @SuppressFBWarnings(
+    value = "SF_SWITCH_FALLTHROUGH",
+    justification = "Fallthrough behavior intended"
+  )
+  @Override
+  protected void createTablePunishmentPoints() throws SQLException {
+    // TODO
   }
 
   @Override
