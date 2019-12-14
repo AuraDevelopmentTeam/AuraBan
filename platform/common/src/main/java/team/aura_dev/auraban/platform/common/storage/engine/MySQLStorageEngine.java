@@ -35,6 +35,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   // Table Names
   private final String tablePlayers;
   private final String tableLadders;
+  private final String tableLadderSteps;
+  private final String tableVLadderStepsResolved;
   private final String tablePunishments;
   private final String tableVPunishmentsResolved;
   private final String tableVActivePunishments;
@@ -87,6 +89,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
     this.tablePlayers = tablePrefix + "players";
     this.tableLadders = tablePrefix + "ladders";
+    this.tableLadderSteps = tablePrefix + "ladder_steps";
+    this.tableVLadderStepsResolved = tablePrefix + "ladder_steps_resolved";
     this.tablePunishments = tablePrefix + "punishments";
     this.tableVPunishmentsResolved = tablePrefix + "punishments_resolved";
     this.tableVActivePunishments = tablePrefix + "active_punishments";
@@ -234,7 +238,51 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   )
   @Override
   protected void createTableLadderSteps() throws SQLException {
-    // TODO
+    switch (getTableVersion(tableLadderSteps)) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable(tableLadderSteps);
+      case 0: // Table doesn't exist
+        logTableCreation(tableLadderSteps);
+        // ladder_steps
+        executeUpdateQuery(
+            // Table Name
+            "CREATE TABLE `"
+                + tableLadderSteps
+                + "` ("
+                // Columns
+                + "`ladder_id` INT UNSIGNED NOT NULL, `ladder_points` SMALLINT NOT NULL, `type` ENUM('warning', 'mute', 'kick', 'ban') NOT NULL, `duration` INT UNSIGNED NULL, "
+                // Keys
+                + "PRIMARY KEY (`ladder_id`, `ladder_points`), "
+                // Foreign Keys
+                + "FOREIGN KEY (`ladder_id`) REFERENCES `"
+                + tableLadders
+                + "` (`id`)"
+                // Comment and Encoding
+                + ") COMMENT = 'v"
+                + SCHEME_VERSION
+                + "' DEFAULT CHARSET = "
+                + encoding);
+        // ladder_steps_resolved
+        executeUpdateQuery(
+            // View Name
+            "CREATE OR REPLACE VIEW `"
+                + tableVLadderStepsResolved
+                + "` AS "
+                // Columns
+                + "SELECT `ladders`.`name` AS `ladder_name`, `ladder_points`, `type`, `duration` "
+                // Table
+                + "FROM `"
+                + tableLadderSteps
+                + "` "
+                // Joins
+                + "LEFT JOIN `"
+                + tableLadders
+                + "` AS `ladders` ON `ladders`.`id` = `ladder_id`");
+    }
   }
 
   @SuppressFBWarnings(
