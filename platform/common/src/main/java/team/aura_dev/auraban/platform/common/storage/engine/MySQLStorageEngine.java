@@ -441,7 +441,9 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         final String version = result.getString(1);
 
         if (!version.isEmpty() && (version.charAt(0) == 'v')) {
-          return Integer.parseInt(version.substring(1));
+          final int versionNum = Integer.parseInt(version.substring(1));
+
+          return (versionNum < 1) ? -1 : versionNum;
         }
       }
     } catch (NumberFormatException e) {

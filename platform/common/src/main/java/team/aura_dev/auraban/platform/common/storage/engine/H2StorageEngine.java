@@ -189,7 +189,9 @@ public class H2StorageEngine extends SQLStorageEngine {
           return -1;
         }
 
-        return result.getInt(1);
+        final int versionNum = result.getInt(1);
+
+        return (versionNum < 1) ? -1 : versionNum;
       }
     }
   }
