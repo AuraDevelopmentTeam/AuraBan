@@ -97,7 +97,27 @@ public class H2StorageEngine extends SQLStorageEngine {
   )
   @Override
   protected void createTableLadders() throws SQLException {
-    // TODO
+    switch (getTableVersion("ladders")) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable("ladders");
+      case 0: // Table doesn't exist
+        logTableCreation("ladders");
+        // ladders
+        executeUpdateQuery(
+            // Table name
+            "CREATE TABLE ladders ("
+                // Columns
+                + "id INT NOT NULL AUTO_INCREMENT, name VARCHAR(128) NOT NULL, "
+                // Keys
+                + "PRIMARY KEY (id));"
+                // Indexes
+                + "CREATE INDEX ON ladders(name)");
+        setTableVersion("ladders");
+    }
   }
 
   @SuppressFBWarnings(
