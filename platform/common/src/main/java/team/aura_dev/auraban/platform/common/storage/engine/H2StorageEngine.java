@@ -40,6 +40,12 @@ public class H2StorageEngine extends SQLStorageEngine {
 
   @Override
   protected void createTables() throws SQLException {
+    createTableTableVersions();
+
+    super.createTables();
+  }
+
+  protected void createTableTableVersions() throws SQLException {
     logTableCreation("table_versions");
     // table_versions
     executeUpdateQuery(
@@ -49,8 +55,6 @@ public class H2StorageEngine extends SQLStorageEngine {
             + "name VARCHAR(128) NOT NULL, version INT NOT NULL, "
             // Keys
             + "PRIMARY KEY (name))");
-
-    super.createTables();
   }
 
   @SuppressFBWarnings(

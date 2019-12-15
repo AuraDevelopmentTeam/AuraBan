@@ -107,7 +107,7 @@ public class MySQLStorageEngineTest {
 
     engine.executeUpdateQuery("CREATE TABLE invalid_version__players (id INT) COMMENT = 'v-1'");
     engine.executeUpdateQuery("CREATE TABLE invalid_version__ladders (id INT) COMMENT = 'vX'");
-    engine.executeUpdateQuery("CREATE TABLE invalid_version__ladder_steps (id INT) COMMENT = '1'");
+    engine.executeUpdateQuery("CREATE TABLE invalid_version__ladder_steps (id INT) COMMENT = 'v0'");
     engine.executeUpdateQuery("CREATE TABLE invalid_version__punishments (id INT) COMMENT = '-1'");
     engine.executeUpdateQuery(
         "CREATE TABLE invalid_version__punishment_points (id INT) COMMENT = '...'");
