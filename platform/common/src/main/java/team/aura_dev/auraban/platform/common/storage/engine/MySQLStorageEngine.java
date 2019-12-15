@@ -125,6 +125,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
   @Override
   protected void connect() {
+    if (dataSource != null) return;
+
     final String connectionURL = String.format(URLFormat, host, port, database);
 
     AuraBanBase.logger.debug("Connecting to \"" + connectionURL + '"');

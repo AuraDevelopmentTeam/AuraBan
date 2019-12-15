@@ -25,6 +25,8 @@ public class H2StorageEngine extends SQLStorageEngine {
   @Override
   @SneakyThrows(ClassNotFoundException.class)
   protected void connect() throws SQLException {
+    if (connection != null) return;
+
     final String connectionURL =
         String.format(URLFormat, databasePath.toFile(), shareDatabase ? "TRUE" : "FALSE");
 
