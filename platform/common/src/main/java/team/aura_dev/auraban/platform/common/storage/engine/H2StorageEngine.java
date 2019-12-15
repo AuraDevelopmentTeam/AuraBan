@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
@@ -14,13 +15,13 @@ import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 @RequiredArgsConstructor
 public class H2StorageEngine extends SQLStorageEngine {
-  private static final String URLFormat = "jdbc:h2:%s;AUTO_SERVER=%s;DATABASE_TO_UPPER=FALSE";
-  private static final int SCHEME_VERSION = 1;
+  protected static final String URLFormat = "jdbc:h2:%s;AUTO_SERVER=%s;DATABASE_TO_UPPER=FALSE";
+  protected static final int SCHEME_VERSION = 1;
 
-  private final Path databasePath;
-  private final boolean shareDatabase;
+  @NonNull protected final Path databasePath;
+  protected final boolean shareDatabase;
 
-  private Connection connection = null;
+  protected Connection connection = null;
 
   @Override
   @SneakyThrows(ClassNotFoundException.class)
@@ -199,7 +200,7 @@ public class H2StorageEngine extends SQLStorageEngine {
     executeUpdateQuery("ALTER TABLE " + tableName + " RENAME TO conflict_" + tableName + "");
   }
 
-  private void setTableVersion(String tableName) throws SQLException {
+  protected void setTableVersion(String tableName) throws SQLException {
     try (final NamedPreparedStatement statement =
         prepareStatement("MERGE INTO table_versions (name, version) VALUES (:table, :version)")) {
       statement.setString("table", tableName);
@@ -209,7 +210,7 @@ public class H2StorageEngine extends SQLStorageEngine {
     }
   }
 
-  private String getResolvedBanViewQuery(String baseTableName) {
+  protected String getResolvedBanViewQuery(String baseTableName) {
     return // View Name
     "CREATE OR REPLACE VIEW "
         + baseTableName

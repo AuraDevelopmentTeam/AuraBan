@@ -26,42 +26,42 @@ public class MySQLStorageEngineTest {
 
   @Test
   public void nullPointerTest() {
-    try (MySQLStorageEngine eninge =
+    try (MySQLStorageEngine engine =
         new MySQLStorageEngine(null, 0, null, null, null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
       assertEquals("host is marked @NonNull but is null", e.getMessage());
     }
 
-    try (MySQLStorageEngine eninge =
+    try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, null, null, null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
       assertEquals("database is marked @NonNull but is null", e.getMessage());
     }
 
-    try (MySQLStorageEngine eninge =
+    try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", null, null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
       assertEquals("user is marked @NonNull but is null", e.getMessage());
     }
 
-    try (MySQLStorageEngine eninge =
+    try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", "", null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
       assertEquals("password is marked @NonNull but is null", e.getMessage());
     }
 
-    try (MySQLStorageEngine eninge =
+    try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", "", "", null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
       assertEquals("tablePrefix is marked @NonNull but is null", e.getMessage());
     }
 
-    try (MySQLStorageEngine eninge =
+    try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", "", "", "", 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {

@@ -13,53 +13,53 @@ import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 public class MySQLStorageEngine extends SQLStorageEngine {
-  private static final String URLFormat = "jdbc:mysql://%s:%d/%s";
-  private static final int SCHEME_VERSION = 1;
+  protected static final String URLFormat = "jdbc:mysql://%s:%d/%s";
+  protected static final int SCHEME_VERSION = 1;
 
   // Credentials
-  @NonNull private final String host;
-  private final int port;
-  @NonNull private final String database;
-  @NonNull private final String user;
-  @NonNull private final String password;
-  @NonNull private final String tablePrefix;
+  @NonNull protected final String host;
+  protected final int port;
+  @NonNull protected final String database;
+  @NonNull protected final String user;
+  @NonNull protected final String password;
+  @NonNull protected final String tablePrefix;
 
   // Pool Settings
-  private final long connectionTimeout;
-  private final long maximumLifetime;
-  private final int maximumPoolSize;
-  private final int minimumIdle;
-  @NonNull private final Map<String, String> properties;
-  private final String encoding;
+  protected final long connectionTimeout;
+  protected final long maximumLifetime;
+  protected final int maximumPoolSize;
+  protected final int minimumIdle;
+  @NonNull protected final Map<String, String> properties;
+  protected final String encoding;
 
   // Table Names
-  private final String tablePlayers;
-  private final String tableLadders;
-  private final String tableLadderSteps;
-  private final String tableVLadderStepsResolved;
-  private final String tablePunishments;
-  private final String tableVPunishmentsResolved;
-  private final String tableVActivePunishments;
-  private final String tableVActivePunishmentsResolved;
-  private final String tableVWarnings;
-  private final String tableVWarningsResolved;
-  private final String tableVActiveWarnings;
-  private final String tableVActiveWarningsResolved;
-  private final String tableVKicks;
-  private final String tableVKicksResolved;
-  private final String tableVMutes;
-  private final String tableVMutesResolved;
-  private final String tableVActiveMutes;
-  private final String tableVActiveMutesResolved;
-  private final String tableVBans;
-  private final String tableVBansResolved;
-  private final String tableVActiveBans;
-  private final String tableVActiveBansResolved;
-  private final String tablePunishmentPoints;
-  private final String tableVPunishmentPointsResolved;
+  protected final String tablePlayers;
+  protected final String tableLadders;
+  protected final String tableLadderSteps;
+  protected final String tableVLadderStepsResolved;
+  protected final String tablePunishments;
+  protected final String tableVPunishmentsResolved;
+  protected final String tableVActivePunishments;
+  protected final String tableVActivePunishmentsResolved;
+  protected final String tableVWarnings;
+  protected final String tableVWarningsResolved;
+  protected final String tableVActiveWarnings;
+  protected final String tableVActiveWarningsResolved;
+  protected final String tableVKicks;
+  protected final String tableVKicksResolved;
+  protected final String tableVMutes;
+  protected final String tableVMutesResolved;
+  protected final String tableVActiveMutes;
+  protected final String tableVActiveMutesResolved;
+  protected final String tableVBans;
+  protected final String tableVBansResolved;
+  protected final String tableVActiveBans;
+  protected final String tableVActiveBansResolved;
+  protected final String tablePunishmentPoints;
+  protected final String tableVPunishmentPointsResolved;
 
   // Data Source
-  private HikariDataSource dataSource;
+  protected HikariDataSource dataSource;
 
   public MySQLStorageEngine(
       @NonNull final String host,
@@ -457,7 +457,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     executeUpdateQuery("RENAME TABLE `" + tableName + "` TO `conflict_" + tableName + "`");
   }
 
-  private String getPunishmentTypeViewQuery(String baseTableName, String viewName, String type) {
+  protected String getPunishmentTypeViewQuery(String baseTableName, String viewName, String type) {
     return // View Name
     "CREATE OR REPLACE VIEW `"
         + viewName
@@ -474,7 +474,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         + "'";
   }
 
-  private String getActivePunishmentViewQuery(String baseTableName, String viewName) {
+  protected String getActivePunishmentViewQuery(String baseTableName, String viewName) {
     return // View Name
     "CREATE OR REPLACE VIEW `"
         + viewName
@@ -489,7 +489,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         + "WHERE (`end` IS NULL) OR (`end` > NOW())";
   }
 
-  private String getResolvedPunishmentViewQuery(String baseTableName, String viewName) {
+  protected String getResolvedPunishmentViewQuery(String baseTableName, String viewName) {
     return // View Name
     "CREATE OR REPLACE VIEW `"
         + viewName
