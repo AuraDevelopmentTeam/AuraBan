@@ -56,17 +56,14 @@ public class H2StorageEngineTest {
 
     engine.connect();
 
-    engine.createTableTableVersions();
+    engine.createTables();
     engine.executeUpdateQuery(
-        "CREATE TABLE players (id INT); MERGE INTO table_versions (name, version) VALUES ('players', -1)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE ladders (id INT); MERGE INTO table_versions (name, version) VALUES ('ladders', -2)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE ladder_steps (id INT); MERGE INTO table_versions (name, version) VALUES ('ladder_steps', -100)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE punishments (id INT); MERGE INTO table_versions (name, version) VALUES ('punishments', 0)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE punishment_points (id INT); MERGE INTO table_versions (name, version) VALUES ('punishment_points', -4)");
+        "MERGE INTO table_versions (name, version) VALUES "
+            + "('players', -1), "
+            + "('ladders', -2), "
+            + "('ladder_steps', -100), "
+            + "('punishments', 0), "
+            + "('punishment_points', -4)");
 
     runInitializationTest(engine);
   }
@@ -77,17 +74,14 @@ public class H2StorageEngineTest {
 
     engine.connect();
 
-    engine.createTableTableVersions();
+    engine.createTables();
     engine.executeUpdateQuery(
-        "CREATE TABLE players (id INT); MERGE INTO table_versions (name, version) VALUES ('players', 1000)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE ladders (id INT); MERGE INTO table_versions (name, version) VALUES ('ladders', 1000)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE ladder_steps (id INT); MERGE INTO table_versions (name, version) VALUES ('ladder_steps', 1000)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE punishments (id INT); MERGE INTO table_versions (name, version) VALUES ('punishments', 1000)");
-    engine.executeUpdateQuery(
-        "CREATE TABLE punishment_points (id INT); MERGE INTO table_versions (name, version) VALUES ('punishment_points', 1000)");
+        "MERGE INTO table_versions (name, version) VALUES "
+            + "('players', 1000), "
+            + "('ladders', 1000), "
+            + "('ladder_steps', 1000), "
+            + "('punishments', 1000), "
+            + "('punishment_points', 1000)");
 
     runInitializationTest(engine);
   }
@@ -129,6 +123,11 @@ public class H2StorageEngineTest {
     @Override
     public void connect() throws SQLException {
       super.connect();
+    }
+
+    @Override
+    protected void createTables() throws SQLException {
+      super.createTables();
     }
 
     @Override
