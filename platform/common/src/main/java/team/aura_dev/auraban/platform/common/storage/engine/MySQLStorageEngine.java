@@ -411,7 +411,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + tableVPunishmentPointsResolved
                 + "` AS "
                 // Columns
-                + "SELECT `player`.`uuid` AS `player_uuid`, `player`.`name` AS `player_name`, `ladders`.`name` AS `ladder_name`, `ladder_points` "
+                + "SELECT `players`.`uuid` AS `player_uuid`, `players`.`name` AS `player_name`, `ladders`.`name` AS `ladder_name`, `ladder_points` "
                 // Table
                 + "FROM `"
                 + tablePunishmentPoints
@@ -419,7 +419,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 // Joins
                 + "LEFT JOIN `"
                 + tablePlayers
-                + "` AS `player` ON `player`.`id` = `player_id` LEFT JOIN `"
+                + "` AS `players` ON `players`.`id` = `player_id` LEFT JOIN `"
                 + tableLadders
                 + "` AS `ladders` ON `ladders`.`id` = `ladder_id`");
     }

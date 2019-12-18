@@ -126,7 +126,39 @@ public class H2StorageEngine extends SQLStorageEngine {
   )
   @Override
   protected void createTableLadderSteps() throws SQLException {
-    // TODO
+    switch (getTableVersion("ladder_steps")) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable("ladder_steps");
+      case 0: // Table doesn't exist
+        logTableCreation("ladder_steps");
+        // ladder_steps
+        executeUpdateQuery(
+            // Table Name
+            "CREATE TABLE ladder_steps ("
+                // Columns
+                + "ladder_id INT NOT NULL, ladder_points SMALLINT NOT NULL, type ENUM('warning', 'mute', 'kick', 'ban') NOT NULL, duration INT NULL, "
+                // Keys
+                + "PRIMARY KEY (ladder_id, ladder_points), "
+                // Foreign Keys
+                + "FOREIGN KEY (ladder_id) REFERENCES ladders (id)"
+                // Comment and Encoding
+                + ")");
+        setTableVersion("ladder_steps");
+        // ladder_steps_resolved
+        executeUpdateQuery(
+            // View Name
+            "CREATE OR REPLACE VIEW ladder_steps_resolved AS "
+                // Columns
+                + "SELECT ladders.name AS ladder_name, ladder_points, type, duration "
+                // Table
+                + "FROM ladder_steps "
+                // Joins
+                + "LEFT OUTER JOIN ladders ON ladders.id = ladder_id");
+    }
   }
 
   @SuppressFBWarnings(
@@ -181,7 +213,38 @@ public class H2StorageEngine extends SQLStorageEngine {
   )
   @Override
   protected void createTablePunishmentPoints() throws SQLException {
-    // TODO
+    switch (getTableVersion("punishment_points")) {
+      case SCHEME_VERSION: // Current version
+      default: // Versions above the current version
+        break;
+      case -1: // Version could not be determined
+        // Also logs a warning
+        renameConflictingTable("punishment_points");
+      case 0: // Table doesn't exist
+        logTableCreation("punishment_points");
+        // punishment_points
+        executeUpdateQuery(
+            // Table Name
+            "CREATE TABLE punishment_points ("
+                // Columns
+                + "player_id INT UNSIGNED NOT NULL, ladder_id INT UNSIGNED NOT NULL, ladder_points SMALLINT NOT NULL, "
+                // Keys
+                + "PRIMARY KEY (player_id, ladder_id), "
+                // Foreign Keys
+                + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (ladder_id) REFERENCES ladders (id)"
+                // Comment and Encoding
+                + ")");
+        // punishment_points_resolved
+        executeUpdateQuery(
+            // View Name
+            "CREATE OR REPLACE VIEW punishment_points_resolved AS "
+                // Columns
+                + "SELECT players.uuid AS player_uuid, players.name AS player_name, ladders.name AS ladder_name, ladder_points "
+                // Table
+                + "FROM punishment_points "
+                // Joins
+                + "LEFT JOIN players ON players.id = player_id LEFT JOIN ladders ON ladders.id = ladder_id");
+    }
   }
 
   @Override
@@ -246,9 +309,9 @@ public class H2StorageEngine extends SQLStorageEngine {
         + baseTableName
         + ".id, player.uuid player_uuid, player.name player_name, operator.uuid operator_uuid, operator.name operator_name, end, reason "
         // Table
-        + "FROM `"
+        + "FROM "
         + baseTableName
-        + "` "
+        + " "
         // Joins
         + "LEFT OUTER JOIN players player ON player.id = player_id LEFT OUTER JOIN players operator ON operator.id = operator_id";
   }
