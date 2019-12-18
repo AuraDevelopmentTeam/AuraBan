@@ -144,9 +144,7 @@ public class H2StorageEngine extends SQLStorageEngine {
                 // Keys
                 + "PRIMARY KEY (ladder_id, ladder_points), "
                 // Foreign Keys
-                + "FOREIGN KEY (ladder_id) REFERENCES ladders (id)"
-                // Comment and Encoding
-                + ")");
+                + "FOREIGN KEY (ladder_id) REFERENCES ladders (id))");
         setTableVersion("ladder_steps");
         // ladder_steps_resolved
         executeUpdateQuery(
@@ -167,43 +165,63 @@ public class H2StorageEngine extends SQLStorageEngine {
   )
   @Override
   protected void createTablePunishments() throws SQLException {
-    // TODO: rename to punishments
-    switch (getTableVersion("bans")) {
+    switch (getTableVersion("punishments")) {
       case SCHEME_VERSION: // Current version
       default: // Versions above the current version
         break;
       case -1: // Version could not be determined
         // Also logs a warning
-        renameConflictingTable("players");
+        renameConflictingTable("punishments");
       case 0: // Table doesn't exist
-        logTableCreation("bans");
-        // bans
+        logTableCreation("punishments");
+        // punishments
         executeUpdateQuery(
-            // Table name
-            "CREATE TABLE bans ("
+            // Table Name
+            "CREATE TABLE punishments ("
                 // Columns
-                + "id INT NOT NULL AUTO_INCREMENT, player_id INT NOT NULL, operator_id INT NOT NULL, end DATETIME NULL, reason VARCHAR(1024) NOT NULL, "
+                + "id INT UNSIGNED NOT NULL AUTO_INCREMENT, player_id INT UNSIGNED NOT NULL, operator_id INT UNSIGNED NOT NULL, type ENUM('warning', 'mute', 'kick', 'ban') NOT NULL, ladder_id INT UNSIGNED NULL, ladder_points SMALLINT NULL, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, end DATETIME NULL, reason VARCHAR(1024) NOT NULL, "
                 // Keys
                 + "PRIMARY KEY (id), "
-                // Foreign keys
-                + "FOREIGN KEY (player_id) REFERENCES players(id), FOREIGN KEY (operator_id) REFERENCES players(id));"
+                // Foreign Keys
+                + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (operator_id) REFERENCES players (id), FOREIGN KEY (ladder_id) REFERENCES ladders (id));"
                 // Indexes
-                + "CREATE INDEX ON bans(end)");
-        setTableVersion("bans");
-        // bans_resolved
-        executeUpdateQuery(getResolvedBanViewQuery("bans"));
-        // current_bans
+                + "CREATE INDEX ON punishments(type); CREATE INDEX ON punishments(end)");
+        // punishments_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery("punishments", "punishments_resolved"));
+        // active_punishments
+        executeUpdateQuery(getActivePunishmentViewQuery("punishments", "active_punishments"));
+        // active_punishments_resolved
         executeUpdateQuery(
-            // View Name
-            "CREATE OR REPLACE VIEW current_bans AS "
-                // Columns
-                + "SELECT id, player_id, operator_id, end, reason "
-                // Table
-                + "FROM bans "
-                // Condition
-                + "WHERE (end IS NULL) OR (end > CURRENT_TIMESTAMP)");
-        // current_bans_resolved
-        executeUpdateQuery(getResolvedBanViewQuery("current_bans"));
+            getResolvedPunishmentViewQuery("active_punishments", "active_punishments_resolved"));
+        // warnings
+        executeUpdateQuery(getPunishmentTypeViewQuery("punishments", "warnings", "warning"));
+        // warnings_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery("warnings", "warnings_resolved"));
+        // active_warnings
+        executeUpdateQuery(getActivePunishmentViewQuery("warnings", "active_warnings"));
+        // active_warnings_resolved
+        executeUpdateQuery(
+            getResolvedPunishmentViewQuery("active_warnings", "active_warnings_resolved"));
+        // kicks
+        executeUpdateQuery(getPunishmentTypeViewQuery("punishments", "kicks", "kick"));
+        // kicks_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery("kicks", "kicks_resolved"));
+        // mutes
+        executeUpdateQuery(getPunishmentTypeViewQuery("punishments", "mutes", "mute"));
+        // mutes_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery("mutes", "mutes_resolved"));
+        // active_mutes
+        executeUpdateQuery(getActivePunishmentViewQuery("mutes", "active_mutes"));
+        // active_mutes_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery("active_mutes", "active_mutes_resolved"));
+        // bans
+        executeUpdateQuery(getPunishmentTypeViewQuery("punishments", "bans", "ban"));
+        // bans_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery("bans", "bans_resolved"));
+        // active_bans
+        executeUpdateQuery(getActivePunishmentViewQuery("bans", "active_bans"));
+        // active_bans_resolved
+        executeUpdateQuery(getResolvedPunishmentViewQuery("active_bans", "active_bans_resolved"));
     }
   }
 
@@ -231,9 +249,7 @@ public class H2StorageEngine extends SQLStorageEngine {
                 // Keys
                 + "PRIMARY KEY (player_id, ladder_id), "
                 // Foreign Keys
-                + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (ladder_id) REFERENCES ladders (id)"
-                // Comment and Encoding
-                + ")");
+                + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (ladder_id) REFERENCES ladders (id))");
         // punishment_points_resolved
         executeUpdateQuery(
             // View Name
@@ -299,21 +315,53 @@ public class H2StorageEngine extends SQLStorageEngine {
     }
   }
 
-  protected String getResolvedBanViewQuery(String baseTableName) {
+  protected String getPunishmentTypeViewQuery(String baseTableName, String viewName, String type) {
     return // View Name
     "CREATE OR REPLACE VIEW "
+        + viewName
+        + " AS "
+        // Columns
+        + "SELECT id, player_id, operator_id, type, ladder_id, ladder_points, timestamp, end, reason "
+        // Table
+        + "FROM "
         + baseTableName
-        + "_resolved AS "
+        + " "
+        // Condition
+        + "WHERE type = '"
+        + type
+        + "'";
+  }
+
+  protected String getActivePunishmentViewQuery(String baseTableName, String viewName) {
+    return // View Name
+    "CREATE OR REPLACE VIEW "
+        + viewName
+        + " AS "
+        // Columns
+        + "SELECT id, player_id, operator_id, type, ladder_id, ladder_points, timestamp, end, reason "
+        // Table
+        + "FROM "
+        + baseTableName
+        + " "
+        // Condition
+        + "WHERE (end IS NULL) OR (end > CURRENT_TIMESTAMP)";
+  }
+
+  protected String getResolvedPunishmentViewQuery(String baseTableName, String viewName) {
+    return // View Name
+    "CREATE OR REPLACE VIEW "
+        + viewName
+        + " AS "
         // Columns
         + "SELECT "
         + baseTableName
-        + ".id, player.uuid player_uuid, player.name player_name, operator.uuid operator_uuid, operator.name operator_name, end, reason "
+        + ".id, player.uuid AS player_uuid, player.name AS player_name, operator.uuid AS operator_uuid, operator.name AS operator_name, type, ladders.name AS ladder_name, ladder_points, timestamp, end, reason "
         // Table
         + "FROM "
         + baseTableName
         + " "
         // Joins
-        + "LEFT OUTER JOIN players player ON player.id = player_id LEFT OUTER JOIN players operator ON operator.id = operator_id";
+        + "LEFT JOIN players player ON player.id = player_id LEFT JOIN players operator ON operator.id = operator_id LEFT JOIN ladders ON ladders.id = ladder_id";
   }
 
   @Override
