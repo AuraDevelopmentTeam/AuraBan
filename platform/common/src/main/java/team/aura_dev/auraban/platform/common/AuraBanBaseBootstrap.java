@@ -57,12 +57,18 @@ public class AuraBanBaseBootstrap {
    * Bootstraps the actual plugin class.
    *
    * @param bootstrapPlugin the instance of the bootstrap class. Used to determine the actual plugin
-   *     name
+   *     name. Also gets prepended to the other parameters
    * @param params parameters forwarded to the plugin class constructor
    */
   public void initializePlugin(Object bootstrapPlugin, Object... params) {
+    // Add plugin instance as first parameter
+    final Object[] mergedParams = new Object[params.length];
+    mergedParams[0] = bootstrapPlugin;
+    System.arraycopy(params, 0, mergedParams, 1, params.length);
+
     plugin =
-        initializePlugin(bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), params);
+        initializePlugin(
+            bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), mergedParams);
     pluginClass = plugin.getClass();
   }
 

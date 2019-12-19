@@ -6,14 +6,19 @@ import java.util.Collection;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import team.aura_dev.auraban.api.AuraBan;
-import team.aura_dev.auraban.api.player.PlayerManager;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
+import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
+import team.aura_dev.auraban.platform.sponge.listener.PlayerEventListenerSponge;
 import team.aura_dev.auraban.platform.sponge.player.PlayerManagerSponge;
 
 public class AuraBanSponge extends AuraBanBase {
-  public AuraBanSponge(Path configDir) {
+  private final AuraBanSpongeBootstrap plugin;
+
+  public AuraBanSponge(AuraBanSpongeBootstrap plugin, Path configDir) {
     super(configDir);
+
+    this.plugin = plugin;
 
     // Instance is initialized
     AuraBan.setApi(this);
@@ -36,7 +41,12 @@ public class AuraBanSponge extends AuraBanBase {
   }
 
   @Override
-  protected PlayerManager generatePlayerManager() {
+  protected PlayerManagerCommon generatePlayerManager() {
     return new PlayerManagerSponge(storageEngine);
+  }
+
+  @Override
+  protected void registerEventListeners() {
+    Sponge.getEventManager().registerListeners(plugin, new PlayerEventListenerSponge(this));
   }
 }

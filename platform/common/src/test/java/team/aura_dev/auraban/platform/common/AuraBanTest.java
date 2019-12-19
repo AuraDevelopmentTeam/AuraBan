@@ -2,7 +2,7 @@ package team.aura_dev.auraban.platform.common;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import team.aura_dev.auraban.api.player.PlayerManager;
+import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 
 public class AuraBanTest extends AuraBanBase {
   public AuraBanTest() {
@@ -24,8 +24,13 @@ public class AuraBanTest extends AuraBanBase {
   }
 
   @Override
-  protected PlayerManager generatePlayerManager() {
-    // TODO Implement when needed
+  protected PlayerManagerCommon generatePlayerManager() {
+    // TODO: Implement when needed
     return null;
+  }
+
+  @Override
+  protected void registerEventListeners() {
+    // TODO: Implement when needed
   }
 }

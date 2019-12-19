@@ -3,16 +3,19 @@ package team.aura_dev.auraban.platform.velocity;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.nio.file.Path;
 import team.aura_dev.auraban.api.AuraBan;
-import team.aura_dev.auraban.api.player.PlayerManager;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
+import team.aura_dev.auraban.platform.velocity.listener.PlayerEventListenerVelocity;
 import team.aura_dev.auraban.platform.velocity.player.PlayerManagerVelocity;
 
 public class AuraBanVelocity extends AuraBanBase {
+  private final AuraBanVelocityBootstrap plugin;
   private final ProxyServer server;
 
-  public AuraBanVelocity(ProxyServer server, Path configDir) {
+  public AuraBanVelocity(AuraBanVelocityBootstrap plugin, ProxyServer server, Path configDir) {
     super(configDir);
 
+    this.plugin = plugin;
     this.server = server;
 
     // Instance is initialized
@@ -30,7 +33,12 @@ public class AuraBanVelocity extends AuraBanBase {
   }
 
   @Override
-  protected PlayerManager generatePlayerManager() {
+  protected PlayerManagerCommon generatePlayerManager() {
     return new PlayerManagerVelocity(storageEngine);
+  }
+
+  @Override
+  protected void registerEventListeners() {
+    server.getEventManager().register(plugin, new PlayerEventListenerVelocity(this));
   }
 }

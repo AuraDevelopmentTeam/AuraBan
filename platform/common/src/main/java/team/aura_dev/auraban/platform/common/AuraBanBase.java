@@ -12,10 +12,10 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import team.aura_dev.auraban.api.AuraBanApi;
-import team.aura_dev.auraban.api.player.PlayerManager;
 import team.aura_dev.auraban.platform.common.config.ConfigLoader;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
+import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 import team.aura_dev.auraban.platform.common.storage.StorageEngineData;
 
@@ -28,7 +28,7 @@ public abstract class AuraBanBase implements AuraBanApi {
 
   @Getter private static AuraBanBase instance = null;
 
-  @Getter protected PlayerManager playerManager;
+  @Getter protected PlayerManagerCommon playerManager;
 
   @Getter protected final Path configDir;
   @Getter protected final Path libsDir;
@@ -100,7 +100,9 @@ public abstract class AuraBanBase implements AuraBanApi {
     return Collections.emptyList();
   }
 
-  protected abstract PlayerManager generatePlayerManager();
+  protected abstract PlayerManagerCommon generatePlayerManager();
+
+  protected abstract void registerEventListeners();
 
   // ============================================================================================
   // Actual plugin functionality starts here
@@ -141,10 +143,13 @@ public abstract class AuraBanBase implements AuraBanApi {
     logger.info("Storage Engine: " + storageEngineData.getName());
     storageEngine = storageEngineData.createInstance();
 
-    logger.info("Intializing Storage Engine...");
+    logger.info("Intializing Storage Engine");
     storageEngine.initialize();
 
     this.playerManager = generatePlayerManager();
+
+    logger.info("Registering Event Listeners");
+    registerEventListeners();
 
     // TODO
   }

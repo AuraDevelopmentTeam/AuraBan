@@ -102,7 +102,7 @@ public abstract class PlayerManagerCommon implements PlayerManager {
       throws IllegalArgumentException;
 
   @Data
-  protected static class BasePlayerData {
+  public static class BasePlayerData {
     private final UUID uuid;
     private final String playerName;
   }

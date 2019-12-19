@@ -6,9 +6,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 
@@ -366,5 +370,17 @@ public class H2StorageEngine extends SQLStorageEngine {
   @Override
   protected Connection getConnection() {
     return connection;
+  }
+
+  @Override
+  public CompletableFuture<Optional<PlayerData>> loadPlayerData(UUID uuid) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public CompletableFuture<PlayerData> loadAndUpdatePlayerData(UUID uuid, String playerName) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
