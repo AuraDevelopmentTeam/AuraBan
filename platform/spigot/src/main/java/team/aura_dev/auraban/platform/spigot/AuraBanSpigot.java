@@ -1,15 +1,11 @@
 package team.aura_dev.auraban.platform.spigot;
 
 import java.nio.file.Path;
-import java.util.Optional;
-import java.util.UUID;
-import javax.annotation.Nonnull;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import team.aura_dev.auraban.api.AuraBan;
-import team.aura_dev.auraban.api.player.PlayerData;
+import team.aura_dev.auraban.api.player.PlayerManager;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.player.PlayerDataCommon;
+import team.aura_dev.auraban.platform.spigot.player.PlayerManagerSpigot;
 
 public class AuraBanSpigot extends AuraBanBase {
   public AuraBanSpigot(Path configDir) {
@@ -30,9 +26,7 @@ public class AuraBanSpigot extends AuraBanBase {
   }
 
   @Override
-  public Optional<PlayerData> getPlayerData(@Nonnull UUID uuid) {
-    final Optional<Player> player = Optional.ofNullable(Bukkit.getPlayer(uuid));
-
-    return player.map(p -> new PlayerDataCommon(uuid, p.getName()));
+  protected PlayerManager generatePlayerManager() {
+    return new PlayerManagerSpigot(storageEngine);
   }
 }

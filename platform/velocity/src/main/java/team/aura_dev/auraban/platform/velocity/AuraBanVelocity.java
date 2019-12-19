@@ -1,15 +1,11 @@
 package team.aura_dev.auraban.platform.velocity;
 
-import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.nio.file.Path;
-import java.util.Optional;
-import java.util.UUID;
-import javax.annotation.Nonnull;
 import team.aura_dev.auraban.api.AuraBan;
-import team.aura_dev.auraban.api.player.PlayerData;
+import team.aura_dev.auraban.api.player.PlayerManager;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.player.PlayerDataCommon;
+import team.aura_dev.auraban.platform.velocity.player.PlayerManagerVelocity;
 
 public class AuraBanVelocity extends AuraBanBase {
   private final ProxyServer server;
@@ -34,9 +30,7 @@ public class AuraBanVelocity extends AuraBanBase {
   }
 
   @Override
-  public Optional<PlayerData> getPlayerData(@Nonnull UUID uuid) {
-    final Optional<Player> player = server.getPlayer(uuid);
-
-    return player.map(p -> new PlayerDataCommon(uuid, p.getUsername()));
+  protected PlayerManager generatePlayerManager() {
+    return new PlayerManagerVelocity(storageEngine);
   }
 }
