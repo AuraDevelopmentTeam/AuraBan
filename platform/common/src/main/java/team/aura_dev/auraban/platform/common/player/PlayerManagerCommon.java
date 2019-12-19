@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import lombok.Data;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.api.player.PlayerManager;
@@ -17,12 +17,12 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 
 public abstract class PlayerManagerCommon implements PlayerManager {
-  protected static Logger logger = AuraBanBase.logger;
+  protected static final Logger logger = AuraBanBase.logger;
 
   protected final StorageEngine storageEngine;
-  protected final @NonNull LoadingCache<UUID, CompletableFuture<Optional<PlayerData>>> playerCache;
+  protected final LoadingCache<UUID, CompletableFuture<Optional<PlayerData>>> playerCache;
 
-  protected PlayerManagerCommon(StorageEngine storageEngine) {
+  protected PlayerManagerCommon(@Nonnull @NonNull StorageEngine storageEngine) {
     this.storageEngine = storageEngine;
     playerCache =
         Caffeine.newBuilder()
@@ -31,7 +31,7 @@ public abstract class PlayerManagerCommon implements PlayerManager {
   }
 
   @Override
-  public Optional<PlayerData> getPlayerData(UUID uuid) {
+  public Optional<PlayerData> getPlayerData(@Nonnull @NonNull UUID uuid) {
     try {
       return playerCache.get(uuid).get();
     } catch (InterruptedException | ExecutionException e) {
@@ -42,7 +42,8 @@ public abstract class PlayerManagerCommon implements PlayerManager {
   }
 
   @Override
-  public PlayerData fromNativePlayer(@Nonnull Object player) throws IllegalArgumentException {
+  public PlayerData fromNativePlayer(@Nonnull @NonNull Object player)
+      throws IllegalArgumentException {
     final BasePlayerData playerData = nativePlayerToBasePlayerData(player);
     final UUID uuid = playerData.getUuid();
     CompletableFuture<Optional<PlayerData>> cacheData = playerCache.getIfPresent(uuid);
@@ -78,7 +79,7 @@ public abstract class PlayerManagerCommon implements PlayerManager {
    *
    * @param uuid The {@link UUID} of the player to remove
    */
-  public void unloadPlayer(UUID uuid) {
+  public void unloadPlayer(@Nonnull @NonNull UUID uuid) {
     playerCache.invalidate(uuid);
   }
 
@@ -87,7 +88,7 @@ public abstract class PlayerManagerCommon implements PlayerManager {
    *
    * @param player The player to remove
    */
-  public void unloadPlayer(PlayerData player) {
+  public void unloadPlayer(@Nonnull @NonNull PlayerData player) {
     unloadPlayer(player.getUuid());
   }
 
@@ -103,7 +104,7 @@ public abstract class PlayerManagerCommon implements PlayerManager {
 
   @Data
   public static class BasePlayerData {
-    private final UUID uuid;
-    private final String playerName;
+    @NonNull private final UUID uuid;
+    @NonNull private final String playerName;
   }
 }
