@@ -1,9 +1,12 @@
-package team.aura_dev.auraban.platform.common.storage.sql;
+package team.aura_dev.auraban.platform.common.storage.engine;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
+import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
+import team.aura_dev.auraban.platform.common.storage.sql.SafeNamedPreparedStatement;
 
 /**
  * This helper class has been created to provide common methods to all subclasses.<br>
@@ -80,6 +83,8 @@ public abstract class SQLStorageEngine implements StorageEngine {
   public final void initialize() throws SQLException {
     connect();
     createTables();
+
+    loadAndUpdatePlayerData(new UUID(0, 0), "Console");
   }
 
   protected abstract void connect() throws SQLException;

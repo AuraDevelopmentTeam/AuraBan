@@ -12,6 +12,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import team.aura_dev.auraban.api.AuraBanApi;
+import team.aura_dev.auraban.api.player.PlayerManager;
 import team.aura_dev.auraban.platform.common.config.ConfigLoader;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
@@ -27,6 +28,8 @@ public abstract class AuraBanBase implements AuraBanApi {
 
   @Getter private static AuraBanBase instance = null;
 
+  @Getter protected PlayerManager playerManager;
+
   @Getter protected final Path configDir;
   @Getter protected final Path libsDir;
 
@@ -38,14 +41,14 @@ public abstract class AuraBanBase implements AuraBanApi {
   protected StorageEngine storageEngine;
 
   protected AuraBanBase(Path configDir) {
-    this.configDir = configDir;
-    this.libsDir = configDir.resolve("libs");
-
     if (instance != null) {
       throw new IllegalStateException("AuraBan has already been initialized!");
     }
 
     instance = this;
+
+    this.configDir = configDir;
+    this.libsDir = configDir.resolve("libs");
   }
 
   public abstract String getBasePlatform();
@@ -77,6 +80,8 @@ public abstract class AuraBanBase implements AuraBanApi {
 
     // We need all dependencies of the storage type
     dependencies.addAll(storageEngineData.getRequiredRuntimeDependencies());
+    // We need caffeine as a loading cache in several classes
+    dependencies.add(RuntimeDependency.CAFFEINE);
 
     // We don't need to download dependencies already present
     dependencies.removeAll(getPlatformDependencies());
@@ -94,6 +99,8 @@ public abstract class AuraBanBase implements AuraBanApi {
   public Collection<RuntimeDependency> getPlatformDependencies() {
     return Collections.emptyList();
   }
+
+  protected abstract PlayerManager generatePlayerManager();
 
   // ============================================================================================
   // Actual plugin functionality starts here
@@ -136,6 +143,8 @@ public abstract class AuraBanBase implements AuraBanApi {
 
     logger.info("Intializing Storage Engine...");
     storageEngine.initialize();
+
+    this.playerManager = generatePlayerManager();
 
     // TODO
   }

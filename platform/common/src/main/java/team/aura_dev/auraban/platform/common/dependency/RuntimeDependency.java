@@ -70,6 +70,18 @@ public class RuntimeDependency {
               "eeddfc676ca7abb49d052c904bd310e07705c7ac")
           .build();
 
+  ////////////////////////////////////////////////////////
+  // Utilities
+  ////////////////////////////////////////////////////////
+  public static final RuntimeDependency CAFFEINE =
+      RuntimeDependency.builder(
+              "com.github.ben-manes.caffeine",
+              "caffeine",
+              "2.8.0",
+              "d6dbff7e409b1c2ad88930e2c220ea13",
+              "6000774d7f8412ced005a704188ced78beeed2bb")
+          .build();
+
   private final String groupId;
   private final String artifactId;
   private final String version;

@@ -10,7 +10,6 @@ import java.util.Map;
 import lombok.NonNull;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
-import team.aura_dev.auraban.platform.common.storage.sql.SQLStorageEngine;
 
 public class MySQLStorageEngine extends SQLStorageEngine {
   protected static final String URLFormat = "jdbc:mysql://%s:%d/%s";

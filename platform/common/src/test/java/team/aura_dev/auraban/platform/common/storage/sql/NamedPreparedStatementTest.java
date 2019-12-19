@@ -25,7 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import team.aura_dev.auraban.platform.common.storage.engine.MySQLStorageEngine;
+import team.aura_dev.auraban.platform.common.storage.engine.MySQLStorageEngineHelper;
 import team.aura_dev.auraban.platform.common.storage.engine.TestDatabase;
 import team.aura_dev.auraban.platform.common.util.UuidUtils;
 
@@ -57,7 +57,7 @@ public class NamedPreparedStatementTest {
           + " AS "
           + name2;
 
-  private MySQLStorageEngine database;
+  private MySQLStorageEngineHelper database;
 
   @SuppressWarnings("deprecation")
   private static Time getTime(UUID uuid) {

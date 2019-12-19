@@ -36,6 +36,7 @@ dependencies {
     compile project(":AuraBan-api")
 
     // Normal dependencies
+    compile "com.github.ben-manes.caffeine:caffeine:${caffeine_version}"
     compile "org.spongepowered:configurate-hocon:${configurate_version}"
     compile "com.h2database:h2:${h2_version}"
     compile "com.zaxxer:HikariCP:${hikariCP_version}"

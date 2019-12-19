@@ -2,10 +2,7 @@ package team.aura_dev.auraban.platform.common;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.UUID;
-import javax.annotation.Nonnull;
-import team.aura_dev.auraban.api.player.PlayerData;
+import team.aura_dev.auraban.api.player.PlayerManager;
 
 public class AuraBanTest extends AuraBanBase {
   public AuraBanTest() {
@@ -27,8 +24,8 @@ public class AuraBanTest extends AuraBanBase {
   }
 
   @Override
-  public Optional<PlayerData> getPlayerData(@Nonnull UUID uuid) {
-    // TODO: Implement when needed
-    return Optional.empty();
+  protected PlayerManager generatePlayerManager() {
+    // TODO Implement when needed
+    return null;
   }
 }

@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
-import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import team.aura_dev.auraban.platform.common.config.Config;
-import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 
 public class MySQLStorageEngineTest {
   private static final TestDatabase testDatabase = new TestDatabase();
@@ -156,50 +154,6 @@ public class MySQLStorageEngineTest {
       throw new AssertionError("Error while initializing database", e);
     } finally {
       instance.close();
-    }
-  }
-
-  /** Used to make the query methods public */
-  private static class MySQLStorageEngineHelper extends MySQLStorageEngine {
-    public MySQLStorageEngineHelper(
-        String host,
-        int port,
-        String database,
-        String user,
-        String password,
-        String tablePrefix,
-        long connectionTimeout,
-        long maximumLifetime,
-        int maximumPoolSize,
-        int minimumIdle,
-        Map<String, String> properties) {
-      super(
-          host,
-          port,
-          database,
-          user,
-          password,
-          tablePrefix,
-          connectionTimeout,
-          maximumLifetime,
-          maximumPoolSize,
-          minimumIdle,
-          properties);
-    }
-
-    @Override
-    public void connect() {
-      super.connect();
-    }
-
-    @Override
-    public NamedPreparedStatement prepareStatement(String query) throws SQLException {
-      return super.prepareStatement(query);
-    }
-
-    @Override
-    public int executeUpdateQuery(String query) throws SQLException {
-      return super.executeUpdateQuery(query);
     }
   }
 }

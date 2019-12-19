@@ -76,11 +76,11 @@ public class TestDatabase {
     }
   }
 
-  public MySQLStorageEngine getDatabaseInstance() {
+  public MySQLStorageEngineHelper getDatabaseInstance() {
     // Just use default values
     final Config.Storage.MySQL.PoolSettings poolSettings = new Config.Storage.MySQL.PoolSettings();
-    final MySQLStorageEngine instance =
-        new MySQLStorageEngine(
+    final MySQLStorageEngineHelper instance =
+        new MySQLStorageEngineHelper(
             host,
             port,
             "test",
