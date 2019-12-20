@@ -231,7 +231,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 // Keys
                 + "PRIMARY KEY (`id`), INDEX (`name`)"
                 // Comment and Encoding
-                + ") COMMENT = 'v"
+                + ") Engine = 'MyISAM' COMMENT = 'v"
                 + SCHEME_VERSION
                 + "' DEFAULT CHARSET = "
                 + encoding);
@@ -268,7 +268,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + tableLadders
                 + "` (`id`)"
                 // Comment and Encoding
-                + ") COMMENT = 'v"
+                + ") Engine = 'MyISAM' COMMENT = 'v"
                 + SCHEME_VERSION
                 + "' DEFAULT CHARSET = "
                 + encoding);
@@ -325,7 +325,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + tableLadders
                 + "` (`id`)"
                 // Comment and Encoding
-                + ") COMMENT = 'v"
+                + ") Engine = 'MyISAM' COMMENT = 'v"
                 + SCHEME_VERSION
                 + "' DEFAULT CHARSET = "
                 + encoding);
@@ -404,7 +404,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + tableLadders
                 + "` (`id`)"
                 // Comment and Encoding
-                + ") COMMENT = 'v"
+                + ") Engine = 'MyISAM' COMMENT = 'v"
                 + SCHEME_VERSION
                 + "' DEFAULT CHARSET = "
                 + encoding);
@@ -542,7 +542,6 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
   @Override
   protected void updateDataSync(UUID uuid, String playerName) throws SQLException {
-    // TODO: Prevent AUTO_INCREMENT from increasing
     try (NamedPreparedStatement statement =
         prepareStatement(
             "INSERT INTO `"

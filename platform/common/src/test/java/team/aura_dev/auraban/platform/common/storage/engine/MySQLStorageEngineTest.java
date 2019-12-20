@@ -184,7 +184,7 @@ public class MySQLStorageEngineTest {
   }
 
   @Test
-  @Ignore("Auto increment does increment for some reason")
+  @Ignore("Old MariaDB version in the bundled MariaDB jar still doesn't like UPSERTs")
   public void updateUserDataTest() throws SQLException, InterruptedException, ExecutionException {
     final MySQLStorageEngineHelper engine = getStorageEngine("update_user_data__");
 
