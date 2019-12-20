@@ -376,7 +376,7 @@ public class H2StorageEngine extends SQLStorageEngine {
   @Override
   protected Optional<PlayerData> loadPlayerDataSync(UUID uuid) throws SQLException {
     try (NamedPreparedStatement statement =
-        prepareStatement("SELECT name FROM players WHERE uuid = :uuid")) {
+        prepareStatement("SELECT name FROM players WHERE uuid = :uuid LIMIT 1")) {
       statement.setBytes("uuid", UuidUtils.asBytes(uuid));
 
       try (ResultSet result = statement.executeQuery()) {

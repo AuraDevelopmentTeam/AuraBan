@@ -235,7 +235,7 @@ public class MySQLStorageEngineTest {
       throws SQLException {
     try (NamedPreparedStatement statement =
         engine.prepareStatement(
-            "SELECT `AUTO_INCREMENT` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'test' AND `TABLE_NAME` = :table_name")) {
+            "SELECT `AUTO_INCREMENT` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'test' AND `TABLE_NAME` = :table_name LIMIT 1")) {
       statement.setString("table_name", engine.tablePrefix + table);
 
       try (ResultSet result = statement.executeQuery()) {
@@ -243,7 +243,7 @@ public class MySQLStorageEngineTest {
           throw new IllegalStateException(
               "Can't find auto increment value for table " + engine.tablePrefix + table);
 
-        return result.getInt(1);
+        return result.getInt("AUTO_INCREMENT");
       }
     }
   }

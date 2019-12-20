@@ -186,27 +186,18 @@ public class H2StorageEngineTest {
 
   private static int getAutoIncrement(H2StorageEngineHelper engine, String table)
       throws SQLException {
-    try (NamedPreparedStatement column_statement =
+    try (NamedPreparedStatement statement =
         engine.prepareStatement(
-            "SELECT SEQUENCE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = :table_name AND COLUMN_NAME = 'id'")) {
-      column_statement.setString("table_name", table);
+            "SELECT CURRENT_VALUE FROM INFORMATION_SCHEMA.SEQUENCES WHERE SEQUENCE_NAME = ("
+                + "SELECT SEQUENCE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = :table_name AND COLUMN_NAME = 'id' LIMIT 1"
+                + ") LIMIT 1")) {
+      statement.setString("table_name", table);
 
-      try (ResultSet column_result = column_statement.executeQuery()) {
-        if (!column_result.next())
+      try (ResultSet result = statement.executeQuery()) {
+        if (!result.next())
           throw new IllegalStateException("Can't find auto increment value for table " + table);
 
-        try (NamedPreparedStatement sequence_statement =
-            engine.prepareStatement(
-                "SELECT CURRENT_VALUE FROM INFORMATION_SCHEMA.SEQUENCES WHERE SEQUENCE_NAME = :sequence_name")) {
-          sequence_statement.setString("sequence_name", column_result.getString(1));
-
-          try (ResultSet sequence_result = sequence_statement.executeQuery()) {
-            if (!sequence_result.next())
-              throw new IllegalStateException("Can't find auto increment value for table " + table);
-
-            return sequence_result.getInt(1);
-          }
-        }
+        return result.getInt("CURRENT_VALUE");
       }
     }
   }
