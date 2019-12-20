@@ -9,11 +9,12 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.player.PlayerDataCommon;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
+import team.aura_dev.auraban.platform.common.util.UuidUtils;
 
 public class MySQLStorageEngine extends SQLStorageEngine {
   protected static final String URLFormat = "jdbc:mysql://%s:%d/%s";
@@ -523,14 +524,33 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @Override
-  public CompletableFuture<Optional<PlayerData>> loadPlayerData(UUID uuid) {
-    // TODO Auto-generated method stub
-    return null;
+  protected Optional<PlayerData> loadPlayerDataSync(UUID uuid) throws SQLException {
+    try (NamedPreparedStatement statement =
+        prepareStatement("SELECT `name` FROM `" + tablePlayers + "` WHERE `uuid` = :uuid")) {
+      statement.setBytes("uuid", UuidUtils.asBytes(uuid));
+
+      try (ResultSet result = statement.executeQuery()) {
+        if (result.next()) {
+          return Optional.of(new PlayerDataCommon(uuid, result.getString("name")));
+        }
+      }
+    }
+
+    return Optional.empty();
   }
 
   @Override
-  public CompletableFuture<PlayerData> loadAndUpdatePlayerData(UUID uuid, String playerName) {
-    // TODO Auto-generated method stub
-    return null;
+  protected void updateDataSync(UUID uuid, String playerName) throws SQLException {
+    // TODO: Prevent AUTO_INCREMENT from increasing
+    try (NamedPreparedStatement statement =
+        prepareStatement(
+            "INSERT INTO `"
+                + tablePlayers
+                + "` (`uuid`, `name`) VALUES (:uuid, :name) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`)")) {
+      statement.setBytes("uuid", UuidUtils.asBytes(uuid));
+      statement.setString("name", playerName);
+
+      statement.executeUpdate();
+    }
   }
 }

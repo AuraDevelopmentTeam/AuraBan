@@ -10,6 +10,7 @@ import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 
 public interface StorageEngine extends AutoCloseable {
+  public static final UUID CONSOLE_UUID = new UUID(0, 0);
   // Global logger
   public static final Logger logger = AuraBanBase.logger;
 

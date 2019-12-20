@@ -3,7 +3,10 @@ package team.aura_dev.auraban.platform.common.storage.engine;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 import team.aura_dev.auraban.platform.common.storage.sql.SafeNamedPreparedStatement;
@@ -84,7 +87,7 @@ public abstract class SQLStorageEngine implements StorageEngine {
     connect();
     createTables();
 
-    loadAndUpdatePlayerData(new UUID(0, 0), "Console");
+    updateDataSync(CONSOLE_UUID, "Console");
   }
 
   protected abstract void connect() throws SQLException;
@@ -119,6 +122,44 @@ public abstract class SQLStorageEngine implements StorageEngine {
   protected abstract int getTableVersion(String tableName) throws SQLException;
 
   protected abstract void renameConflictingTable(String tableName) throws SQLException;
+
+  ////////////////////////////////////////////////////////
+  // Data Methods
+  ////////////////////////////////////////////////////////
+
+  @Override
+  public CompletableFuture<Optional<PlayerData>> loadPlayerData(UUID uuid) {
+    return CompletableFuture.supplyAsync(
+        () -> {
+          try {
+            return loadPlayerDataSync(uuid);
+          } catch (SQLException e) {
+            logger.warn("Error while loading player " + uuid, e);
+
+            return Optional.empty();
+          }
+        });
+  }
+
+  @Override
+  public CompletableFuture<PlayerData> loadAndUpdatePlayerData(UUID uuid, String playerName) {
+    return CompletableFuture.supplyAsync(
+        () -> {
+          try {
+            updateDataSync(uuid, playerName);
+
+            return loadPlayerDataSync(uuid).get();
+          } catch (SQLException e) {
+            logger.warn("Error while loading player " + uuid, e);
+
+            return null;
+          }
+        });
+  }
+
+  protected abstract Optional<PlayerData> loadPlayerDataSync(UUID uuid) throws SQLException;
+
+  protected abstract void updateDataSync(UUID uuid, String playerName) throws SQLException;
 
   ////////////////////////////////////////////////////////
   // Logging Helper Methods

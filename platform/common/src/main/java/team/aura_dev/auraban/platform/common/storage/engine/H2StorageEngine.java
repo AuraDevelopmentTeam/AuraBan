@@ -8,13 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
+import team.aura_dev.auraban.platform.common.player.PlayerDataCommon;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
+import team.aura_dev.auraban.platform.common.util.UuidUtils;
 
 @RequiredArgsConstructor
 public class H2StorageEngine extends SQLStorageEngine {
@@ -373,14 +374,29 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @Override
-  public CompletableFuture<Optional<PlayerData>> loadPlayerData(UUID uuid) {
-    // TODO Auto-generated method stub
-    return null;
+  protected Optional<PlayerData> loadPlayerDataSync(UUID uuid) throws SQLException {
+    try (NamedPreparedStatement statement =
+        prepareStatement("SELECT name FROM players WHERE uuid = :uuid")) {
+      statement.setBytes("uuid", UuidUtils.asBytes(uuid));
+
+      try (ResultSet result = statement.executeQuery()) {
+        if (result.next()) {
+          return Optional.of(new PlayerDataCommon(uuid, result.getString("name")));
+        }
+      }
+    }
+
+    return Optional.empty();
   }
 
   @Override
-  public CompletableFuture<PlayerData> loadAndUpdatePlayerData(UUID uuid, String playerName) {
-    // TODO Auto-generated method stub
-    return null;
+  protected void updateDataSync(UUID uuid, String playerName) throws SQLException {
+    try (NamedPreparedStatement statement =
+        prepareStatement("REPLACE INTO players (uuid, name) VALUES (:uuid, :name)")) {
+      statement.setBytes("uuid", UuidUtils.asBytes(uuid));
+      statement.setString("name", playerName);
+
+      statement.executeUpdate();
+    }
   }
 }
