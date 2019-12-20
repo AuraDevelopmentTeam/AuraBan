@@ -26,13 +26,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import team.aura_dev.auraban.platform.common.storage.engine.MySQLStorageEngineHelper;
-import team.aura_dev.auraban.platform.common.storage.engine.TestDatabase;
+import team.aura_dev.auraban.platform.common.storage.engine.TestMySQLDatabase;
 import team.aura_dev.auraban.platform.common.util.UuidUtils;
 
 public class NamedPreparedStatementTest {
   private static final int REPEATS = 1000;
 
-  private static final TestDatabase testDatabase = new TestDatabase();
+  private static final TestMySQLDatabase testDatabase = new TestMySQLDatabase();
   private static final String name1 = "obj1";
   private static final String name2 = "obj2";
   private static final String str1 = UUID.randomUUID().toString() + '\'';

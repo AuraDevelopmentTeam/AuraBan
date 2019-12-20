@@ -16,7 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import team.aura_dev.auraban.platform.common.config.Config;
 
-public class TestDatabase {
+public class TestMySQLDatabase {
   private static final String baseDir = SystemUtils.JAVA_IO_TMPDIR + "/MariaDB4j/base/";
   private static final int dirLimit = 100;
   private static final String localhost = "localhost";

@@ -1,16 +1,24 @@
 package team.aura_dev.auraban.platform.common.storage.engine;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.config.Config;
 
 public class MySQLStorageEngineTest {
-  private static final TestDatabase testDatabase = new TestDatabase();
+  private static final UUID CONSOLE_UUID = new UUID(0, 0);
+  private static final UUID SPECIFIC_UUID = new UUID(1, 1);
+  private static final TestMySQLDatabase testDatabase = new TestMySQLDatabase();
 
   @BeforeClass
   public static void setUpBeforeClass() {
@@ -119,7 +127,8 @@ public class MySQLStorageEngineTest {
 
     engine.connect();
 
-    engine.executeUpdateQuery("CREATE TABLE high_version__players (id INT) COMMENT = 'v1000'");
+    engine.executeUpdateQuery(
+        "CREATE TABLE high_version__players (id INT AUTO_INCREMENT, uuid BINARY(16), name VARCHAR(16), PRIMARY KEY(id)) COMMENT = 'v1000'");
     engine.executeUpdateQuery("CREATE TABLE high_version__ladders (id INT) COMMENT = 'v1000'");
     engine.executeUpdateQuery("CREATE TABLE high_version__ladder_steps (id INT) COMMENT = 'v1000'");
     engine.executeUpdateQuery("CREATE TABLE high_version__punishments (id INT) COMMENT = 'v1000'");
@@ -127,6 +136,48 @@ public class MySQLStorageEngineTest {
         "CREATE TABLE high_version__punishment_points (id INT) COMMENT = 'v1000'");
 
     runInitializationTest(engine);
+  }
+
+  @Test
+  public void unknownUserTest() throws SQLException, InterruptedException, ExecutionException {
+    final MySQLStorageEngineHelper engine = getStorageEngine("unknown_user__");
+
+    engine.initialize();
+
+    assertFalse(engine.loadPlayerData(SPECIFIC_UUID).get().isPresent());
+  }
+
+  @Test
+  public void consoleUserTest() throws SQLException, InterruptedException, ExecutionException {
+    final MySQLStorageEngineHelper engine = getStorageEngine("console_user__");
+
+    engine.initialize();
+
+    Optional<PlayerData> consoleUser = engine.loadPlayerData(CONSOLE_UUID).get();
+
+    assertTrue(consoleUser.isPresent());
+    assertEquals("Console", consoleUser.get().getPlayerName());
+  }
+
+  @Test
+  public void specificUserTest() throws SQLException, InterruptedException, ExecutionException {
+    final MySQLStorageEngineHelper engine = getStorageEngine("specific_user__");
+
+    engine.initialize();
+
+    // Test before adding to database.
+    assertFalse(engine.loadPlayerData(SPECIFIC_UUID).get().isPresent());
+
+    // Add user and verify
+    PlayerData specificUser = engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").get();
+
+    assertEquals("Dummy", specificUser.getPlayerName());
+
+    // Load user again
+    Optional<PlayerData> specificUserOpt = engine.loadPlayerData(SPECIFIC_UUID).get();
+
+    assertTrue(specificUserOpt.isPresent());
+    assertEquals("Dummy", specificUserOpt.get().getPlayerName());
   }
 
   private MySQLStorageEngineHelper getStorageEngine(String tablePrefix) {

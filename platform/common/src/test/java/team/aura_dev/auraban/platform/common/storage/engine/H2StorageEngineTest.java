@@ -1,6 +1,8 @@
 package team.aura_dev.auraban.platform.common.storage.engine;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -8,16 +10,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
-import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
+import team.aura_dev.auraban.api.player.PlayerData;
 
 public class H2StorageEngineTest {
+  private static final UUID CONSOLE_UUID = new UUID(0, 0);
+  private static final UUID SPECIFIC_UUID = new UUID(1, 1);
   private static final Random rng = new Random();
 
-  private static Path getDatabaseFilePath(Path databasePath) {
+  static Path getDatabaseFilePath(Path databasePath) {
     return Paths.get(databasePath.toString() + ".mv.db");
   }
 
@@ -86,6 +93,48 @@ public class H2StorageEngineTest {
     runInitializationTest(engine);
   }
 
+  @Test
+  public void unknownUserTest() throws SQLException, InterruptedException, ExecutionException {
+    final H2StorageEngineHelper engine = getStorageEngine();
+
+    engine.initialize();
+
+    assertFalse(engine.loadPlayerData(SPECIFIC_UUID).get().isPresent());
+  }
+
+  @Test
+  public void consoleUserTest() throws SQLException, InterruptedException, ExecutionException {
+    final H2StorageEngineHelper engine = getStorageEngine();
+
+    engine.initialize();
+
+    Optional<PlayerData> consoleUser = engine.loadPlayerData(CONSOLE_UUID).get();
+
+    assertTrue(consoleUser.isPresent());
+    assertEquals("Console", consoleUser.get().getPlayerName());
+  }
+
+  @Test
+  public void specificUserTest() throws SQLException, InterruptedException, ExecutionException {
+    final H2StorageEngineHelper engine = getStorageEngine();
+
+    engine.initialize();
+
+    // Test before adding to database.
+    assertFalse(engine.loadPlayerData(SPECIFIC_UUID).get().isPresent());
+
+    // Add user and verify
+    PlayerData specificUser = engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").get();
+
+    assertEquals("Dummy", specificUser.getPlayerName());
+
+    // Load user again
+    Optional<PlayerData> specificUserOpt = engine.loadPlayerData(SPECIFIC_UUID).get();
+
+    assertTrue(specificUserOpt.isPresent());
+    assertEquals("Dummy", specificUserOpt.get().getPlayerName());
+  }
+
   @SneakyThrows(IOException.class)
   private H2StorageEngineHelper getStorageEngine() {
     final Path basePath = Paths.get(SystemUtils.JAVA_IO_TMPDIR);
@@ -111,49 +160,6 @@ public class H2StorageEngineTest {
       throw new AssertionError("Error while initializing database", e);
     } finally {
       instance.close();
-    }
-  }
-
-  /** Used to make the query methods public */
-  private static class H2StorageEngineHelper extends H2StorageEngine {
-    public H2StorageEngineHelper(Path databasePath) {
-      super(databasePath, false);
-    }
-
-    @Override
-    public void connect() throws SQLException {
-      super.connect();
-    }
-
-    @Override
-    protected void createTables() throws SQLException {
-      super.createTables();
-    }
-
-    @Override
-    public NamedPreparedStatement prepareStatement(String query) throws SQLException {
-      return super.prepareStatement(query);
-    }
-
-    @Override
-    public int executeUpdateQuery(String query) throws SQLException {
-      return super.executeUpdateQuery(query);
-    }
-
-    @SneakyThrows({IOException.class, InterruptedException.class})
-    @Override
-    public void close() throws SQLException {
-      super.close();
-
-      final Path databaseFilePath = getDatabaseFilePath(databasePath);
-
-      try {
-        Files.delete(databaseFilePath);
-      } catch (IOException e) {
-        Thread.sleep(100);
-
-        Files.delete(databaseFilePath);
-      }
     }
   }
 }
