@@ -1,7 +1,6 @@
 package team.aura_dev.auraban.platform.common.storage.engine;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;

@@ -5,15 +5,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.config.Config;
+import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 
 public class MySQLStorageEngineTest {
   private static final UUID CONSOLE_UUID = new UUID(0, 0);
@@ -180,6 +183,26 @@ public class MySQLStorageEngineTest {
     assertEquals("Dummy", specificUserOpt.get().getPlayerName());
   }
 
+  @Test
+  @Ignore("Auto increment does increment for some reason")
+  public void updateUserDataTest() throws SQLException, InterruptedException, ExecutionException {
+    final MySQLStorageEngineHelper engine = getStorageEngine("update_user_data__");
+
+    engine.initialize();
+
+    // Console users always gets added
+    assertEquals(2, getAutoIncrement(engine, "players"));
+
+    // Add user and update their data
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").join();
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").join();
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy2").join();
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").join();
+
+    // Only one user added, so only one more
+    assertEquals(3, getAutoIncrement(engine, "players"));
+  }
+
   private MySQLStorageEngineHelper getStorageEngine(String tablePrefix) {
     // Just use default values except tablePrefix
     final Config.Storage.MySQL.PoolSettings poolSettings = new Config.Storage.MySQL.PoolSettings();
@@ -205,6 +228,23 @@ public class MySQLStorageEngineTest {
       throw new AssertionError("Error while initializing database", e);
     } finally {
       instance.close();
+    }
+  }
+
+  private static int getAutoIncrement(MySQLStorageEngineHelper engine, String table)
+      throws SQLException {
+    try (NamedPreparedStatement statement =
+        engine.prepareStatement(
+            "SELECT `AUTO_INCREMENT` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'test' AND `TABLE_NAME` = :table_name")) {
+      statement.setString("table_name", engine.tablePrefix + table);
+
+      try (ResultSet result = statement.executeQuery()) {
+        if (!result.next())
+          throw new IllegalStateException(
+              "Can't find auto increment value for table " + engine.tablePrefix + table);
+
+        return result.getInt(1);
+      }
     }
   }
 }

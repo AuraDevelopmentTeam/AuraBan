@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Random;
@@ -18,13 +19,14 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 import team.aura_dev.auraban.api.player.PlayerData;
+import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 
 public class H2StorageEngineTest {
   private static final UUID CONSOLE_UUID = new UUID(0, 0);
   private static final UUID SPECIFIC_UUID = new UUID(1, 1);
   private static final Random rng = new Random();
 
-  static Path getDatabaseFilePath(Path databasePath) {
+  protected static Path getDatabaseFilePath(Path databasePath) {
     return Paths.get(databasePath.toString() + ".mv.db");
   }
 
@@ -135,6 +137,25 @@ public class H2StorageEngineTest {
     assertEquals("Dummy", specificUserOpt.get().getPlayerName());
   }
 
+  @Test
+  public void updateUserDataTest() throws SQLException, InterruptedException, ExecutionException {
+    final H2StorageEngineHelper engine = getStorageEngine();
+
+    engine.initialize();
+
+    // Console users always gets added
+    assertEquals(1, getAutoIncrement(engine, "players"));
+
+    // Add user and update their data
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").join();
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").join();
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy2").join();
+    engine.loadAndUpdatePlayerData(SPECIFIC_UUID, "Dummy").join();
+
+    // Only one user added, so only one more
+    assertEquals(2, getAutoIncrement(engine, "players"));
+  }
+
   @SneakyThrows(IOException.class)
   private H2StorageEngineHelper getStorageEngine() {
     final Path basePath = Paths.get(SystemUtils.JAVA_IO_TMPDIR);
@@ -160,6 +181,33 @@ public class H2StorageEngineTest {
       throw new AssertionError("Error while initializing database", e);
     } finally {
       instance.close();
+    }
+  }
+
+  private static int getAutoIncrement(H2StorageEngineHelper engine, String table)
+      throws SQLException {
+    try (NamedPreparedStatement column_statement =
+        engine.prepareStatement(
+            "SELECT SEQUENCE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = :table_name AND COLUMN_NAME = 'id'")) {
+      column_statement.setString("table_name", table);
+
+      try (ResultSet column_result = column_statement.executeQuery()) {
+        if (!column_result.next())
+          throw new IllegalStateException("Can't find auto increment value for table " + table);
+
+        try (NamedPreparedStatement sequence_statement =
+            engine.prepareStatement(
+                "SELECT CURRENT_VALUE FROM INFORMATION_SCHEMA.SEQUENCES WHERE SEQUENCE_NAME = :sequence_name")) {
+          sequence_statement.setString("sequence_name", column_result.getString(1));
+
+          try (ResultSet sequence_result = sequence_statement.executeQuery()) {
+            if (!sequence_result.next())
+              throw new IllegalStateException("Can't find auto increment value for table " + table);
+
+            return sequence_result.getInt(1);
+          }
+        }
+      }
     }
   }
 }
