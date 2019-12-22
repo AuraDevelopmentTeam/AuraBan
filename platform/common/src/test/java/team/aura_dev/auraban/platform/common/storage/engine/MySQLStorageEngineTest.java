@@ -39,42 +39,42 @@ public class MySQLStorageEngineTest {
         new MySQLStorageEngine(null, 0, null, null, null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
-      assertEquals("host is marked @NonNull but is null", e.getMessage());
+      assertEquals("host is marked non-null but is null", e.getMessage());
     }
 
     try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, null, null, null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
-      assertEquals("database is marked @NonNull but is null", e.getMessage());
+      assertEquals("database is marked non-null but is null", e.getMessage());
     }
 
     try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", null, null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
-      assertEquals("user is marked @NonNull but is null", e.getMessage());
+      assertEquals("user is marked non-null but is null", e.getMessage());
     }
 
     try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", "", null, null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
-      assertEquals("password is marked @NonNull but is null", e.getMessage());
+      assertEquals("password is marked non-null but is null", e.getMessage());
     }
 
     try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", "", "", null, 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
-      assertEquals("tablePrefix is marked @NonNull but is null", e.getMessage());
+      assertEquals("tablePrefix is marked non-null but is null", e.getMessage());
     }
 
     try (MySQLStorageEngine engine =
         new MySQLStorageEngine("", 0, "", "", "", "", 0, 0, 0, 0, null)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
-      assertEquals("properties is marked @NonNull but is null", e.getMessage());
+      assertEquals("properties is marked non-null but is null", e.getMessage());
     }
   }
 

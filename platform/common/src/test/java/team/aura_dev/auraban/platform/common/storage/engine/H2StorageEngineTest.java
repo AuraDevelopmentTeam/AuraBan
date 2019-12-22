@@ -35,7 +35,7 @@ public class H2StorageEngineTest {
     try (H2StorageEngine engine = new H2StorageEngine(null, false)) {
       fail("Expected NPE");
     } catch (NullPointerException e) {
-      assertEquals("databasePath is marked @NonNull but is null", e.getMessage());
+      assertEquals("databasePath is marked non-null but is null", e.getMessage());
     }
   }
 

@@ -133,7 +133,7 @@ public class RuntimeDependency {
     }
 
     public RuntimeDependencyBuilder transitive() {
-      transitive = true;
+      transitive$value = true;
       transitive$set = true;
 
       return this;
