@@ -72,17 +72,15 @@ public class Config {
     @Getter
     public static class H2 {
       @Setting(
-        comment =
-            "If this is a relative path, it will be relative to the AuraBan config dir (should be \"config/auraban\" or\n"
-                + "\"plugins/AuraBan\"). Absolute paths work too of course."
-      )
+          comment =
+              "If this is a relative path, it will be relative to the AuraBan config dir (should be \"config/auraban\" or\n"
+                  + "\"plugins/AuraBan\"). Absolute paths work too of course.")
       private String databaseFile = "bandata";
 
       @Setting(
-        comment =
-            "Enable this setting if you want to use the same database file for multiple instances.\n"
-                + "Disable it if you don't do it (the default) because it causes a performance penalty."
-      )
+          comment =
+              "Enable this setting if you want to use the same database file for multiple instances.\n"
+                  + "Disable it if you don't do it (the default) because it causes a performance penalty.")
       private boolean shareDatabase = false;
 
       public Path getAbsoluteDatabasePath() {
@@ -97,11 +95,10 @@ public class Config {
       private Credentials crendentials = new Credentials();
 
       @Setting(
-        comment =
-            "These settings are for fine tuning the MySQL connection pool.\n"
-                + "- The default values will be suitable for the majority of users.\n"
-                + "- Do not change these settings unless you know what you're doing!"
-      )
+          comment =
+              "These settings are for fine tuning the MySQL connection pool.\n"
+                  + "- The default values will be suitable for the majority of users.\n"
+                  + "- Do not change these settings unless you know what you're doing!")
       private PoolSettings poolSettings = new PoolSettings();
 
       @ConfigSerializable
@@ -121,35 +118,31 @@ public class Config {
       @Getter
       public static class PoolSettings {
         @Setting(
-          comment =
-              "This setting controls the maximum number of milliseconds that the plugin will wait for a connection from the\n"
-                  + "pool, before timing out."
-        )
+            comment =
+                "This setting controls the maximum number of milliseconds that the plugin will wait for a connection from the\n"
+                    + "pool, before timing out.")
         private long connectionTimeout = 5000;
 
         @Setting(
-          comment =
-              "This setting controls the maximum lifetime of a connection in the pool in milliseconds.\n"
-                  + "- The value should be at least 30 seconds less than any database or infrastructure imposed connection time\n"
-                  + "  limit."
-        )
+            comment =
+                "This setting controls the maximum lifetime of a connection in the pool in milliseconds.\n"
+                    + "- The value should be at least 30 seconds less than any database or infrastructure imposed connection time\n"
+                    + "  limit.")
         private long maximumLifetime = 1800000;
 
         @Setting(
-          comment =
-              "Sets the maximum size of the MySQL connection pool\n"
-                  + "- Basically this value will determine the maximum number of actual connections to the database backend.\n"
-                  + "- More information about determining the size of connection pools can be found here:\n"
-                  + "  https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing"
-        )
+            comment =
+                "Sets the maximum size of the MySQL connection pool\n"
+                    + "- Basically this value will determine the maximum number of actual connections to the database backend.\n"
+                    + "- More information about determining the size of connection pools can be found here:\n"
+                    + "  https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing")
         private int maximumPoolSize = 10;
 
         @Setting(
-          comment =
-              "Sets the minimum number of idle connections that the pool will try to maintain.\n"
-                  + "- For maximum performance and responsiveness to spike demands, it is recommended to set this value to the same\n"
-                  + "  value as maximmPoolSize to allow the pool to act as a fixed size connection pool."
-        )
+            comment =
+                "Sets the minimum number of idle connections that the pool will try to maintain.\n"
+                    + "- For maximum performance and responsiveness to spike demands, it is recommended to set this value to the same\n"
+                    + "  value as maximmPoolSize to allow the pool to act as a fixed size connection pool.")
         private int minimumIdle = 10;
 
         @Setting(comment = "This setting allows you to define extra properties for connections.")

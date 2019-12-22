@@ -43,13 +43,11 @@ public class DependencyDownloader {
                     .map(RuntimeDependency.Maven::getUrl)
                     .collect(Collectors.toList()))
             .withDependencies(
-                dependencies
-                    .stream()
+                dependencies.stream()
                     .map(RuntimeDependency::getDependency)
                     .collect(Collectors.toList()))
             .withTransitiveDependencyProcessors(
-                dependencies
-                    .stream()
+                dependencies.stream()
                     .map(RuntimeDependency::getExclusionPatterns)
                     .flatMap(List::stream)
                     .collect(Collectors.toList()));
@@ -64,8 +62,7 @@ public class DependencyDownloader {
               .peek(DependencyDownloader::checkDownload)
               .collect(Collectors.toList());
 
-      downloads
-          .stream()
+      downloads.stream()
           .map(DownloadResult::getAllDownloadedFiles)
           .flatMap(List::stream)
           .forEach(DependencyDownloader::injectInClasspath);

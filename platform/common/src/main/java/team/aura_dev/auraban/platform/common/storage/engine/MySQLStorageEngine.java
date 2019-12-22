@@ -166,9 +166,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTablePlayer() throws SQLException {
     switch (getTableVersion(tablePlayers)) {
@@ -206,9 +205,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTableLadders() throws SQLException {
     switch (getTableVersion(tableLadders)) {
@@ -239,9 +237,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTableLadderSteps() throws SQLException {
     switch (getTableVersion(tableLadderSteps)) {
@@ -292,9 +289,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTablePunishments() throws SQLException {
     switch (getTableVersion(tablePunishments)) {
@@ -373,9 +369,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTablePunishmentPoints() throws SQLException {
     switch (getTableVersion(tablePunishmentPoints)) {

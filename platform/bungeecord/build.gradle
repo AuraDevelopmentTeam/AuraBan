@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compile project(":AuraBan-common")
+    api project(":AuraBan-common")
 
     // Shadow dependencies
     shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"

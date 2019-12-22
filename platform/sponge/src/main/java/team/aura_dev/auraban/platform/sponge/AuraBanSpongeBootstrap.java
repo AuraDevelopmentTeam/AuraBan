@@ -10,13 +10,12 @@ import org.spongepowered.api.plugin.Plugin;
 import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
 
 @Plugin(
-  id = AuraBanBaseBootstrap.ID,
-  name = AuraBanBaseBootstrap.NAME,
-  version = AuraBanBaseBootstrap.VERSION,
-  description = AuraBanBaseBootstrap.DESCRIPTION,
-  url = AuraBanBaseBootstrap.URL,
-  authors = {AuraBanBaseBootstrap.AUTHOR}
-)
+    id = AuraBanBaseBootstrap.ID,
+    name = AuraBanBaseBootstrap.NAME,
+    version = AuraBanBaseBootstrap.VERSION,
+    description = AuraBanBaseBootstrap.DESCRIPTION,
+    url = AuraBanBaseBootstrap.URL,
+    authors = {AuraBanBaseBootstrap.AUTHOR})
 public class AuraBanSpongeBootstrap {
   private final AuraBanBaseBootstrap bootstrapPlugin;
 

@@ -62,9 +62,8 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTablePlayer() throws SQLException {
     switch (getTableVersion("players")) {
@@ -96,9 +95,8 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTableLadders() throws SQLException {
     switch (getTableVersion("ladders")) {
@@ -125,9 +123,8 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTableLadderSteps() throws SQLException {
     switch (getTableVersion("ladder_steps")) {
@@ -164,9 +161,8 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTablePunishments() throws SQLException {
     switch (getTableVersion("punishments")) {
@@ -230,9 +226,8 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @SuppressFBWarnings(
-    value = "SF_SWITCH_FALLTHROUGH",
-    justification = "Fallthrough behavior intended"
-  )
+      value = "SF_SWITCH_FALLTHROUGH",
+      justification = "Fallthrough behavior intended")
   @Override
   protected void createTablePunishmentPoints() throws SQLException {
     switch (getTableVersion("punishment_points")) {

@@ -33,21 +33,21 @@ repositories {
 }
 
 dependencies {
-    compile project(":AuraBan-api")
+    api project(":AuraBan-api")
 
     // Normal dependencies
-    compile "com.github.ben-manes.caffeine:caffeine:${caffeine_version}"
-    compile "org.spongepowered:configurate-hocon:${configurate_version}"
-    compile "com.h2database:h2:${h2_version}"
-    compile "com.zaxxer:HikariCP:${hikariCP_version}"
+    api "com.github.ben-manes.caffeine:caffeine:${caffeine_version}"
+    api "org.spongepowered:configurate-hocon:${configurate_version}"
+    api "com.h2database:h2:${h2_version}"
+    api "com.zaxxer:HikariCP:${hikariCP_version}"
 
     // Shadow dependencies
     shadow "eu.mikroskeem:picomaven:${picoMaven_version}"
 
     // Test dependencies
-    testCompile "ch.vorburger.mariaDB4j:mariaDB4j:2.4.0"
-    testRuntime "org.mariadb.jdbc:mariadb-java-client:2.5.1"
-    testRuntime "org.slf4j:slf4j-nop:${slf4j_version}"
+    testImplementation "ch.vorburger.mariaDB4j:mariaDB4j:2.4.0"
+    testRuntimeOnly "org.mariadb.jdbc:mariadb-java-client:2.5.1"
+    testRuntimeOnly "org.slf4j:slf4j-nop:${slf4j_version}"
 
     // SLF4J files
     slf4j "org.slf4j:slf4j-api:${slf4j_version}"

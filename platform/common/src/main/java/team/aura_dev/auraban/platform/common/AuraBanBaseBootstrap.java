@@ -122,9 +122,8 @@ public class AuraBanBaseBootstrap {
   }
 
   @SuppressFBWarnings(
-    value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
-    justification = "We're never getting null here"
-  )
+      value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+      justification = "We're never getting null here")
   private static void extractAndInjectSLF4JLib(Path libsPath, String libName) throws IOException {
     final String JAR_PREFIX = "org/slf4j/slf4j-";
     final String JAR_SUFFIX = "-@slf4jVersion@.zip";
