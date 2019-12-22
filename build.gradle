@@ -5,6 +5,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 evaluationDependsOn(":AuraBan-api")
 evaluationDependsOn(":AuraBan-bungeecord")
 evaluationDependsOn(":AuraBan-velocity")
+evaluationDependsOn(":AuraBan-nukkit")
 evaluationDependsOn(":AuraBan-spigot")
 evaluationDependsOn(":AuraBan-sponge")
 
@@ -20,6 +21,7 @@ sourceSets {
             srcDir project(":AuraBan-api").sourceSets.main.java.srcDirs
             srcDir project(":AuraBan-bungeecord").sourceSets.main.java.srcDirs
             srcDir project(":AuraBan-velocity").sourceSets.main.java.srcDirs
+            srcDir project(":AuraBan-nukkit").sourceSets.main.java.srcDirs
             srcDir project(":AuraBan-spigot").sourceSets.main.java.srcDirs
             srcDir project(":AuraBan-sponge").sourceSets.main.java.srcDirs
         }
@@ -27,6 +29,7 @@ sourceSets {
             srcDir project(":AuraBan-api").sourceSets.main.resources.srcDirs
             srcDir project(":AuraBan-bungeecord").sourceSets.main.resources.srcDirs
             srcDir project(":AuraBan-velocity").sourceSets.main.resources.srcDirs
+            srcDir project(":AuraBan-nukkit").sourceSets.main.resources.srcDirs
             srcDir project(":AuraBan-spigot").sourceSets.main.resources.srcDirs
             srcDir project(":AuraBan-sponge").sourceSets.main.resources.srcDirs
         }
@@ -41,11 +44,12 @@ repositories {
 }
 
 dependencies {
-    compile project(":AuraBan-api")
-    compile project(":AuraBan-bungeecord")
-    compile project(":AuraBan-velocity")
-    compile project(":AuraBan-spigot")
-    compile project(":AuraBan-sponge")
+    api project(":AuraBan-api")
+    api project(":AuraBan-bungeecord")
+    api project(":AuraBan-velocity")
+    api project(":AuraBan-nukkit")
+    api project(":AuraBan-spigot")
+    api project(":AuraBan-sponge")
 
     // Shadow dependencies
     shadow("eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}") {
