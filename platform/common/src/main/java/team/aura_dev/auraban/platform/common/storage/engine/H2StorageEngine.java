@@ -186,6 +186,7 @@ public class H2StorageEngine extends SQLStorageEngine {
                 + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (operator_id) REFERENCES players (id), FOREIGN KEY (ladder_id) REFERENCES ladders (id));"
                 // Indexes
                 + "CREATE INDEX ON punishments(type); CREATE INDEX ON punishments(end)");
+        setTableVersion("punishments");
         // punishments_resolved
         executeUpdateQuery(getResolvedPunishmentViewQuery("punishments", "punishments_resolved"));
         // active_punishments
@@ -249,6 +250,7 @@ public class H2StorageEngine extends SQLStorageEngine {
                 + "PRIMARY KEY (player_id, ladder_id), "
                 // Foreign Keys
                 + "FOREIGN KEY (player_id) REFERENCES players (id), FOREIGN KEY (ladder_id) REFERENCES ladders (id))");
+        setTableVersion("punishment_points");
         // punishment_points_resolved
         executeUpdateQuery(
             // View Name
