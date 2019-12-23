@@ -29,7 +29,7 @@ public class AuraBanNukkit extends AuraBanBase {
 
   @Override
   public String getPlatformVariant() {
-    return server.getCodename();
+    return server.getName();
   }
 
   @Override
