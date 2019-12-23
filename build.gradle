@@ -59,6 +59,7 @@ dependencies {
     // SLF4J files
     slf4j "org.slf4j:slf4j-api:${project(":AuraBan-common").slf4j_version}"
     slf4j "team.aura_dev.lib.slf4j-plugin.bungeecord:slf4j-plugin-bungeecord:${project(":AuraBan-common").slf4jPlugin_version}:${project(":AuraBan-common").slf4j_version}"
+    slf4j "team.aura_dev.lib.slf4j-plugin.nukkit:slf4j-plugin-nukkit:${project(":AuraBan-common").slf4jPlugin_version}:${project(":AuraBan-common").slf4j_version}"
     slf4j "team.aura_dev.lib.slf4j-plugin.spigot:slf4j-plugin-spigot:${project(":AuraBan-common").slf4jPlugin_version}:${project(":AuraBan-common").slf4j_version}"
 }
 
