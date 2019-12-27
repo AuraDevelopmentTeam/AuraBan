@@ -309,7 +309,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + tablePunishments
                 + "` ("
                 // Columns
-                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `player_id` INT UNSIGNED NOT NULL, `operator_id` INT UNSIGNED NOT NULL, `type` ENUM('warning', 'mute', 'kick', 'ban') NOT NULL, `ladder_id` INT UNSIGNED NULL, `ladder_points` SMALLINT NULL, `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP, `end` DATETIME NULL, `reason` TEXT NOT NULL, "
+                + "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `player_id` INT UNSIGNED NOT NULL, `operator_id` INT UNSIGNED NOT NULL, `type` ENUM('warning', 'mute', 'kick', 'ban') NOT NULL, `active` BOOLEAN NOT NULL, `ladder_id` INT UNSIGNED NULL, `ladder_points` SMALLINT NULL, `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP, `end` DATETIME NULL, `reason` TEXT NOT NULL, "
                 // Keys
                 + "PRIMARY KEY (`id`), INDEX(`type`), INDEX (`end`), "
                 // Foreign Keys
@@ -464,7 +464,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         + viewName
         + "` AS "
         // Columns
-        + "SELECT `id`, `player_id`, `operator_id`, `type`, `ladder_id`, `ladder_points`, `timestamp`, `end`, `reason` "
+        + "SELECT `id`, `player_id`, `operator_id`, `type`, `active`, `ladder_id`, `ladder_points`, `timestamp`, `end`, `reason` "
         // Table
         + "FROM `"
         + baseTableName
@@ -481,13 +481,13 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         + viewName
         + "` AS "
         // Columns
-        + "SELECT `id`, `player_id`, `operator_id`, `type`, `ladder_id`, `ladder_points`, `timestamp`, `end`, `reason` "
+        + "SELECT `id`, `player_id`, `operator_id`, `type`, `active`, `ladder_id`, `ladder_points`, `timestamp`, `end`, `reason` "
         // Table
         + "FROM `"
         + baseTableName
         + "` "
         // Condition
-        + "WHERE (`end` IS NULL) OR (`end` > NOW())";
+        + "WHERE ((`end` IS NULL) OR (`end` > NOW())) AND `active`";
   }
 
   protected String getResolvedPunishmentViewQuery(String baseTableName, String viewName) {
