@@ -16,6 +16,7 @@ import team.aura_dev.auraban.platform.common.config.ConfigLoader;
 import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
 import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
+import team.aura_dev.auraban.platform.common.punishment.PunishmentManagerCommon;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 import team.aura_dev.auraban.platform.common.storage.StorageEngineData;
 
@@ -28,6 +29,7 @@ public abstract class AuraBanBase implements AuraBanApi {
   @Getter private static AuraBanBase instance = null;
 
   @Getter protected PlayerManagerCommon playerManager;
+  @Getter protected PunishmentManagerCommon punishmentManager;
 
   @Getter protected final Path configDir;
   @Getter protected final Path libsDir;
@@ -101,6 +103,10 @@ public abstract class AuraBanBase implements AuraBanApi {
 
   protected abstract PlayerManagerCommon generatePlayerManager();
 
+  protected PunishmentManagerCommon generatePunishmentManager() {
+    return new PunishmentManagerCommon();
+  }
+
   protected abstract void registerEventListeners();
 
   // ============================================================================================
@@ -146,6 +152,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     storageEngine.initialize();
 
     this.playerManager = generatePlayerManager();
+    this.punishmentManager = generatePunishmentManager();
 
     logger.info("Registering Event Listeners");
     registerEventListeners();

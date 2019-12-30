@@ -1,6 +1,7 @@
 package team.aura_dev.auraban.api;
 
 import team.aura_dev.auraban.api.player.PlayerManager;
+import team.aura_dev.auraban.api.punishment.PunishmentManager;
 
 public interface AuraBanApi {
   public static final String ID = "@id@";
@@ -11,4 +12,6 @@ public interface AuraBanApi {
   public static final String AUTHOR = "The_BrainStone";
 
   public PlayerManager getPlayerManager();
+
+  public PunishmentManager getPunishmentManager();
 }
