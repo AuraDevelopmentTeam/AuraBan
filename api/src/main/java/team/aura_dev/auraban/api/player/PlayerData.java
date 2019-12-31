@@ -1,7 +1,9 @@
 package team.aura_dev.auraban.api.player;
 
+import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import team.aura_dev.auraban.api.punishment.Punishment;
 
 /**
  * Simple class to represent players in a platform independent way.
@@ -17,4 +19,7 @@ public interface PlayerData {
 
   @Nonnull
   public String getDisplayName();
+
+  @Nonnull
+  public Map<Integer, Punishment> getPunishments();
 }

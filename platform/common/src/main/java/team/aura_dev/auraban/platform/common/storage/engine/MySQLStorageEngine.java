@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
 import team.aura_dev.auraban.api.player.PlayerData;
+import team.aura_dev.auraban.api.punishment.Punishment;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.player.PlayerDataCommon;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
@@ -527,7 +528,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
 
       try (ResultSet result = statement.executeQuery()) {
         if (result.next()) {
-          return Optional.of(new PlayerDataCommon(uuid, result.getString("name")));
+          return Optional.of(
+              new PlayerDataCommon(uuid, result.getString("name"), loadPunishmentsSync(uuid)));
         }
       }
     }
@@ -546,6 +548,19 @@ public class MySQLStorageEngine extends SQLStorageEngine {
       statement.setString("name", playerName);
 
       statement.executeUpdate();
+    }
+  }
+
+  @Override
+  protected Map<Integer, Punishment> loadPunishmentsSync(UUID uuid) throws SQLException {
+    try (NamedPreparedStatement statement =
+        prepareStatement(
+            "SELECT `id`, `player_uuid`, `operator_uuid`, `type`, `active`, `timestamp`, `end`, `reason` FROM `"
+                + tableVPunishmentsResolved
+                + "` WHERE `player_uuid` = :uuid")) {
+      statement.setBytes("uuid", UuidUtils.asBytes(uuid));
+
+      return punishmentsFromQuery(statement);
     }
   }
 }

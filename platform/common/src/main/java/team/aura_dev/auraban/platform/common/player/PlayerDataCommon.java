@@ -1,6 +1,8 @@
 package team.aura_dev.auraban.platform.common.player;
 
+import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.Data;
@@ -8,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import team.aura_dev.auraban.api.player.PlayerData;
+import team.aura_dev.auraban.api.punishment.Punishment;
 
 /**
  * Simple class to represent players in a platform independent way.
@@ -24,6 +27,7 @@ import team.aura_dev.auraban.api.player.PlayerData;
 public class PlayerDataCommon implements PlayerData {
   @NonNull private final UUID uuid;
   @NonNull private final String playerName;
+  @NonNull private final Map<Integer, Punishment> punishments;
 
   /**
    * A nice name for the player.<br>
@@ -35,5 +39,10 @@ public class PlayerDataCommon implements PlayerData {
   @Nonnull
   public String getDisplayName() {
     return playerName;
+  }
+
+  @Override
+  public ImmutableMap<Integer, Punishment> getPunishments() {
+    return ImmutableMap.copyOf(punishments);
   }
 }

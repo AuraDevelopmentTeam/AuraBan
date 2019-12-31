@@ -3,13 +3,20 @@ package team.aura_dev.auraban.platform.common.storage.engine;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import team.aura_dev.auraban.api.player.PlayerData;
+import team.aura_dev.auraban.api.punishment.Punishment;
+import team.aura_dev.auraban.api.punishment.PunishmentType;
+import team.aura_dev.auraban.platform.common.punishment.PunishmentBuilderCommon;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 import team.aura_dev.auraban.platform.common.storage.sql.NamedPreparedStatement;
 import team.aura_dev.auraban.platform.common.storage.sql.SafeNamedPreparedStatement;
+import team.aura_dev.auraban.platform.common.util.UuidUtils;
 
 /**
  * This helper class has been created to provide common methods to all subclasses.<br>
@@ -160,6 +167,40 @@ public abstract class SQLStorageEngine implements StorageEngine {
   protected abstract Optional<PlayerData> loadPlayerDataSync(UUID uuid) throws SQLException;
 
   protected abstract void updateDataSync(UUID uuid, String playerName) throws SQLException;
+
+  protected abstract Map<Integer, Punishment> loadPunishmentsSync(UUID uuid) throws SQLException;
+
+  protected Map<Integer, Punishment> punishmentsFromQuery(NamedPreparedStatement query)
+      throws SQLException {
+    final Map<Integer, Punishment> result = new HashMap<>();
+
+    try (final ResultSet resultSet = query.executeQuery()) {
+      while (resultSet.next()) {
+        final Punishment punishment = punishmentFromResultSet(resultSet);
+
+        // Punishments from the database always have an id
+        result.put(punishment.getId().get(), punishment);
+      }
+    }
+
+    return result;
+  }
+
+  protected Punishment punishmentFromResultSet(ResultSet result) throws SQLException {
+    final PunishmentBuilderCommon builder = new PunishmentBuilderCommon();
+
+    builder
+        .id(result.getInt("id"))
+        .player(UuidUtils.asUuid(result.getBytes("player_uuid")))
+        .operator(UuidUtils.asUuid(result.getBytes("operator_uuid")))
+        .type(PunishmentType.valueOf(result.getString("type").toUpperCase(Locale.ROOT)))
+        .active(result.getBoolean("active"))
+        .timestamp(result.getTimestamp("timestamp"))
+        .end(result.getTimestamp("end"))
+        .reason(result.getString("reason"));
+
+    return builder.build();
+  }
 
   ////////////////////////////////////////////////////////
   // Logging Helper Methods
