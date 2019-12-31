@@ -498,7 +498,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
         // Columns
         + "SELECT `"
         + baseTableName
-        + "`.`id`, `player`.`uuid` AS `player_uuid`, `player`.`name` AS `player_name`, `operator`.`uuid` AS `operator_uuid`, `operator`.`name` AS `operator_name`, `type`, `ladders`.`name` AS `ladder_name`, `ladder_points`, `timestamp`, `end`, `reason` "
+        + "`.`id`, `player`.`uuid` AS `player_uuid`, `player`.`name` AS `player_name`, `operator`.`uuid` AS `operator_uuid`, `operator`.`name` AS `operator_name`, `type`, `active`, `ladders`.`name` AS `ladder_name`, `ladder_points`, `timestamp`, `end`, `reason` "
         // Table
         + "FROM `"
         + baseTableName
