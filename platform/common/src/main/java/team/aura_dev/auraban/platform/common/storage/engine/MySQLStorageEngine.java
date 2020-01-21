@@ -164,6 +164,56 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     config.setPoolName("AuraBan-MySQL-Pool");
 
     dataSource = new HikariDataSource(config);
+
+    // Set and verify session variables
+    verifyAndFixSessionVariables();
+  }
+
+  protected void verifyAndFixSessionVariables() {
+    // Convert the value from ms to s and times it by 1.5
+    final long targetWaitTimeout = maximumLifetime * 3 / 2000;
+
+    try {
+      if (getSessionVariable("wait_timeout") < targetWaitTimeout) {
+        logger.debug("Trying to increase the wait_timeout to prevent timeout issues...");
+
+        setSessionVariable("wait_timeout", targetWaitTimeout);
+
+        logger.debug("Successfully increased wait_timeout.");
+      }
+    } catch (SQLException e) {
+      logger.warn("Could not increase wait_timeout.");
+      logger.warn(
+          "Either change the value in your MySQL config or lower storage.MySQL.maximumLifetime until this warning goes away.");
+    }
+  }
+
+  protected long getSessionVariable(String variable) throws SQLException {
+    try (NamedPreparedStatement statement =
+        prepareStatement("SHOW SESSION VARIABLES WHERE `Variable_name` = :variable")) {
+      statement.setString("variable", variable);
+
+      try (ResultSet result = statement.executeQuery()) {
+        if (result.next()) {
+          final String value = result.getString("Value");
+
+          try {
+            return Long.parseLong(value);
+          } catch (NumberFormatException e) {
+            throw new SQLException("Could not parse \"value\" as an int", e);
+          }
+        }
+      }
+    }
+
+    return -1;
+  }
+
+  protected void setSessionVariable(String variable, long targetWaitTimeout) throws SQLException {
+    try (NamedPreparedStatement statement =
+        prepareStatement("SET SESSION " + variable + " = :value")) {
+      statement.setLong("value", targetWaitTimeout);
+    }
   }
 
   @SuppressFBWarnings(
