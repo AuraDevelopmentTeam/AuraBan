@@ -53,6 +53,7 @@ public class TestMySQLDatabase {
             .setSocket(localhost)
             .setBaseDir(actualBaseDir)
             .setDataDir(actualDataDir)
+            .setDeletingTemporaryBaseAndDataDirsOnShutdown(true)
             .build();
     databaseInstance = DB.newEmbeddedDB(config);
     databaseInstance.start();
