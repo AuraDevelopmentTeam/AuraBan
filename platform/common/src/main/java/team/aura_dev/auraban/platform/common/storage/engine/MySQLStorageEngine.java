@@ -544,9 +544,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   protected void updateDataSync(UUID uuid, String playerName) throws SQLException {
     try (NamedPreparedStatement statement =
         prepareStatement(
-            "REPALCE INTO `"
-                + tablePlayers
-                + "` (`uuid`, `name`) VALUES (:uuid, :name)")) {
+            "REPLACE INTO `" + tablePlayers + "` (`uuid`, `name`) VALUES (:uuid, :name)")) {
       statement.setBytes("uuid", UuidUtils.asBytes(uuid));
       statement.setString("name", playerName);
 
