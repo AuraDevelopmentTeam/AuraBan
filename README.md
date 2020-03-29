@@ -16,8 +16,8 @@ You can download all builds from either:
 
 ## [Issue Reporting](https://github.com/AuraDevelopmentTeam/AuraBan/issues)
 
-If you found a bug or even are experiencing a crash please report it so we can fix it. Please check at first if a bug report for the issue already
-[exits](https://github.com/AuraDevelopmentTeam/AuraBan/issues). If not just create a
+If you found a bug or even are experiencing a crash please report it so we can fix it. Please check first if a bug report for the issue already
+[exists](https://github.com/AuraDevelopmentTeam/AuraBan/issues). If not just create a
 [new issue](https://github.com/AuraDevelopmentTeam/AuraBan/issues/new) and fill out the form.
 
 Please include the following:
@@ -108,7 +108,7 @@ are free to verify it.
 
 ## License
 
-AuraBlockLimit is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html)
+AuraBan is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Random Quote
 
