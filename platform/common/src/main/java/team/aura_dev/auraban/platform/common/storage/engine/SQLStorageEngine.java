@@ -73,8 +73,8 @@ public abstract class SQLStorageEngine implements StorageEngine {
    * updates data.
    *
    * @param query an SQL statement
-   * @return either (1) the row count for SQL Data Manipulation Language (DML) statementsor (2) 0
-   *     for SQL statements that return nothing
+   * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) for
+   *     SQL statements that return nothing
    * @throws SQLException if a database access error occurs or the SQL statement returns a {@link
    *     ResultSet} object
    * @see NamedPreparedStatement

@@ -217,9 +217,10 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + procdureUpdatePlayerData
                 + "` ("
                 // Parameters
-                + "IN `vuuid` BINARY(16), IN `vname` VARCHAR(16)"
+                + "IN `vuuid` BINARY(16), IN `vname` VARCHAR(16) CHARACTER SET "
+                + encoding
                 // End Procedure Head
-                + ") "
+                + ") MODIFIES SQL DATA SQL SECURITY INVOKER "
                 // Start Procedure Body
                 + "IF EXISTS ("
                 // Start Condition
