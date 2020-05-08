@@ -133,10 +133,10 @@ public class MySQLStorageEngineTest {
     engine.executeUpdateQuery(
         "CREATE TABLE high_version__players (id INT AUTO_INCREMENT, uuid BINARY(16), name VARCHAR(16), PRIMARY KEY(id)) COMMENT = 'v1000'");
     engine.executeUpdateQuery(
-        "CREATE PROCEDURE `high_version__procdure_update_player_data` (IN `vuuid` BINARY(16), IN `vname` VARCHAR(16)) "
-            + "IF EXISTS (SELECT * FROM `high_version__players` WHERE `uuid` = vuuid LIMIT 1) THEN "
-            + "UPDATE `high_version__players` SET `name` = vname WHERE `uuid` = vuuid; ELSE "
-            + "INSERT INTO `high_version__players` (`uuid`, `name`) VALUES (vuuid, vname); END IF");
+        "CREATE PROCEDURE `high_version__procdure_update_player_data` (IN `pi_uuid` BINARY(16), IN `pi_name` VARCHAR(16)) "
+            + "IF EXISTS (SELECT * FROM `high_version__players` WHERE `uuid` = pi_uuid LIMIT 1) THEN "
+            + "UPDATE `high_version__players` SET `name` = pi_name WHERE `uuid` = pi_uuid; ELSE "
+            + "INSERT INTO `high_version__players` (`uuid`, `name`) VALUES (pi_uuid, pi_name); END IF");
     engine.executeUpdateQuery("CREATE TABLE high_version__ladders (id INT) COMMENT = 'v1000'");
     engine.executeUpdateQuery("CREATE TABLE high_version__ladder_steps (id INT) COMMENT = 'v1000'");
     engine.executeUpdateQuery("CREATE TABLE high_version__punishments (id INT) COMMENT = 'v1000'");

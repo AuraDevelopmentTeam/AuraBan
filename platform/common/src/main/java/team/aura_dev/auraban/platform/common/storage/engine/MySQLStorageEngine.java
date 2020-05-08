@@ -217,7 +217,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + procdureUpdatePlayerData
                 + "` ("
                 // Parameters
-                + "IN `vuuid` BINARY(16), IN `vname` VARCHAR(16) CHARACTER SET "
+                + "IN `pi_uuid` BINARY(16), IN `pi_name` VARCHAR(16) CHARACTER SET "
                 + encoding
                 // End Procedure Head
                 + ") MODIFIES SQL DATA SQL SECURITY INVOKER "
@@ -226,19 +226,19 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 // Start Condition
                 + "SELECT * FROM `"
                 + tablePlayers
-                + "` WHERE `uuid` = vuuid LIMIT 1"
+                + "` WHERE `uuid` = pi_uuid LIMIT 1"
                 // End Condition
                 + ") THEN "
                 // Start Update Query
                 + "UPDATE `"
                 + tablePlayers
-                + "` SET `name` = vname WHERE `uuid` = vuuid; "
+                + "` SET `name` = pi_name WHERE `uuid` = pi_uuid; "
                 // End Update Query
                 + "ELSE "
                 // Start Insert Query
                 + "INSERT INTO `"
                 + tablePlayers
-                + "` (`uuid`, `name`) VALUES (vuuid, vname); "
+                + "` (`uuid`, `name`) VALUES (pi_uuid, pi_name); "
                 // End Insert Query
                 + "END IF;");
     }
