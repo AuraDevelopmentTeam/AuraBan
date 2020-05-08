@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.platform.common.config.Config;
@@ -130,8 +129,14 @@ public class MySQLStorageEngineTest {
 
     engine.connect();
 
+    // Proper table and procedure needed because the initialization succeeds
     engine.executeUpdateQuery(
         "CREATE TABLE high_version__players (id INT AUTO_INCREMENT, uuid BINARY(16), name VARCHAR(16), PRIMARY KEY(id)) COMMENT = 'v1000'");
+    engine.executeUpdateQuery(
+        "CREATE PROCEDURE `high_version__procdure_update_player_data` (IN `vuuid` BINARY(16), IN `vname` VARCHAR(16)) "
+            + "IF EXISTS (SELECT * FROM `high_version__players` WHERE `uuid` = vuuid LIMIT 1) THEN "
+            + "UPDATE `high_version__players` SET `name` = vname WHERE `uuid` = vuuid; ELSE "
+            + "INSERT INTO `high_version__players` (`uuid`, `name`) VALUES (vuuid, vname); END IF");
     engine.executeUpdateQuery("CREATE TABLE high_version__ladders (id INT) COMMENT = 'v1000'");
     engine.executeUpdateQuery("CREATE TABLE high_version__ladder_steps (id INT) COMMENT = 'v1000'");
     engine.executeUpdateQuery("CREATE TABLE high_version__punishments (id INT) COMMENT = 'v1000'");
@@ -184,9 +189,8 @@ public class MySQLStorageEngineTest {
   }
 
   @Test
-  @Ignore("Old MariaDB version in the bundled MariaDB jar still doesn't like UPSERTs")
-  public void updateUserDataTest() throws SQLException, InterruptedException, ExecutionException {
-    final MySQLStorageEngineHelper engine = getStorageEngine("update_user_data__");
+  public void updatePlayerDataTest() throws SQLException, InterruptedException, ExecutionException {
+    final MySQLStorageEngineHelper engine = getStorageEngine("update_player_data__");
 
     engine.initialize();
 

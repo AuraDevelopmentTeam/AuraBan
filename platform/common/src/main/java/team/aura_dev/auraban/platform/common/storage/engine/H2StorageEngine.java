@@ -390,7 +390,7 @@ public class H2StorageEngine extends SQLStorageEngine {
   }
 
   @Override
-  protected void updateDataSync(UUID uuid, String playerName) throws SQLException {
+  protected void updatePlayerDataSync(UUID uuid, String playerName) throws SQLException {
     try (NamedPreparedStatement statement =
         prepareStatement("MERGE INTO players (uuid, name) KEY (uuid) VALUES (:uuid, :name)")) {
       statement.setBytes("uuid", UuidUtils.asBytes(uuid));

@@ -94,7 +94,7 @@ public abstract class SQLStorageEngine implements StorageEngine {
     connect();
     createTables();
 
-    updateDataSync(CONSOLE_UUID, "Console");
+    updatePlayerDataSync(CONSOLE_UUID, "Console");
   }
 
   protected abstract void connect() throws SQLException;
@@ -153,7 +153,7 @@ public abstract class SQLStorageEngine implements StorageEngine {
     return CompletableFuture.supplyAsync(
         () -> {
           try {
-            updateDataSync(uuid, playerName);
+            updatePlayerDataSync(uuid, playerName);
 
             return loadPlayerDataSync(uuid).get();
           } catch (SQLException e) {
@@ -166,7 +166,7 @@ public abstract class SQLStorageEngine implements StorageEngine {
 
   protected abstract Optional<PlayerData> loadPlayerDataSync(UUID uuid) throws SQLException;
 
-  protected abstract void updateDataSync(UUID uuid, String playerName) throws SQLException;
+  protected abstract void updatePlayerDataSync(UUID uuid, String playerName) throws SQLException;
 
   protected abstract Map<Integer, Punishment> loadPunishmentsSync(UUID uuid) throws SQLException;
 

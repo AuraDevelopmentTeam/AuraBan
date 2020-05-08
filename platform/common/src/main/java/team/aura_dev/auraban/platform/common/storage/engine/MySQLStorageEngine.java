@@ -63,6 +63,9 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   protected final String tablePunishmentPoints;
   protected final String tableVPunishmentPointsResolved;
 
+  // Procedure Names
+  protected final String procdureUpdatePlayerData;
+
   // Data Source
   protected HikariDataSource dataSource;
 
@@ -116,6 +119,8 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     this.tableVActiveBansResolved = tablePrefix + "active_bans_resolved";
     this.tablePunishmentPoints = tablePrefix + "punishment_points";
     this.tableVPunishmentPointsResolved = tablePrefix + "punishment_points_resolved";
+
+    this.procdureUpdatePlayerData = tablePrefix + "procdure_update_player_data";
   }
 
   @Override
@@ -205,6 +210,36 @@ public class MySQLStorageEngine extends SQLStorageEngine {
                 + SCHEME_VERSION
                 + "' DEFAULT CHARSET = "
                 + encoding);
+        // updatePlayerData
+        executeUpdateQuery(
+            // Procedure Name
+            "CREATE PROCEDURE `"
+                + procdureUpdatePlayerData
+                + "` ("
+                // Parameters
+                + "IN `vuuid` BINARY(16), IN `vname` VARCHAR(16)"
+                // End Procedure Head
+                + ") "
+                // Start Procedure Body
+                + "IF EXISTS ("
+                // Start Condition
+                + "SELECT * FROM `"
+                + tablePlayers
+                + "` WHERE `uuid` = vuuid LIMIT 1"
+                // End Condition
+                + ") THEN "
+                // Start Update Query
+                + "UPDATE `"
+                + tablePlayers
+                + "` SET `name` = vname WHERE `uuid` = vuuid; "
+                // End Update Query
+                + "ELSE "
+                // Start Insert Query
+                + "INSERT INTO `"
+                + tablePlayers
+                + "` (`uuid`, `name`) VALUES (vuuid, vname); "
+                // End Insert Query
+                + "END IF;");
     }
   }
 
@@ -541,10 +576,9 @@ public class MySQLStorageEngine extends SQLStorageEngine {
   }
 
   @Override
-  protected void updateDataSync(UUID uuid, String playerName) throws SQLException {
+  protected void updatePlayerDataSync(UUID uuid, String playerName) throws SQLException {
     try (NamedPreparedStatement statement =
-        prepareStatement(
-            "REPLACE INTO `" + tablePlayers + "` (`uuid`, `name`) VALUES (:uuid, :name)")) {
+        prepareStatement("CALL `" + procdureUpdatePlayerData + "` (:uuid, :name)")) {
       statement.setBytes("uuid", UuidUtils.asBytes(uuid));
       statement.setString("name", playerName);
 
