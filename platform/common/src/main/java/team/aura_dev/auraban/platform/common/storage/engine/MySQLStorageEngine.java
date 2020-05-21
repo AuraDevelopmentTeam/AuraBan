@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.NonNull;
 import team.aura_dev.auraban.api.player.PlayerData;
 import team.aura_dev.auraban.api.punishment.Punishment;
@@ -149,6 +150,7 @@ public class MySQLStorageEngine extends SQLStorageEngine {
     config.setConnectionTimeout(connectionTimeout);
     config.setInitializationFailTimeout(connectionTimeout);
     config.setMaxLifetime(maximumLifetime);
+    config.addDataSourceProperty("socketTimeout", TimeUnit.SECONDS.toMillis(30));
     config.setMaximumPoolSize(maximumPoolSize);
     config.setMinimumIdle(minimumIdle);
 
