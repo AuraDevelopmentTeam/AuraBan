@@ -1,6 +1,6 @@
 # [AuraBan](https://github.com/AuraDevelopmentTeam/AuraBan)
 
-[![Build Status](https://gitlab.aura-dev.team/AuraDev/AuraBan/badges/master/build.svg)](https://gitlab.aura-dev.team/AuraDev/AuraBan/pipelines)
+[![Build Status](https://gitlab.aura-dev.team/AuraDev/AuraBan/badges/master/pipeline.svg)](https://gitlab.aura-dev.team/AuraDev/AuraBan/pipelines)
 [![Coverage Report](https://gitlab.aura-dev.team/AuraDev/AuraBan/badges/master/coverage.svg)](https://gitlab.aura-dev.team/AuraDev/AuraBan/pipelines)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3ff1ca2dbeea436bb9a335ea58cf39d1)](https://www.codacy.com/manual/AuraDevelopmentTeam/AuraBan?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AuraDevelopmentTeam/AuraBan&amp;utm_campaign=Badge_Grade)
 
