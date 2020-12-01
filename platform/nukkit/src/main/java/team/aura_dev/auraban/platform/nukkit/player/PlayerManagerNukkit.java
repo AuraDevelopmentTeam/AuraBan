@@ -1,6 +1,6 @@
 package team.aura_dev.auraban.platform.nukkit.player;
 
-import cn.nukkit.Player;
+import cn.nukkit.player.Player;
 import java.util.UUID;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
@@ -21,7 +21,7 @@ public class PlayerManagerNukkit extends PlayerManagerCommon {
     } else if (player instanceof Player) {
       final Player nativePlayer = (Player) player;
 
-      uuid = nativePlayer.getUniqueId();
+      uuid = new UUID(nativePlayer.getUniqueId(), 0L);
       playerName = nativePlayer.getName();
     } else {
       throw new IllegalArgumentException(

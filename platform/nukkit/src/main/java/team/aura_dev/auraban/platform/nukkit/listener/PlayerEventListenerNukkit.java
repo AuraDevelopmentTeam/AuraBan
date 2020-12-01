@@ -5,6 +5,7 @@ import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerAsyncPreLoginEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
+import java.util.UUID;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 
@@ -22,6 +23,6 @@ public class PlayerEventListenerNukkit implements Listener {
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void onPlayerLeave(PlayerQuitEvent event) {
-    playerManager.unloadPlayer(event.getPlayer().getUniqueId());
+    playerManager.unloadPlayer(new UUID(event.getPlayer().getUniqueId(), 0L));
   }
 }
