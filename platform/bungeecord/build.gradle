@@ -29,17 +29,6 @@ dependencies {
     slf4j "team.aura_dev.lib.slf4j-plugin.bungeecord:slf4j-plugin-bungeecord:${project(":AuraBan-common").slf4jPlugin_version}:${project(":AuraBan-common").slf4j_version}"
 }
 
-processSources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "slf4jVersion", project(":AuraBan-common").slf4j_version
-    inputs.property "slf4jPluginVersion", project(":AuraBan-common").slf4jPlugin_version
-
-    filter (ReplaceTokens, tokens: [
-        "slf4jVersion": project(":AuraBan-common").slf4j_version,
-        "slf4jPluginVersion": project(":AuraBan-common").slf4jPlugin_version
-    ])
-}
-
 shadowJar {
     from(project.configurations.slf4j.files) {
         into "org/slf4j"
