@@ -1,17 +1,8 @@
 apply from: "../../GradleCommon/common.gradle"
 
-import org.apache.tools.ant.filters.ReplaceTokens
-
 configurations {
     slf4j {
         transitive = false
-    }
-}
-
-repositories {
-    maven {
-        name "mikroskeem"
-        url "https://repo.wut.ee/repository/mikroskeem-repo"
     }
 }
 
@@ -30,6 +21,11 @@ dependencies {
 }
 
 shadowJar {
+    relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
+    relocate("licenses", "${rootProject.group}.shadow.licenses")
+    relocate("org.apache", "${rootProject.group}.shadow.org.apache")
+    relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")
+
     from(project.configurations.slf4j.files) {
         into "org/slf4j"
         rename '(.*).jar', '$1.zip'
