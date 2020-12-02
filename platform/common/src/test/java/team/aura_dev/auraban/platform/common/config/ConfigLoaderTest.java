@@ -14,12 +14,12 @@ public class ConfigLoaderTest {
     final ConfigLoader loader = new ConfigLoader(plugin);
 
     assertEquals(
-        "|                                         __                                                                            | #\n"
-            + "|                             /\\     _ _ |__) _  _    AuraBan v"
+        "|                            __                                                                                         | #\n"
+            + "|                /\\     _ _ |__) _  _    AuraBan v"
             + AuraBanApi.VERSION
-            + repeat(' ', 29 - AuraBanApi.VERSION.length())
-            + "                            | #\n"
-            + "|                            /--\\|_|| (_||__)(_|| )   Proudly running on Testing - Unittests                            | #\n"
+            + repeat(' ', 55 - AuraBanApi.VERSION.length())
+            + "               | #\n"
+            + "|               /--\\|_|| (_||__)(_|| )   Proudly running on Testing - Unittests (Here's some extra text)                | #\n"
             + "|                                                                                                                       | #\n",
         loader.getBanner());
   }

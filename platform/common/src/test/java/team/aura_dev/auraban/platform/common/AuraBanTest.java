@@ -20,7 +20,8 @@ public class AuraBanTest extends AuraBanBase {
 
   @Override
   public String getPlatformVariant() {
-    return "Unittests";
+    // Some extra text so long version names aren't an issue
+    return "Unittests (Here's some extra text)";
   }
 
   @Override
