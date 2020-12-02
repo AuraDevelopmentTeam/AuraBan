@@ -21,7 +21,7 @@ public class PlayerManagerNukkit extends PlayerManagerCommon {
     } else if (player instanceof Player) {
       final Player nativePlayer = (Player) player;
 
-      uuid = new UUID(nativePlayer.getUniqueId(), 0L);
+      uuid = nativePlayer.getServerId();
       playerName = nativePlayer.getName();
     } else {
       throw new IllegalArgumentException(
