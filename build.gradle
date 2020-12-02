@@ -56,37 +56,6 @@ dependencies {
     slf4j "team.aura_dev.lib.slf4j-plugin.spigot:slf4j-plugin-spigot:${project(":AuraBan-common").slf4jPlugin_version}:${project(":AuraBan-common").slf4j_version}"
 }
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "lang"
-        exclude "assets/*/lang"
-        exclude "*.conf"
-        exclude pngPatterns
-        exclude "**/*.ogg"
-
-        expand \
-            "id": rootProject.pluginId,
-            "name": rootProject.pluginName,
-            "version": rootProject.version,
-            "group": rootProject.group,
-            "description": rootProject.description,
-            "build": rootProject.buildNum,
-            "buildType": rootProject.buildType,
-            "minecraftVersion": rootProject.minecraft_version
-    }
-}
-
-processSources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "slf4jVersion", project(":AuraBan-common").slf4j_version
-    inputs.property "slf4jPluginVersion", project(":AuraBan-common").slf4jPlugin_version
-
-    filter (ReplaceTokens, tokens: [
-        "slf4jVersion": project(":AuraBan-common").slf4j_version,
-        "slf4jPluginVersion": project(":AuraBan-common").slf4jPlugin_version
-    ])
-}
-
 shadowJar {
     relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
     relocate("licenses", "${rootProject.group}.shadow.licenses")
