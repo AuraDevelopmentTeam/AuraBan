@@ -2,19 +2,6 @@ apply from: "../../GradleCommon/common.gradle"
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
-evaluationDependsOn(":AuraBan-common")
-
-sourceSets {
-    main {
-        java {
-            srcDir project(":AuraBan-common").sourceSets.main.java.srcDirs
-        }
-        resources {
-            srcDir project(":AuraBan-common").sourceSets.main.resources.srcDirs
-        }
-    }
-}
-
 repositories {
     maven {
         name "mikroskeem"
@@ -24,6 +11,13 @@ repositories {
 
 dependencies {
     api project(":AuraBan-common")
+
+    shadow(project(":AuraBan-api")) {
+        transitive = false
+    }
+    shadow(project(":AuraBan-common")) {
+        transitive = false
+    }
 
     shadow "eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}"
 }

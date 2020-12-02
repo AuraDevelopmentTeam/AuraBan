@@ -2,37 +2,9 @@ apply from: "GradleCommon/common.gradle"
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
-evaluationDependsOn(":AuraBan-api")
-evaluationDependsOn(":AuraBan-bungeecord")
-evaluationDependsOn(":AuraBan-velocity")
-evaluationDependsOn(":AuraBan-nukkit")
-evaluationDependsOn(":AuraBan-spigot")
-evaluationDependsOn(":AuraBan-sponge")
-
 configurations {
     slf4j {
         transitive = false
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir project(":AuraBan-api").sourceSets.main.java.srcDirs
-            srcDir project(":AuraBan-bungeecord").sourceSets.main.java.srcDirs
-            srcDir project(":AuraBan-velocity").sourceSets.main.java.srcDirs
-            srcDir project(":AuraBan-nukkit").sourceSets.main.java.srcDirs
-            srcDir project(":AuraBan-spigot").sourceSets.main.java.srcDirs
-            srcDir project(":AuraBan-sponge").sourceSets.main.java.srcDirs
-        }
-        resources {
-            srcDir project(":AuraBan-api").sourceSets.main.resources.srcDirs
-            srcDir project(":AuraBan-bungeecord").sourceSets.main.resources.srcDirs
-            srcDir project(":AuraBan-velocity").sourceSets.main.resources.srcDirs
-            srcDir project(":AuraBan-nukkit").sourceSets.main.resources.srcDirs
-            srcDir project(":AuraBan-spigot").sourceSets.main.resources.srcDirs
-            srcDir project(":AuraBan-sponge").sourceSets.main.resources.srcDirs
-        }
     }
 }
 
@@ -44,12 +16,33 @@ repositories {
 }
 
 dependencies {
-    api project(":AuraBan-api")
     api project(":AuraBan-bungeecord")
     api project(":AuraBan-velocity")
     api project(":AuraBan-nukkit")
     api project(":AuraBan-spigot")
     api project(":AuraBan-sponge")
+    
+    shadow(project(":AuraBan-api")) {
+        transitive = false
+    }
+    shadow(project(":AuraBan-common")) {
+        transitive = false
+    }
+    shadow(project(":AuraBan-bungeecord")) {
+        transitive = false
+    }
+    shadow(project(":AuraBan-velocity")) {
+        transitive = false
+    }
+    shadow(project(":AuraBan-nukkit")) {
+        transitive = false
+    }
+    shadow(project(":AuraBan-spigot")) {
+        transitive = false
+    }
+    shadow(project(":AuraBan-sponge")) {
+        transitive = false
+    }
 
     // Shadow dependencies
     shadow("eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}") {

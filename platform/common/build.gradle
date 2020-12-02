@@ -2,22 +2,9 @@ apply from: "../../GradleCommon/common.gradle"
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
-evaluationDependsOn(":AuraBan-api")
-
 configurations {
     slf4j {
         transitive = false
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir project(":AuraBan-api").sourceSets.main.java.srcDirs
-        }
-        resources {
-            srcDir project(":AuraBan-api").sourceSets.main.resources.srcDirs
-        }
     }
 }
 
@@ -34,6 +21,10 @@ repositories {
 
 dependencies {
     api project(":AuraBan-api")
+
+    shadow(project(":AuraBan-api")) {
+        transitive = false
+    }
 
     // Normal dependencies
     api "com.github.ben-manes.caffeine:caffeine:${caffeine_version}"
