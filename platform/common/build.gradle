@@ -33,7 +33,9 @@ dependencies {
     api "com.zaxxer:HikariCP:${hikariCP_version}"
 
     // Shadow dependencies
-    shadow "eu.mikroskeem:picomaven:${picoMaven_version}"
+    shadow("eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}") {
+        exclude group: "org.slf4j"
+    }
 
     // Test dependencies
     testImplementation "ch.vorburger.mariaDB4j:mariaDB4j:2.4.0"
