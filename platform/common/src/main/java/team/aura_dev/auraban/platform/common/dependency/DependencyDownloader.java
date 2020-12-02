@@ -1,5 +1,6 @@
 package team.aura_dev.auraban.platform.common.dependency;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import eu.mikroskeem.picomaven.DownloadResult;
 import eu.mikroskeem.picomaven.PicoMaven;
 import eu.mikroskeem.picomaven.artifact.Dependency;
@@ -24,6 +25,9 @@ public class DependencyDownloader {
   private static final DependencyClassLoader classLoader =
       AuraBanBaseBootstrap.getDependencyClassLoader();
 
+  @SuppressFBWarnings(
+      value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+      justification = "SpotBugs is incorrect in this case")
   public static void downloadAndInjectInClasspath(
       Collection<RuntimeDependency> dependencies, Path libPath) {
     try {

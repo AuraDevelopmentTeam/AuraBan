@@ -2,6 +2,7 @@ package team.aura_dev.auraban.platform.common.player;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +31,9 @@ public abstract class PlayerManagerCommon implements PlayerManager {
             .build(storageEngine::loadPlayerData);
   }
 
+  @SuppressFBWarnings(
+      value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+      justification = "SpotBugs is incorrect in this case")
   @Override
   public Optional<PlayerData> getPlayerData(@Nonnull @NonNull UUID uuid) {
     try {
