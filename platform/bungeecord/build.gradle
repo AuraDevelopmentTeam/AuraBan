@@ -25,13 +25,7 @@ dependencies {
         transitive = false
     }
 
-    // Shadow dependencies
-    shadow("eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}") {
-        exclude group: "org.slf4j"
-    }
-
     // SLF4J files
-    slf4j "org.slf4j:slf4j-api:${project(":AuraBan-common").slf4j_version}"
     slf4j "team.aura_dev.lib.slf4j-plugin.bungeecord:slf4j-plugin-bungeecord:${project(":AuraBan-common").slf4jPlugin_version}:${project(":AuraBan-common").slf4j_version}"
 }
 
@@ -47,13 +41,6 @@ processSources {
 }
 
 shadowJar {
-    relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
-    relocate("licenses", "${rootProject.group}.shadow.licenses")
-    relocate("org.apache", "${rootProject.group}.shadow.org.apache")
-    relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")
-
-    exclude "module-info.class"
-
     from(project.configurations.slf4j.files) {
         into "org/slf4j"
         rename '(.*).jar', '$1.zip'

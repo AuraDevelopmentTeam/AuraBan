@@ -18,11 +18,6 @@ dependencies {
     shadow(project(":AuraBan-common")) {
         transitive = false
     }
-
-    // Shadow dependencies
-    shadow("eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}") {
-        exclude group: "org.slf4j"
-    }
 }
 
 processSources {
@@ -34,13 +29,4 @@ processSources {
         "slf4jVersion": project(":AuraBan-common").slf4j_version,
         "slf4jPluginVersion": project(":AuraBan-common").slf4jPlugin_version
     ])
-}
-
-shadowJar {
-    relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
-    relocate("licenses", "${rootProject.group}.shadow.licenses")
-    relocate("org.apache", "${rootProject.group}.shadow.org.apache")
-    relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")
-
-    exclude "module-info.class"
 }
