@@ -100,3 +100,9 @@ shadowJar {
         rename '(.*).jar', '$1.zip'
     }
 }
+
+delombok {
+    onlyIf {
+        false
+    }
+}
