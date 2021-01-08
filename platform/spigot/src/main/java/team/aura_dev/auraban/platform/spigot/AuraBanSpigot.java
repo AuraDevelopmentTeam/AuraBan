@@ -7,12 +7,14 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 import team.aura_dev.auraban.platform.spigot.listener.PlayerEventListenerSpigot;
 import team.aura_dev.auraban.platform.spigot.player.PlayerManagerSpigot;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 
 public class AuraBanSpigot extends AuraBanBase {
   private final AuraBanSpigotBootstrap plugin;
 
-  public AuraBanSpigot(AuraBanSpigotBootstrap plugin, Path configDir) {
-    super(configDir);
+  public AuraBanSpigot(
+      DependencyClassLoader classLoader, AuraBanSpigotBootstrap plugin, Path configDir) {
+    super(classLoader, configDir);
 
     this.plugin = plugin;
 

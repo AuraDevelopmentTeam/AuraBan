@@ -7,13 +7,18 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 import team.aura_dev.auraban.platform.nukkit.listener.PlayerEventListenerNukkit;
 import team.aura_dev.auraban.platform.nukkit.player.PlayerManagerNukkit;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 
 public class AuraBanNukkit extends AuraBanBase {
   private final AuraBanNukkitBootstrap plugin;
   private final Server server;
 
-  public AuraBanNukkit(AuraBanNukkitBootstrap plugin, Server server, Path configDir) {
-    super(configDir);
+  public AuraBanNukkit(
+      DependencyClassLoader classLoader,
+      AuraBanNukkitBootstrap plugin,
+      Server server,
+      Path configDir) {
+    super(classLoader, configDir);
 
     this.plugin = plugin;
     this.server = server;

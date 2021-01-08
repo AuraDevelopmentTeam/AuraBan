@@ -13,12 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import team.aura_dev.auraban.api.AuraBanApi;
 import team.aura_dev.auraban.platform.common.config.ConfigLoader;
-import team.aura_dev.auraban.platform.common.dependency.DependencyDownloader;
-import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
+import team.aura_dev.auraban.platform.common.dependency.RuntimeDependencies;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 import team.aura_dev.auraban.platform.common.punishment.PunishmentManagerCommon;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 import team.aura_dev.auraban.platform.common.storage.StorageEngineData;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
+import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
+import team.aura_dev.lib.multiplatformcore.download.DependencyDownloader;
 
 @SuppressFBWarnings(
     value = {"JLM_JSR166_UTILCONCURRENT_MONITORENTER", "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"},
@@ -31,8 +33,10 @@ public abstract class AuraBanBase implements AuraBanApi {
   @Getter protected PlayerManagerCommon playerManager;
   @Getter protected PunishmentManagerCommon punishmentManager;
 
+  @Getter protected final DependencyClassLoader classLoader;
   @Getter protected final Path configDir;
   @Getter protected final Path libsDir;
+  @Getter protected final DependencyDownloader dependencyDownloader;
 
   @Getter(lazy = true)
   private final List<String> asciiBanner = generateAsciiBanner();
@@ -41,15 +45,17 @@ public abstract class AuraBanBase implements AuraBanApi {
   protected StorageEngineData storageEngineData;
   protected StorageEngine storageEngine;
 
-  protected AuraBanBase(Path configDir) {
+  protected AuraBanBase(DependencyClassLoader classLoader, Path configDir) {
     if (instance != null) {
       throw new IllegalStateException("AuraBan has already been initialized!");
     }
 
     instance = this;
 
+    this.classLoader = classLoader;
     this.configDir = configDir;
     this.libsDir = configDir.resolve("libs");
+    this.dependencyDownloader = new DependencyDownloader(classLoader, libsDir);
   }
 
   public abstract String getBasePlatform();
@@ -68,7 +74,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     final List<RuntimeDependency> dependencies = new LinkedList<>();
 
     // We need Configurate for the config
-    dependencies.add(RuntimeDependency.CONFIGURATE_HOCON);
+    dependencies.add(RuntimeDependencies.CONFIGURATE_HOCON);
 
     // We don't need to download dependencies already present
     dependencies.removeAll(getPlatformDependencies());
@@ -82,7 +88,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     // We need all dependencies of the storage type
     dependencies.addAll(storageEngineData.getRequiredRuntimeDependencies());
     // We need caffeine as a loading cache in several classes
-    dependencies.add(RuntimeDependency.CAFFEINE);
+    dependencies.add(RuntimeDependencies.CAFFEINE);
 
     // We don't need to download dependencies already present
     dependencies.removeAll(getPlatformDependencies());
@@ -130,7 +136,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     }
 
     logger.info("Downloading early dependencies");
-    DependencyDownloader.downloadAndInjectInClasspath(getEarlyDependencies(), getLibsDir());
+    dependencyDownloader.downloadAndInjectInClasspath(getEarlyDependencies());
 
     configLoader = new ConfigLoader(this);
     configLoader.loadConfig();
@@ -143,7 +149,7 @@ public abstract class AuraBanBase implements AuraBanApi {
     storageEngineData = configLoader.getConfig().getStorage().getStorageEngineData();
 
     logger.info("Downloading dependencies");
-    DependencyDownloader.downloadAndInjectInClasspath(getDependencies(), getLibsDir());
+    dependencyDownloader.downloadAndInjectInClasspath(getDependencies());
 
     logger.info("Storage Engine: " + storageEngineData.getName());
     storageEngine = storageEngineData.createInstance();

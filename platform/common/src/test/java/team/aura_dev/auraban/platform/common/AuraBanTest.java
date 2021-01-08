@@ -2,15 +2,22 @@ package team.aura_dev.auraban.platform.common;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 
 public class AuraBanTest extends AuraBanBase {
+  private static final DependencyClassLoader dependencyClassLoader =
+      AccessController.doPrivileged(
+          (PrivilegedAction<DependencyClassLoader>) () -> new DependencyClassLoader("@group@"));
+
   public AuraBanTest() {
-    this(Paths.get(""));
+    this(dependencyClassLoader, Paths.get(""));
   }
 
-  public AuraBanTest(Path configDir) {
-    super(configDir);
+  public AuraBanTest(DependencyClassLoader classLoader, Path configDir) {
+    super(classLoader, configDir);
   }
 
   @Override

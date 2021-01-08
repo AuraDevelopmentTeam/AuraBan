@@ -33,8 +33,8 @@ dependencies {
     api "com.zaxxer:HikariCP:${hikariCP_version}"
 
     // Shadow dependencies
-    shadow("eu.mikroskeem:picomaven:${project(":AuraBan-common").picoMaven_version}") {
-        exclude group: "org.slf4j"
+    shadow("team.aura_dev.lib.multiplatformcore:MultiPlatformCore:${multiPlatformCore_version}") {
+        transitive = false
     }
 
     // Test dependencies
@@ -58,7 +58,7 @@ processSources {
 }
 
 shadowJar {
-    relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
+    relocate("${rootProject.baseGroup}.lib", "${rootProject.group}.lib")
     relocate("licenses", "${rootProject.group}.shadow.licenses")
     relocate("org.apache", "${rootProject.group}.shadow.org.apache")
     relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")

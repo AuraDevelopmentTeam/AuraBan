@@ -6,15 +6,6 @@ configurations {
     }
 }
 
-allprojects {
-    repositories {
-        maven {
-            name "mikroskeem"
-            url "https://repo.wut.ee/repository/mikroskeem-repo"
-        }
-    }
-}
-
 dependencies {
     api project(":AuraBan-bungeecord")
     api project(":AuraBan-velocity")
@@ -52,7 +43,7 @@ dependencies {
 }
 
 shadowJar {
-    relocate("eu.mikroskeem", "${rootProject.group}.shadow.eu.mikroskeem")
+    relocate("${rootProject.baseGroup}.lib", "${rootProject.group}.lib")
     relocate("licenses", "${rootProject.group}.shadow.licenses")
     relocate("org.apache", "${rootProject.group}.shadow.org.apache")
     relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")

@@ -4,9 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.auraban.platform.common.config.Config;
-import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
+import team.aura_dev.auraban.platform.common.dependency.RuntimeDependencies;
 import team.aura_dev.auraban.platform.common.storage.StorageEngine;
 import team.aura_dev.auraban.platform.common.storage.StorageEngineData;
+import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
 @RequiredArgsConstructor
 public class MySQLStorageEngineData implements StorageEngineData {
@@ -19,7 +20,7 @@ public class MySQLStorageEngineData implements StorageEngineData {
 
   @Override
   public List<RuntimeDependency> getRequiredRuntimeDependencies() {
-    return Arrays.asList(RuntimeDependency.HIKARI_CP, RuntimeDependency.MARIADB_CLIENT);
+    return Arrays.asList(RuntimeDependencies.HIKARI_CP, RuntimeDependencies.MARIADB_CLIENT);
   }
 
   @Override

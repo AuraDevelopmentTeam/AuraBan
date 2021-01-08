@@ -7,13 +7,18 @@ import team.aura_dev.auraban.platform.bungeecord.listener.PlayerEventListenerBun
 import team.aura_dev.auraban.platform.bungeecord.player.PlayerManagerBungeeCord;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 
 public class AuraBanBungeeCord extends AuraBanBase {
   private final AuraBanBungeeCordBootstrap plugin;
   private final ProxyServer server;
 
-  public AuraBanBungeeCord(AuraBanBungeeCordBootstrap plugin, ProxyServer server, Path configDir) {
-    super(configDir);
+  public AuraBanBungeeCord(
+      DependencyClassLoader classLoader,
+      AuraBanBungeeCordBootstrap plugin,
+      ProxyServer server,
+      Path configDir) {
+    super(classLoader, configDir);
 
     this.plugin = plugin;
     this.server = server;

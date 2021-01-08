@@ -7,16 +7,19 @@ import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import team.aura_dev.auraban.api.AuraBan;
 import team.aura_dev.auraban.platform.common.AuraBanBase;
-import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
+import team.aura_dev.auraban.platform.common.dependency.RuntimeDependencies;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 import team.aura_dev.auraban.platform.sponge.listener.PlayerEventListenerSponge;
 import team.aura_dev.auraban.platform.sponge.player.PlayerManagerSponge;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
+import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
 public class AuraBanSponge extends AuraBanBase {
   private final AuraBanSpongeBootstrap plugin;
 
-  public AuraBanSponge(AuraBanSpongeBootstrap plugin, Path configDir) {
-    super(configDir);
+  public AuraBanSponge(
+      DependencyClassLoader classLoader, AuraBanSpongeBootstrap plugin, Path configDir) {
+    super(classLoader, configDir);
 
     this.plugin = plugin;
 
@@ -37,7 +40,7 @@ public class AuraBanSponge extends AuraBanBase {
   @Override
   public Collection<RuntimeDependency> getPlatformDependencies() {
     // MARIADB_CLIENT, HIKARI_CP and CAFFEINE is present but outdated, so we use the newer version
-    return Arrays.asList(RuntimeDependency.CONFIGURATE_HOCON, RuntimeDependency.H2_DATABASE);
+    return Arrays.asList(RuntimeDependencies.CONFIGURATE_HOCON, RuntimeDependencies.H2_DATABASE);
   }
 
   @Override

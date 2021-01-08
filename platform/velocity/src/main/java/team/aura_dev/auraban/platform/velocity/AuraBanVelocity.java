@@ -7,13 +7,18 @@ import team.aura_dev.auraban.platform.common.AuraBanBase;
 import team.aura_dev.auraban.platform.common.player.PlayerManagerCommon;
 import team.aura_dev.auraban.platform.velocity.listener.PlayerEventListenerVelocity;
 import team.aura_dev.auraban.platform.velocity.player.PlayerManagerVelocity;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 
 public class AuraBanVelocity extends AuraBanBase {
   private final AuraBanVelocityBootstrap plugin;
   private final ProxyServer server;
 
-  public AuraBanVelocity(AuraBanVelocityBootstrap plugin, ProxyServer server, Path configDir) {
-    super(configDir);
+  public AuraBanVelocity(
+      DependencyClassLoader classLoader,
+      AuraBanVelocityBootstrap plugin,
+      ProxyServer server,
+      Path configDir) {
+    super(classLoader, configDir);
 
     this.plugin = plugin;
     this.server = server;

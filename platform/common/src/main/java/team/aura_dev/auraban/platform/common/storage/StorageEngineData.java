@@ -1,7 +1,7 @@
 package team.aura_dev.auraban.platform.common.storage;
 
 import java.util.List;
-import team.aura_dev.auraban.platform.common.dependency.RuntimeDependency;
+import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
 public interface StorageEngineData {
   String getName();
