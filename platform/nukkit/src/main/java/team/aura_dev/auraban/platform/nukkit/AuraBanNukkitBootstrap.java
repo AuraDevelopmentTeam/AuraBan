@@ -10,7 +10,7 @@ public class AuraBanNukkitBootstrap extends PluginBase {
   @Override
   public void onLoad() {
     final AuraBanBootstrapper bootstrapper = new AuraBanBootstrapper();
-    bootstrapper.checkAndLoadSLF4J(getDataFolder().toPath().resolve("libs"), "nukkit");
+    bootstrapper.checkAndLoadSLF4JPlugin(getDataFolder().toPath().resolve("libs"), "nukkit");
     bootstrapper.initializePlugin(this, getServer(), getDataFolder().toPath());
 
     bootstrappedPlugin = bootstrapper.getPlugin();

@@ -28,8 +28,7 @@ public class AuraBanBootstrapper extends MultiProjectSLF4JBootstrapper<AuraBanBa
    * @param type Which type of the slf4j-plugin-xxx to use
    * @see #checkAndLoadSLF4J(Path, String, String)
    */
-  @Override
-  public void checkAndLoadSLF4J(Path libsPath, String type) {
-    checkAndLoadSLF4J(libsPath, "@slf4jVersion@", type + "-@slf4jPluginVersion@");
+  public void checkAndLoadSLF4JPlugin(Path libsPath, String type) {
+    checkAndLoadSLF4J(libsPath, "@slf4jVersion@", "plugin-" + type + "-@slf4jPluginVersion@");
   }
 }
