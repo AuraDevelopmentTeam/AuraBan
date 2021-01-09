@@ -3,20 +3,23 @@ package team.aura_dev.auraban.platform.bungeecord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
+import team.aura_dev.auraban.platform.common.AuraBanBootstrapper;
 
 public class AuraBanBungeeCordBootstrap extends Plugin {
-  private AuraBanBaseBootstrap bootstrapPlugin;
+  private AuraBanBaseBootstrap bootstrappedPlugin;
 
   @Override
   public void onLoad() {
-    bootstrapPlugin = new AuraBanBaseBootstrap();
-    bootstrapPlugin.checkAndLoadSLF4J(getDataFolder().toPath().resolve("libs"), "bungeecord");
-    bootstrapPlugin.initializePlugin(this, ProxyServer.getInstance(), getDataFolder().toPath());
+    final AuraBanBootstrapper bootstrapper = new AuraBanBootstrapper();
+    bootstrapper.checkAndLoadSLF4J(getDataFolder().toPath().resolve("libs"), "bungeecord");
+    bootstrapper.initializePlugin(this, ProxyServer.getInstance(), getDataFolder().toPath());
+
+    bootstrappedPlugin = bootstrapper.getPlugin();
   }
 
   @Override
   public void onEnable() {
-    bootstrapPlugin.preInitPlugin();
-    bootstrapPlugin.initPlugin();
+    bootstrappedPlugin.preInitPlugin();
+    bootstrappedPlugin.initPlugin();
   }
 }

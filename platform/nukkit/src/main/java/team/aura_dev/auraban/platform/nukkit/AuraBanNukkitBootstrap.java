@@ -2,20 +2,23 @@ package team.aura_dev.auraban.platform.nukkit;
 
 import cn.nukkit.plugin.PluginBase;
 import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
+import team.aura_dev.auraban.platform.common.AuraBanBootstrapper;
 
 public class AuraBanNukkitBootstrap extends PluginBase {
-  private AuraBanBaseBootstrap bootstrapPlugin;
+  private AuraBanBaseBootstrap bootstrappedPlugin;
 
   @Override
   public void onLoad() {
-    bootstrapPlugin = new AuraBanBaseBootstrap();
-    bootstrapPlugin.checkAndLoadSLF4J(getDataFolder().toPath().resolve("libs"), "nukkit");
-    bootstrapPlugin.initializePlugin(this, getServer(), getDataFolder().toPath());
+    final AuraBanBootstrapper bootstrapper = new AuraBanBootstrapper();
+    bootstrapper.checkAndLoadSLF4J(getDataFolder().toPath().resolve("libs"), "nukkit");
+    bootstrapper.initializePlugin(this, getServer(), getDataFolder().toPath());
+
+    bootstrappedPlugin = bootstrapper.getPlugin();
   }
 
   @Override
   public void onEnable() {
-    bootstrapPlugin.preInitPlugin();
-    bootstrapPlugin.initPlugin();
+    bootstrappedPlugin.preInitPlugin();
+    bootstrappedPlugin.initPlugin();
   }
 }

@@ -8,26 +8,29 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.nio.file.Path;
 import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
+import team.aura_dev.auraban.platform.common.AuraBanBootstrapper;
 
 @Plugin(
-    id = AuraBanBaseBootstrap.ID,
-    name = AuraBanBaseBootstrap.NAME,
-    version = AuraBanBaseBootstrap.VERSION,
-    description = AuraBanBaseBootstrap.DESCRIPTION,
-    url = AuraBanBaseBootstrap.URL,
-    authors = {AuraBanBaseBootstrap.AUTHOR})
+    id = AuraBanBootstrapper.ID,
+    name = AuraBanBootstrapper.NAME,
+    version = AuraBanBootstrapper.VERSION,
+    description = AuraBanBootstrapper.DESCRIPTION,
+    url = AuraBanBootstrapper.URL,
+    authors = {AuraBanBootstrapper.AUTHOR})
 public class AuraBanVelocityBootstrap {
-  private final AuraBanBaseBootstrap bootstrapPlugin;
+  private final AuraBanBaseBootstrap bootstrappedPlugin;
 
   @Inject
   public AuraBanVelocityBootstrap(ProxyServer server, @DataDirectory Path dataDir) {
-    bootstrapPlugin = new AuraBanBaseBootstrap();
-    bootstrapPlugin.initializePlugin(this, server, dataDir);
+    final AuraBanBootstrapper bootstrapper = new AuraBanBootstrapper();
+    bootstrapper.initializePlugin(this, server, dataDir);
+
+    bootstrappedPlugin = bootstrapper.getPlugin();
   }
 
   @Subscribe
   public void onProxyInitialization(ProxyInitializeEvent event) {
-    bootstrapPlugin.preInitPlugin();
-    bootstrapPlugin.initPlugin();
+    bootstrappedPlugin.preInitPlugin();
+    bootstrappedPlugin.initPlugin();
   }
 }

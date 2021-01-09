@@ -8,30 +8,33 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
+import team.aura_dev.auraban.platform.common.AuraBanBootstrapper;
 
 @Plugin(
-    id = AuraBanBaseBootstrap.ID,
-    name = AuraBanBaseBootstrap.NAME,
-    version = AuraBanBaseBootstrap.VERSION,
-    description = AuraBanBaseBootstrap.DESCRIPTION,
-    url = AuraBanBaseBootstrap.URL,
-    authors = {AuraBanBaseBootstrap.AUTHOR})
+    id = AuraBanBootstrapper.ID,
+    name = AuraBanBootstrapper.NAME,
+    version = AuraBanBootstrapper.VERSION,
+    description = AuraBanBootstrapper.DESCRIPTION,
+    url = AuraBanBootstrapper.URL,
+    authors = {AuraBanBootstrapper.AUTHOR})
 public class AuraBanSpongeBootstrap {
-  private final AuraBanBaseBootstrap bootstrapPlugin;
+  private final AuraBanBaseBootstrap bootstrappedPlugin;
 
   @Inject
   public AuraBanSpongeBootstrap(@ConfigDir(sharedRoot = false) Path configDir) {
-    bootstrapPlugin = new AuraBanBaseBootstrap();
-    bootstrapPlugin.initializePlugin(this, configDir);
+    final AuraBanBootstrapper bootstrapper = new AuraBanBootstrapper();
+    bootstrapper.initializePlugin(this, configDir);
+
+    bootstrappedPlugin = bootstrapper.getPlugin();
   }
 
   @Listener
   public void preInit(GamePreInitializationEvent event) {
-    bootstrapPlugin.preInitPlugin();
+    bootstrappedPlugin.preInitPlugin();
   }
 
   @Listener
   public void init(GameInitializationEvent event) {
-    bootstrapPlugin.initPlugin();
+    bootstrappedPlugin.initPlugin();
   }
 }
