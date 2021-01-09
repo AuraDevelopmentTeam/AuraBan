@@ -25,11 +25,11 @@ public class AuraBanBootstrapper extends MultiProjectSLF4JBootstrapper<AuraBanBa
    * {@code slf4jVersion} defaults to @slf4jVersion@
    *
    * @param libsPath Where to unpack the jar files to
-   * @param version Which version of the slf4j-plugin-xxx to use
+   * @param type Which type of the slf4j-plugin-xxx to use
    * @see #checkAndLoadSLF4J(Path, String, String)
    */
   @Override
-  public void checkAndLoadSLF4J(Path libsPath, String version) {
-    checkAndLoadSLF4J(libsPath, "@slf4jVersion@", version);
+  public void checkAndLoadSLF4J(Path libsPath, String type) {
+    checkAndLoadSLF4J(libsPath, "@slf4jVersion@", type + "-@slf4jPluginVersion@");
   }
 }

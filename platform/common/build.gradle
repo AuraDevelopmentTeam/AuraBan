@@ -60,8 +60,6 @@ processSources {
 shadowJar {
     relocate("${rootProject.baseGroup}.lib", "${rootProject.group}.lib")
     relocate("licenses", "${rootProject.group}.shadow.licenses")
-    relocate("org.apache", "${rootProject.group}.shadow.org.apache")
-    relocate("org.codehaus", "${rootProject.group}.shadow.org.codehaus")
 
     // For picomaven
     exclude "module-info.class"
