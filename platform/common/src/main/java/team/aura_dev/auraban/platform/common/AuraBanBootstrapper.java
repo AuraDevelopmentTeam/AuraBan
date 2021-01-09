@@ -11,6 +11,10 @@ public class AuraBanBootstrapper extends MultiProjectSLF4JBootstrapper<AuraBanBa
   public static final String URL = "https://github.com/AuraDevelopmentTeam/AuraBan";
   public static final String AUTHOR = "The_BrainStone";
 
+  public AuraBanBootstrapper() {
+    super(AuraBanBaseBootstrap.class);
+  }
+
   @Override
   protected String getPackageName() {
     return "@group@";
